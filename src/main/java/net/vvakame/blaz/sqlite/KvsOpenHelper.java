@@ -25,7 +25,7 @@ public class KvsOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// TODO KEYにUniq制約が必要
 		db.execSQL("CREATE TABLE KEYS (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT, PARENT_KEY TEXT)");
-		db.execSQL("CREATE TABLE VALUES (KEY TEXT, KIND TEXT, TYPE TEXT, VALUE BLOB)");
+		db.execSQL("CREATE TABLE VALUES (KEY_STR TEXT, KIND TEXT, NAME TEXT, TYPE TEXT, VALUE BLOB)");
 	}
 
 	@Override
