@@ -1,4 +1,4 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.sqlite;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,9 +33,9 @@ public class KvsOpenHelperTest {
 		assertThat(database, notNullValue());
 
 		database.beginTransaction();
-		database.execSQL("INSERT INTO TEST (VAL) VALUES (1)");
+		database.execSQL("INSERT INTO KEYS (KEY) VALUES (1)");
 
-		Cursor c = database.query("TEST", null, null, null, null, null, null);
+		Cursor c = database.query("KEYS", null, null, null, null, null, null);
 		assertThat(c.getCount(), is(1));
 	}
 }

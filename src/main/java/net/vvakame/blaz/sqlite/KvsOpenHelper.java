@@ -1,4 +1,4 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.sqlite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,7 +23,9 @@ public class KvsOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE TEST (KEY INTEGER PRIMARY KEY AUTOINCREMENT, VAL TEXT)");
+		// TODO KEYにUniq制約が必要
+		db.execSQL("CREATE TABLE KEYS (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT, PARENT_KEY TEXT)");
+		db.execSQL("CREATE TABLE VALUES (KEY TEXT, KIND TEXT, TYPE TEXT, VALUE BLOB)");
 	}
 
 	@Override
