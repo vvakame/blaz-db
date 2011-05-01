@@ -15,19 +15,15 @@ public interface IKeyValueStore {
 	public Entity get(Key key);
 
 	/**
-	 * {@link Key} に対応する {@link Entity} を上書き保存する.
-	 * @param key
+	 * {@link Entity} を保存する.
 	 * @param entity
 	 * @author vvakame
 	 */
-	public void put(Key key, Entity entity);
+	public void put(Entity entity);
 
-	/**
-	 * {@link Filter} を適用した
-	 * @param m 
-	 * @param <T> 
-	 * @return Query
-	 * @author vvakame
-	 */
-	public <T>ModelQuery<T> query(ModelMeta m);
+	// EQ_MATCH
+	// LT_MATCH
+	// GT_MATCH
+	// LEQ_MATCH
+	// GEQ_MATCH
 }
