@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.FilterOption;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.KeyUtil;
@@ -67,17 +68,19 @@ public class SQLiteKVS implements IKeyValueStore {
 		entity.setKey(newKey);
 		int nameIdx = c.getColumnIndex("NAME");
 		int typeIdx = c.getColumnIndex("TYPE");
-		int valueIdx = c.getColumnIndex("VALUE");
+		int valStrIdx = c.getColumnIndex("VAL_STR");
+		int valIntIdx = c.getColumnIndex("VAL_INT");
+		int valRealIdx = c.getColumnIndex("VAL_REAL");
+		int valBlobIdx = c.getColumnIndex("VAL_BLOB");
 		if (!c.moveToFirst()) {
 			return entity;
 		}
 		do {
 			String name = c.getString(nameIdx);
 			String type = c.getString(typeIdx);
-			byte[] blob = c.getBlob(valueIdx);
 			Object value;
 			if ("String".equals(type)) {
-				value = new String(blob);
+				value = c.getString(valStrIdx);
 			} else {
 				throw new UnsupportedOperationException();
 			}
@@ -85,6 +88,10 @@ public class SQLiteKVS implements IKeyValueStore {
 		} while (c.moveToNext());
 
 		return entity;
+	}
+
+	static List<Entity> find(FilterOption options) {
+		return null;
 	}
 
 	static ContentValues convKeyToValues(Key key) {
@@ -115,7 +122,7 @@ public class SQLiteKVS implements IKeyValueStore {
 				value.put("NAME", keyStr);
 				value.put("TYPE", "String");
 				// TODO 文字コードを指定したほうがいい
-				value.put("VALUE", ((String) obj).getBytes());
+				value.put("VAL_STR", (String) obj);
 				values.add(value);
 			} else {
 				throw new UnsupportedOperationException();

@@ -41,6 +41,7 @@ public class SQLiteKVSTest {
 			entity.setProperty("key1", "value1");
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
+			entity.setProperty("rnd", "rnd1");
 			Datastore.put(entity);
 		}
 		{
@@ -49,6 +50,7 @@ public class SQLiteKVSTest {
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
 			entity.setProperty("key4", "value4");
+			entity.setProperty("rnd", "rnd2");
 			Datastore.put(entity);
 		}
 		{
@@ -57,6 +59,7 @@ public class SQLiteKVSTest {
 			entity.setProperty("key3", "value3");
 			entity.setProperty("key4", "value4");
 			entity.setProperty("key5", "value5");
+			entity.setProperty("rnd", "rnd3");
 			Datastore.put(entity);
 		}
 
@@ -89,6 +92,12 @@ public class SQLiteKVSTest {
 							});
 		assertThat(c.moveToFirst(), is(true));
 		assertThat(c.getCount(), is(3));
+
+		c = mKvs.mDb.rawQuery("SELECT KEY_STR FROM VALUES WHERE VAL_STR = ?", new String[] {
+			"rnd3"
+		});
+		assertThat(c.moveToFirst(), is(true));
+		assertThat(c.getCount(), is(1));
 	}
 
 	/**
