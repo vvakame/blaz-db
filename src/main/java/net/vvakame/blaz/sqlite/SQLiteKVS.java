@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.EntityNotFoundException;
 import net.vvakame.blaz.FilterOption;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
@@ -52,97 +53,6 @@ public class SQLiteKVS implements IKeyValueStore {
 		for (ContentValues values : list) {
 			mDb.insert(TABLE_VALUES, null, values);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Entity get(Key key) {
-		Cursor c;
-		c = mDb.query(TABLE_KEYS, null, "KEY_STR = ?", new String[] {
-			KeyUtil.keyToString(key)
-		}, null, null, null);
-		if (!c.moveToFirst()) {
-			// FIXME EntityNotFoundException作る
-			throw new IllegalArgumentException();
-		}
-		Key newKey = new Key();
-		newKey.setId(c.getLong(c.getColumnIndex(COL_ID)));
-		newKey.setName(c.getString(c.getColumnIndex(COL_NAME)));
-
-		c = mDb.query(TABLE_VALUES, null, "KEY_STR = ?", new String[] {
-			KeyUtil.keyToString(key)
-		}, null, null, null);
-
-		Entity entity = new Entity();
-		entity.setKey(newKey);
-		final int nameIdx = c.getColumnIndex(COL_NAME);
-		final int typeIdx = c.getColumnIndex(COL_TYPE);
-		final int valStrIdx = c.getColumnIndex(COL_VALUE_STRING);
-		final int valIntIdx = c.getColumnIndex(COL_VALUE_INTEGER);
-		final int valRealIdx = c.getColumnIndex(COL_VALUE_REAL);
-		final int valBlobIdx = c.getColumnIndex(COL_VALUE_BLOB);
-		if (!c.moveToFirst()) {
-			return entity;
-		}
-		do {
-			final String name = c.getString(nameIdx);
-			String type = c.getString(typeIdx);
-			Object value;
-			if (T_NULL.equals(type)) {
-				value = null;
-			} else if (T_STRING.equals(type)) {
-				value = c.getString(valStrIdx);
-			} else if (T_BOOLEAN.equals(type)) {
-				value = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
-			} else if (T_LONG.equals(type)) {
-				value = c.getLong(valIntIdx);
-			} else if (T_DOUBLE.equals(type)) {
-				value = c.getDouble(valRealIdx);
-			} else if (T_KEY.equals(type)) {
-				value = "UNKNOWN"; // FIXME
-			} else if (T_BYTES.equals(type)) {
-				value = c.getBlob(valBlobIdx);
-			} else if (T_L_BLANK.equals(type)) {
-				value = new ArrayList<Object>();
-			} else if (type.startsWith(T_L_PREFIX)) {
-				List<Object> list;
-				if (entity.getProperties().containsKey(name)) {
-					list = (List<Object>) entity.getProperty(name);
-				} else {
-					list = new ArrayList<Object>();
-				}
-				if (T_L_NULL.equals(type)) {
-					list.add(null);
-				} else if (T_L_STRING.equals(type)) {
-					list.add(c.getString(valStrIdx));
-				} else if (T_L_BOOLEAN.equals(type)) {
-					boolean b = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
-					list.add(b);
-				} else if (T_L_LONG.equals(type)) {
-					list.add(c.getLong(valIntIdx));
-				} else if (T_L_DOUBLE.equals(type)) {
-					list.add(c.getDouble(valRealIdx));
-				} else if (T_L_KEY.equals(type)) {
-					list.add("UNKNOWN"); // FIXME
-				} else if (T_L_BYTES.equals(type)) {
-					list.add(c.getBlob(valBlobIdx));
-				} else {
-					throw new UnsupportedPropertyException("property name=" + name
-							+ " is not suppored type. type=" + type);
-				}
-				value = list;
-			} else {
-				throw new UnsupportedPropertyException("property name=" + name
-						+ " is not suppored type. type=" + type);
-			}
-			entity.setProperty(name, value);
-		} while (c.moveToNext());
-
-		return entity;
-	}
-
-	static List<Entity> find(FilterOption options) {
-		return null;
 	}
 
 	static ContentValues convKeyToValues(Key key) {
@@ -292,5 +202,95 @@ public class SQLiteKVS implements IKeyValueStore {
 			}
 			return;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Entity get(Key key) {
+		Cursor c;
+		c = mDb.query(TABLE_KEYS, null, "KEY_STR = ?", new String[] {
+			KeyUtil.keyToString(key)
+		}, null, null, null);
+		if (!c.moveToFirst()) {
+			throw new EntityNotFoundException("key=" + key.toString() + " is not found.");
+		}
+		Key newKey = new Key();
+		newKey.setId(c.getLong(c.getColumnIndex(COL_ID)));
+		newKey.setName(c.getString(c.getColumnIndex(COL_NAME)));
+
+		c = mDb.query(TABLE_VALUES, null, "KEY_STR = ?", new String[] {
+			KeyUtil.keyToString(key)
+		}, null, null, COL_NAME + "," + COL_SEQ);
+
+		Entity entity = new Entity();
+		entity.setKey(newKey);
+		final int nameIdx = c.getColumnIndex(COL_NAME);
+		final int typeIdx = c.getColumnIndex(COL_TYPE);
+		final int valStrIdx = c.getColumnIndex(COL_VALUE_STRING);
+		final int valIntIdx = c.getColumnIndex(COL_VALUE_INTEGER);
+		final int valRealIdx = c.getColumnIndex(COL_VALUE_REAL);
+		final int valBlobIdx = c.getColumnIndex(COL_VALUE_BLOB);
+		if (!c.moveToFirst()) {
+			return entity;
+		}
+		do {
+			final String name = c.getString(nameIdx);
+			String type = c.getString(typeIdx);
+			Object value;
+			if (T_NULL.equals(type)) {
+				value = null;
+			} else if (T_STRING.equals(type)) {
+				value = c.getString(valStrIdx);
+			} else if (T_BOOLEAN.equals(type)) {
+				value = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
+			} else if (T_LONG.equals(type)) {
+				value = c.getLong(valIntIdx);
+			} else if (T_DOUBLE.equals(type)) {
+				value = c.getDouble(valRealIdx);
+			} else if (T_KEY.equals(type)) {
+				value = "UNKNOWN"; // FIXME
+			} else if (T_BYTES.equals(type)) {
+				value = c.getBlob(valBlobIdx);
+			} else if (T_L_BLANK.equals(type)) {
+				value = new ArrayList<Object>();
+			} else if (type.startsWith(T_L_PREFIX)) {
+				List<Object> list;
+				if (entity.getProperties().containsKey(name)) {
+					list = (List<Object>) entity.getProperty(name);
+				} else {
+					list = new ArrayList<Object>();
+				}
+				if (T_L_NULL.equals(type)) {
+					list.add(null);
+				} else if (T_L_STRING.equals(type)) {
+					list.add(c.getString(valStrIdx));
+				} else if (T_L_BOOLEAN.equals(type)) {
+					boolean b = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
+					list.add(b);
+				} else if (T_L_LONG.equals(type)) {
+					list.add(c.getLong(valIntIdx));
+				} else if (T_L_DOUBLE.equals(type)) {
+					list.add(c.getDouble(valRealIdx));
+				} else if (T_L_KEY.equals(type)) {
+					list.add("UNKNOWN"); // FIXME
+				} else if (T_L_BYTES.equals(type)) {
+					list.add(c.getBlob(valBlobIdx));
+				} else {
+					throw new UnsupportedPropertyException("property name=" + name
+							+ " is not suppored type. type=" + type);
+				}
+				value = list;
+			} else {
+				throw new UnsupportedPropertyException("property name=" + name
+						+ " is not suppored type. type=" + type);
+			}
+			entity.setProperty(name, value);
+		} while (c.moveToNext());
+
+		return entity;
+	}
+
+	static List<Entity> find(FilterOption options) {
+		return null;
 	}
 }
