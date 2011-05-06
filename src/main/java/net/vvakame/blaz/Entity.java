@@ -14,7 +14,11 @@ public class Entity {
 	private Map<String, Object> propertyMap = new HashMap<String, Object>();
 
 
-	// TODO Slim3やappengineと対称性があるか調べてない
+	/**
+	 * EntityのKeyを設定する.
+	 * @param key
+	 * @author vvakame
+	 */
 	public void setKey(Key key) {
 		this.key = key;
 	}
