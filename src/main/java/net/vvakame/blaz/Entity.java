@@ -48,12 +48,14 @@ public class Entity {
 
 	/**
 	 * Entityが保持するプロパティを返します.
+	 * @param <T> 
 	 * @param name
 	 * @return プロパティの値
 	 * @author vvakame
 	 */
-	public Object getProperty(String name) {
-		return propertyMap.get(name);
+	@SuppressWarnings("unchecked")
+	public <T>T getProperty(String name) {
+		return (T) propertyMap.get(name);
 	}
 
 	/**

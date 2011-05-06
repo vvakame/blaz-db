@@ -52,6 +52,8 @@ public class KvsOpenHelper extends SQLiteOpenHelper {
 
 	static final String T_L_PREFIX = "L#";
 
+	static final String T_L_BLANK = T_L_PREFIX + "BLANK";
+
 	static final String T_L_NULL = T_L_PREFIX + T_NULL;
 
 	static final String T_L_STRING = T_L_PREFIX + T_STRING;
