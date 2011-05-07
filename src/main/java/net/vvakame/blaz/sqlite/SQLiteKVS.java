@@ -65,7 +65,6 @@ public class SQLiteKVS implements IKeyValueStore {
 		}
 		values.put(COL_KIND, key.getKind());
 		values.put(COL_KEY_STRING, KeyUtil.keyToString(key));
-		values.put(COL_PARENT_KEY, KeyUtil.keyToString(key.getParent()));
 
 		return values;
 	}

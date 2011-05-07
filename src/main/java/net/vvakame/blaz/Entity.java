@@ -42,15 +42,6 @@ public class Entity {
 	}
 
 	/**
-	 * EntityのParentのKeyを取得します.
-	 * @return ParentのKey
-	 * @author vvakame
-	 */
-	public Key getParent() {
-		return this.key.getParent();
-	}
-
-	/**
 	 * Entityが保持するプロパティを返します.
 	 * @param <T> 
 	 * @param name

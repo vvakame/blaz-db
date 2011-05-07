@@ -20,8 +20,6 @@ public class KvsOpenHelper extends SQLiteOpenHelper {
 
 	static final String COL_KEY_STRING = "KEY_STR";
 
-	static final String COL_PARENT_KEY = "PARENT_KEY";
-
 	static final String COL_KIND = "KIND";
 
 	static final String COL_TYPE = "TYPE";
@@ -87,7 +85,7 @@ public class KvsOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// FIXME KEYにUniq制約が必要
-		db.execSQL("CREATE TABLE KEYS (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT, PARENT_KEY TEXT)");
+		db.execSQL("CREATE TABLE KEYS (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT)");
 		db.execSQL("CREATE TABLE VALUES (KEY_STR TEXT, KIND TEXT, NAME TEXT, TYPE TEXT, SEQ INTEGER, VAL_STR TEXT, VAL_INT INTEGER, VAL_REAL REAL, VAL_BYTES BLOB)");
 		db.execSQL("CREATE INDEX VALUES_KEY_STR ON VALUES(KEY_STR)");
 		db.execSQL("CREATE INDEX VALUES_KIND_NAME ON VALUES(KIND, NAME)");
