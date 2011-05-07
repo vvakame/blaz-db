@@ -247,7 +247,7 @@ public class SQLiteKVS implements IKeyValueStore {
 			} else if (T_DOUBLE.equals(type)) {
 				value = c.getDouble(valRealIdx);
 			} else if (T_KEY.equals(type)) {
-				value = "UNKNOWN"; // FIXME
+				value = KeyUtil.stringToKey(c.getString(valStrIdx));
 			} else if (T_BYTES.equals(type)) {
 				value = c.getBlob(valBlobIdx);
 			} else if (T_L_BLANK.equals(type)) {
@@ -271,7 +271,7 @@ public class SQLiteKVS implements IKeyValueStore {
 				} else if (T_L_DOUBLE.equals(type)) {
 					list.add(c.getDouble(valRealIdx));
 				} else if (T_L_KEY.equals(type)) {
-					list.add("UNKNOWN"); // FIXME
+					list.add(KeyUtil.stringToKey(c.getString(valStrIdx)));
 				} else if (T_L_BYTES.equals(type)) {
 					list.add(c.getBlob(valBlobIdx));
 				} else {

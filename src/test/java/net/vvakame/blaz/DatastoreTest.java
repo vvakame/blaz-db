@@ -85,7 +85,7 @@ public class DatastoreTest {
 			assertThat(entity.getProperty("BooleanF"), is((Object) false));
 			assertThat(entity.getProperty("Float"), is((Object) 1.125));
 			assertThat(entity.getProperty("Double"), is((Object) 2.5));
-			// TODO assertThat(entity.getProperty("Key"), is((Object) KeyUtil.createKey("hoge", "puyo")));
+			assertThat(entity.getProperty("Key"), is((Object) KeyUtil.createKey("hoge", "puyo")));
 			assertThat(entity.getProperty("byte[]"), is((Object) new byte[] {
 				1,
 				2,
@@ -106,7 +106,7 @@ public class DatastoreTest {
 			assertThat(list.get(7), is((Object) false));
 			assertThat(list.get(8), is((Object) 1.125));
 			assertThat(list.get(9), is((Object) 2.25));
-			// TODO assertThat(list.get(10), is((Object) KeyUtil.createKey("hoge", "payo")));
+			assertThat(list.get(10), is((Object) KeyUtil.createKey("hoge", "payo")));
 			assertThat(list.get(11), is((Object) new byte[] {
 				1,
 				2,
