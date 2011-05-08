@@ -3,6 +3,8 @@ package net.vvakame.blaz;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.vvakame.blaz.Filter.FilterOption;
+import net.vvakame.blaz.Filter.FilterTarget;
 import net.vvakame.blaz.sqlite.SQLiteKVS;
 
 import org.junit.Before;
@@ -148,6 +150,35 @@ public class DatastoreTest {
 
 		entity = Datastore.get(key2);
 		assertThat(entity.getProperties().size(), is(1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", "value1");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", "value2");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", "value2");
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, "value2"));
+		assertThat(list.size(), is(2));
 	}
 
 	/**

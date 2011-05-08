@@ -1,5 +1,7 @@
 package net.vvakame.blaz;
 
+import java.util.List;
+
 /**
  * {@link IKeyValueStore} 実装を利用したDatastore.
  * @author vvakame
@@ -37,5 +39,15 @@ public class Datastore {
 	 */
 	public static Entity get(Key key) throws EntityNotFoundException {
 		return sKvs.get(key);
+	}
+
+	/**
+	 * 指定の条件に合致する {@link Entity} を探して返す
+	 * @param filters
+	 * @return 見つかった {@link Entity}
+	 * @author vvakame
+	 */
+	static List<Entity> find(Filter... filters) {
+		return sKvs.find(filters);
 	}
 }
