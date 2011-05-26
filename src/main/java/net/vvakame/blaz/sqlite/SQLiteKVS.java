@@ -74,56 +74,57 @@ public class SQLiteKVS implements IKeyValueStore {
 		for (String name : properties.keySet()) {
 			Object obj = properties.get(name);
 			if (obj instanceof Collection) {
-				makeValueList(key, values, name, (Collection<?>) obj);
+				convListToValue(key, values, name, (Collection<?>) obj);
 			} else {
-				makeValue(key, values, name, obj);
+				convObjToValue(key, values, name, obj, false);
 			}
 		}
 
 		return values;
 	}
 
-	static void makeValue(Key key, List<ContentValues> values, String name, Object obj) {
+	static void convObjToValue(Key key, List<ContentValues> values, String name, Object obj,
+			boolean isList) {
 		ContentValues value = new ContentValues();
 		value.put(COL_KEY_STRING, KeyUtil.keyToString(key));
 		value.put(COL_KIND, key.getKind());
 		value.put(COL_NAME, name);
 
 		if (obj == null) {
-			value.put(COL_TYPE, T_NULL);
+			value.put(COL_TYPE, isList ? T_L_NULL : T_NULL);
 		} else if (obj instanceof String) {
-			value.put(COL_TYPE, T_STRING);
+			value.put(COL_TYPE, isList ? T_L_STRING : T_STRING);
 			value.put(COL_VALUE_STRING, (String) obj);
 		} else if (obj instanceof Byte) {
-			value.put(COL_TYPE, T_LONG);
+			value.put(COL_TYPE, isList ? T_L_LONG : T_LONG);
 			value.put(COL_VALUE_INTEGER, (Byte) obj);
 		} else if (obj instanceof Short) {
-			value.put(COL_TYPE, T_LONG);
+			value.put(COL_TYPE, isList ? T_L_LONG : T_LONG);
 			value.put(COL_VALUE_INTEGER, (Short) obj);
 		} else if (obj instanceof Integer) {
-			value.put(COL_TYPE, T_LONG);
+			value.put(COL_TYPE, isList ? T_L_LONG : T_LONG);
 			value.put(COL_VALUE_INTEGER, (Integer) obj);
 		} else if (obj instanceof Long) {
-			value.put(COL_TYPE, T_LONG);
+			value.put(COL_TYPE, isList ? T_L_LONG : T_LONG);
 			value.put(COL_VALUE_INTEGER, (Long) obj);
 		} else if (obj instanceof Boolean) {
-			value.put(COL_TYPE, T_BOOLEAN);
+			value.put(COL_TYPE, isList ? T_L_BOOLEAN : T_BOOLEAN);
 			if ((Boolean) obj) {
 				value.put(COL_VALUE_STRING, T_V_BOOLEAN_TRUE);
 			} else {
 				value.put(COL_VALUE_STRING, T_V_BOOLEAN_FALSE);
 			}
 		} else if (obj instanceof Float) {
-			value.put(COL_TYPE, T_DOUBLE);
+			value.put(COL_TYPE, isList ? T_L_DOUBLE : T_DOUBLE);
 			value.put(COL_VALUE_REAL, (Float) obj);
 		} else if (obj instanceof Double) {
-			value.put(COL_TYPE, T_DOUBLE);
+			value.put(COL_TYPE, isList ? T_L_DOUBLE : T_DOUBLE);
 			value.put(COL_VALUE_REAL, (Double) obj);
 		} else if (obj instanceof Key) {
-			value.put(COL_TYPE, T_KEY);
+			value.put(COL_TYPE, isList ? T_L_KEY : T_KEY);
 			value.put(COL_VALUE_STRING, KeyUtil.keyToString((Key) obj));
 		} else if (obj instanceof byte[]) {
-			value.put(COL_TYPE, T_BYTES);
+			value.put(COL_TYPE, isList ? T_L_BYTES : T_BYTES);
 			value.put(COL_VALUE_BLOB, (byte[]) obj);
 		} else {
 			throw new UnsupportedPropertyException("property name=" + name
@@ -132,7 +133,7 @@ public class SQLiteKVS implements IKeyValueStore {
 		values.add(value);
 	}
 
-	static void makeValueList(Key key, List<ContentValues> values, String name,
+	static void convListToValue(Key key, List<ContentValues> values, String name,
 			Collection<?> collection) {
 		Object[] list = collection.toArray();
 		if (collection.size() == 0) {
@@ -149,55 +150,7 @@ public class SQLiteKVS implements IKeyValueStore {
 		} else {
 			for (int i = 0; i < list.length; i++) {
 				Object obj = list[i];
-				ContentValues value = new ContentValues();
-				value.put(COL_KEY_STRING, KeyUtil.keyToString(key));
-				value.put(COL_KIND, key.getKind());
-				value.put(COL_NAME, name);
-				value.put(COL_SEQ, i);
-
-				if (obj == null) {
-					value.put(COL_TYPE, T_L_NULL);
-				} else if (obj instanceof String) {
-					value.put(COL_TYPE, T_L_STRING);
-					value.put(COL_VALUE_STRING, (String) obj);
-				} else if (obj instanceof Byte) {
-					value.put(COL_TYPE, T_L_LONG);
-					value.put(COL_VALUE_INTEGER, (Byte) obj);
-				} else if (obj instanceof Short) {
-					value.put(COL_TYPE, T_L_LONG);
-					value.put(COL_VALUE_INTEGER, (Short) obj);
-				} else if (obj instanceof Integer) {
-					value.put(COL_TYPE, T_L_LONG);
-					value.put(COL_VALUE_INTEGER, (Integer) obj);
-				} else if (obj instanceof Long) {
-					value.put(COL_TYPE, T_L_LONG);
-					value.put(COL_VALUE_INTEGER, (Long) obj);
-				} else if (obj instanceof Boolean) {
-					value.put(COL_TYPE, T_L_BOOLEAN);
-					if ((Boolean) obj) {
-						value.put(COL_VALUE_STRING, T_V_BOOLEAN_TRUE);
-					} else {
-						value.put(COL_VALUE_STRING, T_V_BOOLEAN_FALSE);
-					}
-				} else if (obj instanceof Float) {
-					value.put(COL_TYPE, T_L_DOUBLE);
-					value.put(COL_VALUE_REAL, (Float) obj);
-				} else if (obj instanceof Double) {
-					value.put(COL_TYPE, T_L_DOUBLE);
-					value.put(COL_VALUE_REAL, (Double) obj);
-				} else if (obj instanceof Key) {
-					value.put(COL_TYPE, T_L_KEY);
-					value.put(COL_VALUE_STRING, KeyUtil.keyToString((Key) obj));
-				} else if (obj instanceof byte[]) {
-					value.put(COL_TYPE, T_L_BYTES);
-					value.put(COL_VALUE_BLOB, (byte[]) obj);
-				} else {
-					throw new UnsupportedPropertyException("property name=" + name + ", index = "
-							+ i + " is not suppored type. type="
-							+ obj.getClass().getCanonicalName());
-				}
-				values.add(value);
-
+				convObjToValue(key, values, name, obj, true);
 			}
 			return;
 		}
@@ -308,76 +261,6 @@ public class SQLiteKVS implements IKeyValueStore {
 		return keys;
 	}
 
-
-	static final String SQL_KEY_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " = ?";
-
-	static final String SQL_KEY_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " < ?";
-
-	static final String SQL_KEY_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " <= ?";
-
-	static final String SQL_KEY_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " > ?";
-
-	static final String SQL_KEY_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " >= ?";
-
-	static final String SQL_KIND = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES + " WHERE "
-			+ COL_KIND + " = ?";
-
-	static final String SQL_PROPERTY_STR_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
-			+ " = ?";
-
-	static final String SQL_PROPERTY_STR_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
-			+ " < ?";
-
-	static final String SQL_PROPERTY_STR_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND "
-			+ COL_VALUE_STRING + " <= ?";
-
-	static final String SQL_PROPERTY_STR_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
-			+ " > ?";
-
-	static final String SQL_PROPERTY_STR_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND "
-			+ COL_VALUE_STRING + " >= ?";
-
-	static final String SQL_PROPERTY_INTEGER_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " = ?";
-
-	static final String SQL_PROPERTY_INTEGER_GT = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " < ?";
-
-	static final String SQL_PROPERTY_INTEGER_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " <= ?";
-
-	static final String SQL_PROPERTY_INTEGER_LT = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " > ?";
-
-	static final String SQL_PROPERTY_INTEGER_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " >= ?";
-
-	static final String SQL_PROPERTY_REAL_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " = ?";
-
-	static final String SQL_PROPERTY_REAL_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " < ?";
-
-	static final String SQL_PROPERTY_REAL_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " <= ?";
-
-	static final String SQL_PROPERTY_REAL_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " > ?";
-
-	static final String SQL_PROPERTY_REAL_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " >= ?";
-
-
 	@Override
 	public List<Key> findAsKey(Filter... filters) {
 		if (filters.length == 0) {
@@ -393,12 +276,12 @@ public class SQLiteKVS implements IKeyValueStore {
 		Filter filter;
 		if (filters.length == 1) {
 			filter = filters[0];
-			makeQuery(filter, builder, args);
+			QueryBuilder.makeQuery(filter, builder, args);
 		} else {
 			for (int i = 0; i < filters.length; i++) {
 				filter = filters[i];
 				builder.append(" (");
-				makeQuery(filter, builder, args);
+				QueryBuilder.makeQuery(filter, builder, args);
 				builder.append(") ");
 				if (i - 1 != filters.length) {
 					builder.append("INTERSECT");
@@ -520,212 +403,4 @@ public class SQLiteKVS implements IKeyValueStore {
 		return resultList;
 	}
 
-	static void makeQuery(Filter filter, StringBuilder builder, List<String> args) {
-		switch (filter.getTarget()) {
-			case KEY:
-				makeQueryKey(filter, builder, args);
-				break;
-
-			case KIND:
-				makeQueryKind(filter, builder, args);
-				break;
-
-			case PROPERTY:
-				makeQueryProperty(filter, builder, args);
-				break;
-
-			default:
-				throw new IllegalArgumentException();
-		}
-	}
-
-	static void makeQueryKey(Filter filter, StringBuilder builder, List<String> args) {
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_KEY_EQ);
-				break;
-
-			case GT:
-				builder.append(SQL_KEY_GT);
-				break;
-
-			case GT_EQ:
-				builder.append(SQL_KEY_GT_EQ);
-				break;
-
-			case LT:
-				builder.append(SQL_KEY_LT);
-				break;
-
-			case LT_EQ:
-				builder.append(SQL_KEY_LT_EQ);
-				break;
-
-			default:
-				break;
-		}
-		args.add(KeyUtil.keyToString((Key) filter.getValue()));
-	}
-
-	static void makeQueryKind(Filter filter, StringBuilder builder, List<String> args) {
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_KIND);
-				break;
-			default:
-				break;
-		}
-		args.add(filter.getName());
-	}
-
-	static void makeQueryProperty(Filter filter, StringBuilder builder, List<String> args) {
-		Object obj = filter.getValue();
-		if (obj instanceof Key) {
-			makeQueryPropertyKey(filter, builder, args);
-		} else if (obj instanceof String) {
-			makeQueryPropertyString(filter, builder, args);
-		} else if (obj instanceof Boolean) {
-			makeQueryPropertyBoolean(filter, builder, args);
-		} else if (obj instanceof Byte || obj instanceof Short || obj instanceof Integer
-				|| obj instanceof Long) {
-			makeQueryPropertyInteger(filter, builder, args);
-		} else if (obj instanceof Float || obj instanceof Double) {
-			makeQueryPropertyReal(filter, builder, args);
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	static void makeQueryPropertyKey(Filter filter, StringBuilder builder, List<String> args) {
-		String name = filter.getName();
-		Object obj = filter.getValue();
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_PROPERTY_STR_EQ);
-				break;
-			case GT:
-				builder.append(SQL_PROPERTY_STR_GT);
-				break;
-			case GT_EQ:
-				builder.append(SQL_PROPERTY_STR_GT_EQ);
-				break;
-			case LT:
-				builder.append(SQL_PROPERTY_STR_LT);
-				break;
-			case LT_EQ:
-				builder.append(SQL_PROPERTY_STR_LT_EQ);
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-		args.add(T_KEY);
-		args.add(name);
-		args.add(KeyUtil.keyToString((Key) obj));
-	}
-
-	static void makeQueryPropertyString(Filter filter, StringBuilder builder, List<String> args) {
-		String name = filter.getName();
-		Object obj = filter.getValue();
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_PROPERTY_STR_EQ);
-				break;
-			case GT:
-				builder.append(SQL_PROPERTY_STR_GT);
-				break;
-			case GT_EQ:
-				builder.append(SQL_PROPERTY_STR_GT_EQ);
-				break;
-			case LT:
-				builder.append(SQL_PROPERTY_STR_LT);
-				break;
-			case LT_EQ:
-				builder.append(SQL_PROPERTY_STR_LT_EQ);
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-		args.add(T_STRING);
-		args.add(name);
-		args.add((String) obj);
-	}
-
-	static void makeQueryPropertyBoolean(Filter filter, StringBuilder builder, List<String> args) {
-		String name = filter.getName();
-		Object obj = filter.getValue();
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_PROPERTY_STR_EQ);
-				break;
-			case GT:
-				builder.append(SQL_PROPERTY_STR_GT);
-				break;
-			case GT_EQ:
-				builder.append(SQL_PROPERTY_STR_GT_EQ);
-				break;
-			case LT:
-				builder.append(SQL_PROPERTY_STR_LT);
-				break;
-			case LT_EQ:
-				builder.append(SQL_PROPERTY_STR_LT_EQ);
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-		args.add(T_BOOLEAN);
-		args.add(name);
-		args.add(String.valueOf(obj));
-	}
-
-	static void makeQueryPropertyInteger(Filter filter, StringBuilder builder, List<String> args) {
-		String name = filter.getName();
-		Object obj = filter.getValue();
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_PROPERTY_INTEGER_EQ);
-				break;
-			case GT:
-				builder.append(SQL_PROPERTY_INTEGER_GT);
-				break;
-			case GT_EQ:
-				builder.append(SQL_PROPERTY_INTEGER_GT_EQ);
-				break;
-			case LT:
-				builder.append(SQL_PROPERTY_INTEGER_LT);
-				break;
-			case LT_EQ:
-				builder.append(SQL_PROPERTY_INTEGER_LT_EQ);
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-		args.add(name);
-		args.add(String.valueOf(obj));
-	}
-
-	static void makeQueryPropertyReal(Filter filter, StringBuilder builder, List<String> args) {
-		String name = filter.getName();
-		Object obj = filter.getValue();
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_PROPERTY_REAL_EQ);
-				break;
-			case GT:
-				builder.append(SQL_PROPERTY_REAL_GT);
-				break;
-			case GT_EQ:
-				builder.append(SQL_PROPERTY_REAL_GT_EQ);
-				break;
-			case LT:
-				builder.append(SQL_PROPERTY_REAL_LT);
-				break;
-			case LT_EQ:
-				builder.append(SQL_PROPERTY_REAL_LT_EQ);
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-		args.add(name);
-		args.add(String.valueOf(obj));
-	}
 }
