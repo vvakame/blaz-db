@@ -271,6 +271,68 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_integer_PROPERTY_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", 1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", 1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", 2);
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, 1));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_integer_PROPERTY_EQ_multi_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("name1", 1);
+			entity.setProperty("name2", 2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("name1", 1);
+			entity.setProperty("name2", 3);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("name1", 2);
+			entity.setProperty("name2", 3);
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, 1),
+						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, 3));
+		assertThat(list.size(), is(1));
+	}
+
+	/**
 	 * {@link Datastore} を呼出し可能なようにセットアップすること.
 	 * @author vvakame
 	 */
