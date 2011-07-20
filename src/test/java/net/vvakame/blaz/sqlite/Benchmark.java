@@ -29,6 +29,8 @@ public class Benchmark {
 
 	static final String TAG = "SQLiteBench";
 
+	IKeyValueStore kvs;
+
 
 	/**
 	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
@@ -97,7 +99,7 @@ public class Benchmark {
 	@Before
 	public void before() {
 		ShadowApplication application = Robolectric.getShadowApplication();
-		IKeyValueStore kvs = new SQLiteKVS(application.getApplicationContext());
+		kvs = new SQLiteKVS(application.getApplicationContext());
 		Datastore.init(kvs);
 	}
 }

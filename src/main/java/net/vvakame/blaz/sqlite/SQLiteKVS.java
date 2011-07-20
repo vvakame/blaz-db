@@ -283,7 +283,7 @@ public class SQLiteKVS implements IKeyValueStore {
 				builder.append(" (");
 				QueryBuilder.makeQuery(filter, builder, args);
 				builder.append(") ");
-				if (i - 1 != filters.length) {
+				if (i != filters.length - 1) {
 					builder.append("INTERSECT");
 				}
 			}
