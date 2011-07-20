@@ -232,7 +232,11 @@ class QueryBuilder {
 		}
 		args.add(T_BOOLEAN);
 		args.add(name);
-		args.add(String.valueOf(obj));
+		if ((Boolean) obj) {
+			args.add(T_V_BOOLEAN_TRUE);
+		} else {
+			args.add(T_V_BOOLEAN_FALSE);
+		}
 	}
 
 	static void makeQueryPropertyInteger(Filter filter, StringBuilder builder, List<String> args) {

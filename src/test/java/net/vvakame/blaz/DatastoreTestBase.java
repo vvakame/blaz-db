@@ -150,7 +150,7 @@ public abstract class DatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
-	public void find_property_equal_single_filter() {
+	public void find_string_PROPERTY_EQ_single_filter() {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
@@ -179,7 +179,7 @@ public abstract class DatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
-	public void find_property_equal_multi_filter() {
+	public void find_string_PROPERTY_EQ_multi_filter() {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
@@ -205,6 +205,68 @@ public abstract class DatastoreTestBase {
 				Datastore.find(
 						new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, "value2"),
 						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, "value1"));
+		assertThat(list.size(), is(1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_boolean_PROPERTY_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", true);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", true);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", false);
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, true));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_boolean_PROPERTY_EQ_multi_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("name1", true);
+			entity.setProperty("name2", true);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("name1", true);
+			entity.setProperty("name2", false);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("name1", false);
+			entity.setProperty("name2", false);
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, true),
+						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, false));
 		assertThat(list.size(), is(1));
 	}
 
