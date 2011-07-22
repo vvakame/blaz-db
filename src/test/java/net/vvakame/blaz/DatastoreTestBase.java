@@ -413,8 +413,8 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", "value3");
 			Datastore.put(entity);
 		}
-		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, "value1"));
-		assertThat(list.size(), is(2));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, "value2"));
+		assertThat(list.size(), is(1));
 	}
 
 	/**
@@ -441,8 +441,8 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", 3);
 			Datastore.put(entity);
 		}
-		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 1));
-		assertThat(list.size(), is(2));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 2));
+		assertThat(list.size(), is(1));
 	}
 
 	/**
@@ -469,7 +469,91 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			Datastore.put(entity);
 		}
-		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 1.1));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 1.2));
+		assertThat(list.size(), is(1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_string_PROPERTY_GT_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", "value1");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", "value2");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", "value3");
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT_EQ, "value2"));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_integer_PROPERTY_GT_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", 1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", 2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", 3);
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT_EQ, 2));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_real_PROPERTY_GT_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", 1.1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", 1.2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", 1.3);
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT_EQ, 1.2));
 		assertThat(list.size(), is(2));
 	}
 
