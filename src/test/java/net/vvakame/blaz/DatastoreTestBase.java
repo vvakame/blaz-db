@@ -171,6 +171,10 @@ public abstract class DatastoreTestBase {
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, "value2"));
 		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
 
 	/**
@@ -204,6 +208,8 @@ public abstract class DatastoreTestBase {
 				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, "value2"),
 						new PropertyFilter("name2", FilterOption.EQ, "value1"));
 		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), is(key1));
 	}
 
 	/**
@@ -232,6 +238,10 @@ public abstract class DatastoreTestBase {
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, true));
 		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
 
 	/**
@@ -265,6 +275,8 @@ public abstract class DatastoreTestBase {
 				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, true),
 						new PropertyFilter("name2", FilterOption.EQ, false));
 		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), is(key1));
 	}
 
 	/**
@@ -293,6 +305,10 @@ public abstract class DatastoreTestBase {
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, 1));
 		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
 
 	/**
@@ -326,6 +342,8 @@ public abstract class DatastoreTestBase {
 				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, 1), new PropertyFilter(
 						"name2", FilterOption.EQ, 3));
 		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), is(key1));
 	}
 
 	/**
@@ -354,6 +372,10 @@ public abstract class DatastoreTestBase {
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, 1.3));
 		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
 
 	/**
@@ -387,6 +409,8 @@ public abstract class DatastoreTestBase {
 				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, 1.1),
 						new PropertyFilter("name2", FilterOption.EQ, 1.3));
 		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), is(key1));
 	}
 
 	/**
