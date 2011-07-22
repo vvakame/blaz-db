@@ -41,13 +41,29 @@ public class PropertyFilter implements IFilter {
 	/**
 	 * the constructor.
 	 * @param name 
+	 * @param value
+	 * @category constructor
+	 */
+	public PropertyFilter(String name, boolean value) {
+		if (name == null) {
+			throw new IllegalArgumentException("name is required.");
+		}
+
+		this.option = FilterOption.EQ;
+		this.name = name;
+		this.value = value;
+	}
+
+	/**
+	 * the constructor.
+	 * @param name 
 	 * @param option
 	 * @param value
 	 * @category constructor
 	 */
 	public PropertyFilter(String name, FilterOption option, boolean value) {
-		if (option == null) {
-			throw new IllegalArgumentException("FilterOption is required.");
+		if (option != FilterOption.EQ) {
+			throw new IllegalArgumentException("FilterOption is must be EQ.");
 		} else if (name == null) {
 			throw new IllegalArgumentException("name is required.");
 		}

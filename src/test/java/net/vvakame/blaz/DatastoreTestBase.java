@@ -390,6 +390,90 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_string_PROPERTY_GT_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", "value1");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", "value2");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", "value3");
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, "value1"));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_integer_PROPERTY_GT_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", 1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", 2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", 3);
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 1));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_real_PROPERTY_GT_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", 1.1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", 1.2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", 1.3);
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 1.1));
+		assertThat(list.size(), is(2));
+	}
+
+	/**
 	 * {@link Datastore} を呼出し可能なようにセットアップすること.
 	 * @author vvakame
 	 */

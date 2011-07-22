@@ -289,7 +289,8 @@ public class SQLiteKVS implements IKeyValueStore {
 			}
 		}
 
-		Cursor c = mDb.rawQuery(builder.toString(), args.toArray(new String[] {}));
+		String query = builder.toString();
+		Cursor c = mDb.rawQuery(query, args.toArray(new String[] {}));
 		if (!c.moveToFirst()) {
 			return new ArrayList<Key>();
 		}

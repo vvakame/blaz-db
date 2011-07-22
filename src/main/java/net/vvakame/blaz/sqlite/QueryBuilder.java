@@ -13,16 +13,16 @@ class QueryBuilder {
 			+ " WHERE " + COL_KEY_STRING + " = ?";
 
 	static final String SQL_KEY_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " < ?";
-
-	static final String SQL_KEY_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " <= ?";
-
-	static final String SQL_KEY_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_KEY_STRING + " > ?";
 
-	static final String SQL_KEY_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+	static final String SQL_KEY_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_KEY_STRING + " >= ?";
+
+	static final String SQL_KEY_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+			+ " WHERE " + COL_KEY_STRING + " < ?";
+
+	static final String SQL_KEY_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+			+ " WHERE " + COL_KEY_STRING + " <= ?";
 
 	static final String SQL_KIND = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES + " WHERE "
 			+ COL_KIND + " = ?";
@@ -33,49 +33,49 @@ class QueryBuilder {
 
 	static final String SQL_PROPERTY_STR_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
-			+ " < ?";
+			+ " > ?";
 
 	static final String SQL_PROPERTY_STR_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND "
-			+ COL_VALUE_STRING + " <= ?";
+			+ COL_VALUE_STRING + " >= ?";
 
 	static final String SQL_PROPERTY_STR_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
-			+ " > ?";
+			+ " < ?";
 
 	static final String SQL_PROPERTY_STR_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND "
-			+ COL_VALUE_STRING + " >= ?";
+			+ COL_VALUE_STRING + " <= ?";
 
 	static final String SQL_PROPERTY_INTEGER_EQ = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " = ?";
 
 	static final String SQL_PROPERTY_INTEGER_GT = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " < ?";
-
-	static final String SQL_PROPERTY_INTEGER_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " <= ?";
-
-	static final String SQL_PROPERTY_INTEGER_LT = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " > ?";
 
-	static final String SQL_PROPERTY_INTEGER_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
+	static final String SQL_PROPERTY_INTEGER_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " >= ?";
+
+	static final String SQL_PROPERTY_INTEGER_LT = "SELECT " + COL_KEY_STRING + " FROM "
+			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " < ?";
+
+	static final String SQL_PROPERTY_INTEGER_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
+			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_INTEGER + " <= ?";
 
 	static final String SQL_PROPERTY_REAL_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " = ?";
 
 	static final String SQL_PROPERTY_REAL_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " < ?";
-
-	static final String SQL_PROPERTY_REAL_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " <= ?";
-
-	static final String SQL_PROPERTY_REAL_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " > ?";
 
-	static final String SQL_PROPERTY_REAL_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
+	static final String SQL_PROPERTY_REAL_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " >= ?";
+
+	static final String SQL_PROPERTY_REAL_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " < ?";
+
+	static final String SQL_PROPERTY_REAL_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
+			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " <= ?";
 
 
 	static void makeQuery(IFilter filter, StringBuilder builder, List<String> args) {
