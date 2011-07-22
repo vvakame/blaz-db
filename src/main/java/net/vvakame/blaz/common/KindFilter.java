@@ -12,7 +12,7 @@ public class KindFilter implements IFilter {
 
 	FilterOption option = FilterOption.EQ;
 
-	String value;
+	String name;
 
 
 	/**
@@ -25,7 +25,7 @@ public class KindFilter implements IFilter {
 			throw new IllegalArgumentException("kind is required.");
 		}
 
-		this.value = kind;
+		this.name = kind;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class KindFilter implements IFilter {
 
 	@Override
 	public String getName() {
-		throw new IllegalStateException("not supported!");
+		return name;
 	}
 
 	@Override
@@ -45,6 +45,6 @@ public class KindFilter implements IFilter {
 
 	@Override
 	public Object getValue() {
-		return value;
+		throw new IllegalStateException("not supported!");
 	}
 }

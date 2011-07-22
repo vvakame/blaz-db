@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.vvakame.blaz.IFilter.FilterOption;
+import net.vvakame.blaz.common.KindFilter;
 import net.vvakame.blaz.common.PropertyFilter;
 
 import org.junit.Test;
@@ -143,6 +144,38 @@ public abstract class DatastoreTestBase {
 
 		entity = Datastore.get(key2);
 		assertThat(entity.getProperties().size(), is(1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_KIND_EQ_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", "value1");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", "value2");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo3"));
+			entity.setProperty("key", "value2");
+			Datastore.put(entity);
+		}
+		List<Entity> list = Datastore.find(new KindFilter("hoge"));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
 
 	/**
