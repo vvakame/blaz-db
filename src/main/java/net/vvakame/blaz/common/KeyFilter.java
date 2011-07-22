@@ -1,6 +1,7 @@
 package net.vvakame.blaz.common;
 
 import net.vvakame.blaz.IFilter;
+import net.vvakame.blaz.Key;
 
 /**
  * Entityを検索するためのフィルタ
@@ -12,41 +13,24 @@ public class KeyFilter implements IFilter {
 
 	FilterOption option;
 
-	Object value;
+	Key key;
 
 
 	/**
 	 * the constructor.
 	 * @param option
-	 * @param value
+	 * @param key
 	 * @category constructor
 	 */
-	public KeyFilter(FilterOption option, String value) {
+	public KeyFilter(FilterOption option, Key key) {
 		if (option == null) {
 			throw new IllegalArgumentException("FilterOption is required.");
-		} else if (value == null) {
+		} else if (key == null) {
 			throw new IllegalArgumentException("value is required.");
 		}
 
 		this.option = option;
-		this.value = value;
-	}
-
-	/**
-	 * the constructor.
-	 * @param option
-	 * @param value
-	 * @category constructor
-	 */
-	public KeyFilter(FilterOption option, long value) {
-		if (option == null) {
-			throw new IllegalArgumentException("FilterOption is required.");
-		} else if (value == 1) {
-			throw new IllegalArgumentException("value must not be 1.");
-		}
-
-		this.option = option;
-		this.value = value;
+		this.key = key;
 	}
 
 	@Override
@@ -66,6 +50,6 @@ public class KeyFilter implements IFilter {
 
 	@Override
 	public Object getValue() {
-		return value;
+		return key;
 	}
 }

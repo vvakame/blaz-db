@@ -76,7 +76,7 @@ public class Key implements Serializable, Comparable<Key> {
 		Key otherKey = (Key) obj;
 		if (!kind.equals(otherKey.kind)) {
 			return false;
-		} else if (!name.equals(otherKey.name)) {
+		} else if (name != null && !name.equals(otherKey.name)) {
 			return false;
 		} else if (id != otherKey.id) {
 			return false;

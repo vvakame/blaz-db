@@ -2,6 +2,7 @@ package net.vvakame.blaz.sqlite;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -240,6 +241,120 @@ public class SQLiteKVS implements IKeyValueStore {
 		return entity;
 	}
 
+	@SuppressWarnings("unchecked")
+	Map<Key, Entity> getAsMap(Iterable<Key> keys) {
+		if (keys == null) {
+			return new HashMap<Key, Entity>();
+		}
+
+		ArrayList<Key> keyList = new ArrayList<Key>();
+		for (Key key : keys) {
+			keyList.add(key);
+		}
+
+		if (keyList.size() == 0) {
+			return new HashMap<Key, Entity>();
+		}
+
+		StringBuilder builder = new StringBuilder();
+		List<String> args = new ArrayList<String>();
+		builder.append(COL_KEY_STRING).append(" IN (");
+		for (int i = 0; i < keyList.size(); i++) {
+			builder.append("?");
+			if (i != keyList.size() - 1) {
+				builder.append(",");
+			}
+			args.add(KeyUtil.keyToString(keyList.get(i)));
+		}
+		builder.append(")");
+
+		Cursor c =
+				mDb.query(TABLE_VALUES, null, builder.toString(), args.toArray(new String[] {}),
+						null, null, COL_KEY_STRING + "," + COL_NAME + "," + COL_SEQ);
+
+		if (!c.moveToFirst()) {
+			return new HashMap<Key, Entity>();
+		}
+
+		final int keyIdx = c.getColumnIndex(COL_KEY_STRING);
+		final int nameIdx = c.getColumnIndex(COL_NAME);
+		final int typeIdx = c.getColumnIndex(COL_TYPE);
+		final int valStrIdx = c.getColumnIndex(COL_VALUE_STRING);
+		final int valIntIdx = c.getColumnIndex(COL_VALUE_INTEGER);
+		final int valRealIdx = c.getColumnIndex(COL_VALUE_REAL);
+		final int valBlobIdx = c.getColumnIndex(COL_VALUE_BLOB);
+
+		Map<Key, Entity> resultMap = new HashMap<Key, Entity>();
+
+		String oldKeyStr = c.getString(keyIdx);
+		String keyStr = c.getString(keyIdx);
+		Entity entity = new Entity();
+		entity.setKey(KeyUtil.stringToKey(keyStr));
+		do {
+			keyStr = c.getString(keyIdx);
+			if (!keyStr.equals(oldKeyStr)) {
+				resultMap.put(entity.getKey(), entity);
+				oldKeyStr = keyStr;
+				entity = new Entity();
+				entity.setKey(KeyUtil.stringToKey(keyStr));
+			}
+			final String name = c.getString(nameIdx);
+			String type = c.getString(typeIdx);
+			Object value;
+			if (T_NULL.equals(type)) {
+				value = null;
+			} else if (T_STRING.equals(type)) {
+				value = c.getString(valStrIdx);
+			} else if (T_BOOLEAN.equals(type)) {
+				value = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
+			} else if (T_LONG.equals(type)) {
+				value = c.getLong(valIntIdx);
+			} else if (T_DOUBLE.equals(type)) {
+				value = c.getDouble(valRealIdx);
+			} else if (T_KEY.equals(type)) {
+				value = KeyUtil.stringToKey(c.getString(valStrIdx));
+			} else if (T_BYTES.equals(type)) {
+				value = c.getBlob(valBlobIdx);
+			} else if (T_L_BLANK.equals(type)) {
+				value = new ArrayList<Object>();
+			} else if (type.startsWith(T_L_PREFIX)) {
+				List<Object> list;
+				if (entity.getProperties().containsKey(name)) {
+					list = (List<Object>) entity.getProperty(name);
+				} else {
+					list = new ArrayList<Object>();
+				}
+				if (T_L_NULL.equals(type)) {
+					list.add(null);
+				} else if (T_L_STRING.equals(type)) {
+					list.add(c.getString(valStrIdx));
+				} else if (T_L_BOOLEAN.equals(type)) {
+					boolean b = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
+					list.add(b);
+				} else if (T_L_LONG.equals(type)) {
+					list.add(c.getLong(valIntIdx));
+				} else if (T_L_DOUBLE.equals(type)) {
+					list.add(c.getDouble(valRealIdx));
+				} else if (T_L_KEY.equals(type)) {
+					list.add(KeyUtil.stringToKey(c.getString(valStrIdx)));
+				} else if (T_L_BYTES.equals(type)) {
+					list.add(c.getBlob(valBlobIdx));
+				} else {
+					throw new UnsupportedPropertyException("property name=" + name
+							+ " is not suppored type. type=" + type);
+				}
+				value = list;
+			} else {
+				throw new UnsupportedPropertyException("property name=" + name
+						+ " is not suppored type. type=" + type);
+			}
+			entity.setProperty(name, value);
+		} while (c.moveToNext());
+		resultMap.put(entity.getKey(), entity);
+
+		return resultMap;
+	}
+
 	Key cursorToKey(Cursor c) {
 		Key newKey = new Key();
 		newKey.setKind(c.getString(c.getColumnIndex(COL_KIND)));
@@ -298,7 +413,6 @@ public class SQLiteKVS implements IKeyValueStore {
 		return cursorToKeys(c);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Entity> find(IFilter... filters) {
 		List<Key> keys = findAsKey(filters);
@@ -306,102 +420,20 @@ public class SQLiteKVS implements IKeyValueStore {
 			return new ArrayList<Entity>();
 		}
 
-		StringBuilder builder = new StringBuilder();
-		List<String> args = new ArrayList<String>();
-		builder.append(COL_KEY_STRING).append(" IN (");
-		for (int i = 0; i < keys.size(); i++) {
-			builder.append("?");
-			if (i != keys.size() - 1) {
-				builder.append(",");
-			}
-			args.add(KeyUtil.keyToString(keys.get(i)));
-		}
-		builder.append(")");
-
-		Cursor c =
-				mDb.query(TABLE_VALUES, null, builder.toString(), args.toArray(new String[] {}),
-						null, null, COL_KEY_STRING + "," + COL_NAME + "," + COL_SEQ);
-
-		if (!c.moveToFirst()) {
-			return new ArrayList<Entity>();
+		Map<Key, Entity> entities = getAsMap(keys);
+		List<Entity> resultList = new ArrayList<Entity>(entities.values());
+		if (keys.size() == entities.size()) {
+			return resultList;
 		}
 
-		final int keyIdx = c.getColumnIndex(COL_KEY_STRING);
-		final int nameIdx = c.getColumnIndex(COL_NAME);
-		final int typeIdx = c.getColumnIndex(COL_TYPE);
-		final int valStrIdx = c.getColumnIndex(COL_VALUE_STRING);
-		final int valIntIdx = c.getColumnIndex(COL_VALUE_INTEGER);
-		final int valRealIdx = c.getColumnIndex(COL_VALUE_REAL);
-		final int valBlobIdx = c.getColumnIndex(COL_VALUE_BLOB);
-
-		List<Entity> resultList = new ArrayList<Entity>();
-		String oldKeyStr = c.getString(keyIdx);
-		String keyStr = c.getString(keyIdx);
-		Entity entity = new Entity();
-		entity.setKey(KeyUtil.stringToKey(keyStr));
-		do {
-			keyStr = c.getString(keyIdx);
-			if (!keyStr.equals(oldKeyStr)) {
+		for (Key key : keys) {
+			if (!entities.containsKey(key)) {
+				Entity entity = new Entity();
+				entity.setKey(key);
 				resultList.add(entity);
-				oldKeyStr = keyStr;
-				entity = new Entity();
-				entity.setKey(KeyUtil.stringToKey(keyStr));
 			}
-			final String name = c.getString(nameIdx);
-			String type = c.getString(typeIdx);
-			Object value;
-			if (T_NULL.equals(type)) {
-				value = null;
-			} else if (T_STRING.equals(type)) {
-				value = c.getString(valStrIdx);
-			} else if (T_BOOLEAN.equals(type)) {
-				value = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
-			} else if (T_LONG.equals(type)) {
-				value = c.getLong(valIntIdx);
-			} else if (T_DOUBLE.equals(type)) {
-				value = c.getDouble(valRealIdx);
-			} else if (T_KEY.equals(type)) {
-				value = KeyUtil.stringToKey(c.getString(valStrIdx));
-			} else if (T_BYTES.equals(type)) {
-				value = c.getBlob(valBlobIdx);
-			} else if (T_L_BLANK.equals(type)) {
-				value = new ArrayList<Object>();
-			} else if (type.startsWith(T_L_PREFIX)) {
-				List<Object> list;
-				if (entity.getProperties().containsKey(name)) {
-					list = (List<Object>) entity.getProperty(name);
-				} else {
-					list = new ArrayList<Object>();
-				}
-				if (T_L_NULL.equals(type)) {
-					list.add(null);
-				} else if (T_L_STRING.equals(type)) {
-					list.add(c.getString(valStrIdx));
-				} else if (T_L_BOOLEAN.equals(type)) {
-					boolean b = c.getString(valStrIdx).equals(T_V_BOOLEAN_TRUE) ? true : false;
-					list.add(b);
-				} else if (T_L_LONG.equals(type)) {
-					list.add(c.getLong(valIntIdx));
-				} else if (T_L_DOUBLE.equals(type)) {
-					list.add(c.getDouble(valRealIdx));
-				} else if (T_L_KEY.equals(type)) {
-					list.add(KeyUtil.stringToKey(c.getString(valStrIdx)));
-				} else if (T_L_BYTES.equals(type)) {
-					list.add(c.getBlob(valBlobIdx));
-				} else {
-					throw new UnsupportedPropertyException("property name=" + name
-							+ " is not suppored type. type=" + type);
-				}
-				value = list;
-			} else {
-				throw new UnsupportedPropertyException("property name=" + name
-						+ " is not suppored type. type=" + type);
-			}
-			entity.setProperty(name, value);
-		} while (c.moveToNext());
-		resultList.add(entity);
+		}
 
 		return resultList;
 	}
-
 }

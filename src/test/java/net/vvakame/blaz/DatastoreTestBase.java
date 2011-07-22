@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.vvakame.blaz.IFilter.FilterOption;
+import net.vvakame.blaz.common.KeyFilter;
 import net.vvakame.blaz.common.KindFilter;
 import net.vvakame.blaz.common.PropertyFilter;
 
@@ -112,6 +113,26 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
+	 * {@link Datastore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
+	 * @author vvakame
+	 */
+	@Test
+	public void put_get_empty() {
+		Key key = KeyUtil.createKey("hoge", "piyo");
+
+		{
+			Entity entity = new Entity();
+			entity.setKey(key);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = Datastore.get(key);
+			assertThat(entity.getKey(), is(key));
+			assertThat(entity.getProperties().size(), is(0));
+		}
+	}
+
+	/**
 	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
@@ -176,6 +197,57 @@ public abstract class DatastoreTestBase {
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_Key_EQ_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Datastore.put(entity);
+		}
+
+		Key key;
+		List<Entity> list;
+
+		key = KeyUtil.createKey("hoge", "2");
+		list = Datastore.find(new KeyFilter(FilterOption.EQ, key));
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(key));
+
+		key = KeyUtil.createKey("hoge", 2);
+		list = Datastore.find(new KeyFilter(FilterOption.EQ, key));
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(key));
 	}
 
 	/**
@@ -749,8 +821,9 @@ public abstract class DatastoreTestBase {
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.LT_EQ, "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
-		assertThat(list.get(0).getKey(), is(key1));
-
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
 
 	/**

@@ -27,6 +27,21 @@ public class KeyUtil {
 	}
 
 	/**
+	 * 指定のKindとidを表す {@link Key} を生成し返す.
+	 * @param kind
+	 * @param id
+	 * @return 生成したKey
+	 * @author vvakame
+	 */
+	public static Key createKey(String kind, long id) {
+		Key key = new Key();
+		key.setKind(kind);
+		key.setId(id);
+
+		return key;
+	}
+
+	/**
 	 * {@link Key} を文字列表現に変換する.
 	 * @param key
 	 * @return keyの文字列表現
@@ -61,6 +76,8 @@ public class KeyUtil {
 		String[] split = keyStr.split(SEPARATOR);
 		if ("N".equals(split[1])) {
 			return createKey(split[0], split[2]);
+		} else if ("I".equals(split[1])) {
+			return createKey(split[0], Long.parseLong(split[2]));
 		} else {
 			throw new UnsupportedOperationException();
 		}

@@ -9,22 +9,22 @@ import static net.vvakame.blaz.sqlite.KvsOpenHelper.*;
 
 class QueryBuilder {
 
-	static final String SQL_KEY_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " = ?";
+	static final String SQL_KEY_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
+			+ COL_KEY_STRING + " = ?";
 
-	static final String SQL_KEY_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " > ?";
+	static final String SQL_KEY_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
+			+ COL_KEY_STRING + " > ?";
 
-	static final String SQL_KEY_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+	static final String SQL_KEY_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
 			+ " WHERE " + COL_KEY_STRING + " >= ?";
 
-	static final String SQL_KEY_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_KEY_STRING + " < ?";
+	static final String SQL_KEY_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
+			+ COL_KEY_STRING + " < ?";
 
-	static final String SQL_KEY_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+	static final String SQL_KEY_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
 			+ " WHERE " + COL_KEY_STRING + " <= ?";
 
-	static final String SQL_KIND = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES + " WHERE "
+	static final String SQL_KIND = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
 			+ COL_KIND + " = ?";
 
 	static final String SQL_PROPERTY_STR_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
@@ -77,6 +77,8 @@ class QueryBuilder {
 	static final String SQL_PROPERTY_REAL_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
 			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " <= ?";
 
+
+	// FIXME SQL_PROPERTY_KEY_EQ 的な何かが必要
 
 	static void makeQuery(IFilter filter, StringBuilder builder, List<String> args) {
 		switch (filter.getTarget()) {
