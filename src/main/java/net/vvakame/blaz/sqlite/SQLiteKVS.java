@@ -7,7 +7,7 @@ import java.util.Map;
 
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.EntityNotFoundException;
-import net.vvakame.blaz.Filter;
+import net.vvakame.blaz.IFilter;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.KeyUtil;
@@ -262,18 +262,18 @@ public class SQLiteKVS implements IKeyValueStore {
 	}
 
 	@Override
-	public List<Key> findAsKey(Filter... filters) {
+	public List<Key> findAsKey(IFilter... filters) {
 		if (filters.length == 0) {
 			throw new IllegalArgumentException("must need 1 filter option required.");
 		}
-		for (Filter filter : filters) {
+		for (IFilter filter : filters) {
 			if (filter == null) {
 				throw new IllegalArgumentException("null argment is not allowed.");
 			}
 		}
 		StringBuilder builder = new StringBuilder();
 		List<String> args = new ArrayList<String>();
-		Filter filter;
+		IFilter filter;
 		if (filters.length == 1) {
 			filter = filters[0];
 			QueryBuilder.makeQuery(filter, builder, args);
@@ -299,7 +299,7 @@ public class SQLiteKVS implements IKeyValueStore {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Entity> find(Filter... filters) {
+	public List<Entity> find(IFilter... filters) {
 		List<Key> keys = findAsKey(filters);
 		if (keys == null || keys.size() == 0) {
 			return new ArrayList<Entity>();

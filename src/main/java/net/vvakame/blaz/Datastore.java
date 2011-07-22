@@ -47,7 +47,7 @@ public class Datastore {
 	 * @return 見つかった {@link Entity}
 	 * @author vvakame
 	 */
-	static List<Entity> find(Filter... filters) {
+	static List<Entity> find(IFilter... filters) {
 		return sKvs.find(filters);
 	}
 }

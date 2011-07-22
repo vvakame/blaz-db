@@ -3,8 +3,8 @@ package net.vvakame.blaz;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.blaz.Filter.FilterOption;
-import net.vvakame.blaz.Filter.FilterTarget;
+import net.vvakame.blaz.IFilter.FilterOption;
+import net.vvakame.blaz.common.PropertyFilter;
 
 import org.junit.Test;
 
@@ -169,8 +169,7 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", "value2");
 			Datastore.put(entity);
 		}
-		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, "value2"));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, "value2"));
 		assertThat(list.size(), is(2));
 	}
 
@@ -202,9 +201,8 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list =
-				Datastore.find(
-						new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, "value2"),
-						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, "value1"));
+				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, "value2"),
+						new PropertyFilter("name2", FilterOption.EQ, "value1"));
 		assertThat(list.size(), is(1));
 	}
 
@@ -232,8 +230,7 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", false);
 			Datastore.put(entity);
 		}
-		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, true));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, true));
 		assertThat(list.size(), is(2));
 	}
 
@@ -265,8 +262,8 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, true),
-						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, false));
+				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, true),
+						new PropertyFilter("name2", FilterOption.EQ, false));
 		assertThat(list.size(), is(1));
 	}
 
@@ -294,8 +291,7 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", 2);
 			Datastore.put(entity);
 		}
-		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, 1));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, 1));
 		assertThat(list.size(), is(2));
 	}
 
@@ -327,8 +323,8 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, 1),
-						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, 3));
+				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, 1), new PropertyFilter(
+						"name2", FilterOption.EQ, 3));
 		assertThat(list.size(), is(1));
 	}
 
@@ -356,8 +352,7 @@ public abstract class DatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			Datastore.put(entity);
 		}
-		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "key", FilterOption.EQ, 1.3));
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, 1.3));
 		assertThat(list.size(), is(2));
 	}
 
@@ -389,8 +384,8 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list =
-				Datastore.find(new Filter(FilterTarget.PROPERTY, "name1", FilterOption.EQ, 1.1),
-						new Filter(FilterTarget.PROPERTY, "name2", FilterOption.EQ, 1.3));
+				Datastore.find(new PropertyFilter("name1", FilterOption.EQ, 1.1),
+						new PropertyFilter("name2", FilterOption.EQ, 1.3));
 		assertThat(list.size(), is(1));
 	}
 
