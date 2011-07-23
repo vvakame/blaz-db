@@ -1137,6 +1137,69 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_complex_query() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("real", 1.1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("real", 1.2);
+			entity.setProperty("int", 2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("real", 1.3);
+			entity.setProperty("int", 2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo1"));
+			entity.setProperty("real", 1.1);
+			entity.setProperty("int", 1);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo2"));
+			entity.setProperty("real", 1.2);
+			entity.setProperty("int", 2);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo3"));
+			entity.setProperty("real", 1.3);
+			entity.setProperty("int", 3);
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo4"));
+			entity.setProperty("real", 1.2);
+			entity.setProperty("int", 4);
+			Datastore.put(entity);
+		}
+
+		List<Entity> list =
+				Datastore.find(new KindFilter("fuga"), new PropertyFilter("real", FilterOption.EQ,
+						1.2), new PropertyFilter("int", FilterOption.EQ, 2));
+		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("fuga", "piyo2");
+		assertThat(list.get(0).getKey(), is(key1));
+	}
+
+	/**
 	 * {@link Datastore} を呼出し可能なようにセットアップすること.
 	 * @author vvakame
 	 */
