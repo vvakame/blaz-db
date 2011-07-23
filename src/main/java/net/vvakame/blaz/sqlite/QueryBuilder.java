@@ -9,20 +9,35 @@ import static net.vvakame.blaz.sqlite.KvsOpenHelper.*;
 
 class QueryBuilder {
 
-	static final String SQL_KEY_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
-			+ COL_KEY_STRING + " = ?";
+	static final String SQL_KEY_ID_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_ID + " = ?";
 
-	static final String SQL_KEY_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
-			+ COL_KEY_STRING + " > ?";
+	static final String SQL_KEY_ID_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_ID + " > ?";
 
-	static final String SQL_KEY_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
-			+ " WHERE " + COL_KEY_STRING + " >= ?";
+	static final String SQL_KEY_ID_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_ID + " >= ?";
 
-	static final String SQL_KEY_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
-			+ COL_KEY_STRING + " < ?";
+	static final String SQL_KEY_ID_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_ID + " < ?";
 
-	static final String SQL_KEY_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
-			+ " WHERE " + COL_KEY_STRING + " <= ?";
+	static final String SQL_KEY_ID_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_ID + " <= ?";
+
+	static final String SQL_KEY_NAME_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_NAME + " = ?";
+
+	static final String SQL_KEY_NAME_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_NAME + " > ?";
+
+	static final String SQL_KEY_NAME_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_NAME + " >= ?";
+
+	static final String SQL_KEY_NAME_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_NAME + " < ?";
+
+	static final String SQL_KEY_NAME_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
+			+ " WHERE " + COL_KIND + " = ? AND " + COL_NAME + " <= ?";
 
 	static final String SQL_KIND = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS + " WHERE "
 			+ COL_KIND + " = ?";
@@ -100,31 +115,62 @@ class QueryBuilder {
 	}
 
 	static void makeQueryKey(IFilter filter, StringBuilder builder, List<String> args) {
-		switch (filter.getOption()) {
-			case EQ:
-				builder.append(SQL_KEY_EQ);
-				break;
+		Key key = (Key) filter.getValue();
+		args.add(key.getKind());
 
-			case GT:
-				builder.append(SQL_KEY_GT);
-				break;
+		if (key.getName() == null) {
+			switch (filter.getOption()) {
+				case EQ:
+					builder.append(SQL_KEY_ID_EQ);
+					break;
 
-			case GT_EQ:
-				builder.append(SQL_KEY_GT_EQ);
-				break;
+				case GT:
+					builder.append(SQL_KEY_ID_GT);
+					break;
 
-			case LT:
-				builder.append(SQL_KEY_LT);
-				break;
+				case GT_EQ:
+					builder.append(SQL_KEY_ID_GT_EQ);
+					break;
 
-			case LT_EQ:
-				builder.append(SQL_KEY_LT_EQ);
-				break;
+				case LT:
+					builder.append(SQL_KEY_ID_LT);
+					break;
 
-			default:
-				break;
+				case LT_EQ:
+					builder.append(SQL_KEY_ID_LT_EQ);
+					break;
+
+				default:
+					break;
+			}
+			args.add(String.valueOf(key.getId()));
+		} else {
+			switch (filter.getOption()) {
+				case EQ:
+					builder.append(SQL_KEY_NAME_EQ);
+					break;
+
+				case GT:
+					builder.append(SQL_KEY_NAME_GT);
+					break;
+
+				case GT_EQ:
+					builder.append(SQL_KEY_NAME_GT_EQ);
+					break;
+
+				case LT:
+					builder.append(SQL_KEY_NAME_LT);
+					break;
+
+				case LT_EQ:
+					builder.append(SQL_KEY_NAME_LT_EQ);
+					break;
+
+				default:
+					break;
+			}
+			args.add(key.getName());
 		}
-		args.add(KeyUtil.keyToString((Key) filter.getValue()));
 	}
 
 	static void makeQueryKind(IFilter filter, StringBuilder builder, List<String> args) {

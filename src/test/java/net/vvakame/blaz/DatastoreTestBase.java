@@ -255,6 +255,252 @@ public abstract class DatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
+	public void find_Key_GT_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Datastore.put(entity);
+		}
+
+		Key key;
+		List<Entity> list;
+
+		key = KeyUtil.createKey("hoge", "1");
+		list = Datastore.find(new KeyFilter(FilterOption.GT, key));
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", "2")));
+
+		key = KeyUtil.createKey("hoge", 1);
+		list = Datastore.find(new KeyFilter(FilterOption.GT, key));
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", 2)));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_Key_GT_EQ_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "3"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 3));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Datastore.put(entity);
+		}
+
+		Key key;
+		List<Entity> list;
+
+		Key key1;
+		Key key2;
+
+		key = KeyUtil.createKey("hoge", "2");
+		list = Datastore.find(new KeyFilter(FilterOption.GT_EQ, key));
+
+		assertThat(list.size(), is(2));
+		key1 = KeyUtil.createKey("hoge", "2");
+		key2 = KeyUtil.createKey("hoge", "3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+
+		key = KeyUtil.createKey("hoge", 2);
+		list = Datastore.find(new KeyFilter(FilterOption.GT_EQ, key));
+
+		assertThat(list.size(), is(2));
+		key1 = KeyUtil.createKey("hoge", 2);
+		key2 = KeyUtil.createKey("hoge", 3);
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_Key_LT_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", 1));
+			Datastore.put(entity);
+		}
+
+		Key key;
+		List<Entity> list;
+
+		key = KeyUtil.createKey("hoge", "2");
+		list = Datastore.find(new KeyFilter(FilterOption.LT, key));
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", "1")));
+
+		key = KeyUtil.createKey("hoge", 2);
+		list = Datastore.find(new KeyFilter(FilterOption.LT, key));
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", 1)));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_Key_LT_EQ_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "3"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", 3));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Datastore.put(entity);
+		}
+
+		Key key;
+		List<Entity> list;
+
+		Key key1;
+		Key key2;
+
+		key = KeyUtil.createKey("hoge", "2");
+		list = Datastore.find(new KeyFilter(FilterOption.LT_EQ, key));
+
+		assertThat(list.size(), is(2));
+		key1 = KeyUtil.createKey("hoge", "1");
+		key2 = KeyUtil.createKey("hoge", "2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+
+		key = KeyUtil.createKey("hoge", 2);
+		list = Datastore.find(new KeyFilter(FilterOption.LT_EQ, key));
+
+		assertThat(list.size(), is(2));
+		key1 = KeyUtil.createKey("hoge", 1);
+		key2 = KeyUtil.createKey("hoge", 2);
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
 	public void find_string_PROPERTY_EQ_single_filter() {
 		{
 			Entity entity = new Entity();
