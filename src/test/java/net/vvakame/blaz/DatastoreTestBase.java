@@ -168,7 +168,7 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
-	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
+	 * {@link Datastore#put(Entity)} の上書きの動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -196,6 +196,30 @@ public abstract class DatastoreTestBase {
 		{
 			Entity entity = Datastore.get(key);
 			assertThat(entity.getProperties().size(), is(1));
+		}
+	}
+
+	/**
+	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
+	 * @author vvakame
+	 */
+	@Test(expected = EntityNotFoundException.class)
+	public void delete() {
+		Key key = KeyUtil.createKey("hoge", "piyo");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key);
+			entity.setProperty("key1", "value1");
+			entity.setProperty("key2", "value2");
+			entity.setProperty("key3", "value3");
+			entity.setProperty("key4", "value4");
+			Datastore.put(entity);
+		}
+		{
+			Datastore.delete(key);
+		}
+		{
+			Datastore.get(key);
 		}
 	}
 
