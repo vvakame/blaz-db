@@ -769,6 +769,76 @@ public abstract class DatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
+	public void find_key_PROPERTY_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", KeyUtil.createKey("a", "A"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", KeyUtil.createKey("a", "B"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", KeyUtil.createKey("a", "B"));
+			Datastore.put(entity);
+		}
+		Key key = KeyUtil.createKey("a", "B");
+		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.EQ, key));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_key_PROPERTY_EQ_multi_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key1", KeyUtil.createKey("a", "A"));
+			entity.setProperty("key2", KeyUtil.createKey("a", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key1", KeyUtil.createKey("a", "B"));
+			entity.setProperty("key2", KeyUtil.createKey("a", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key1", KeyUtil.createKey("a", "B"));
+			entity.setProperty("key2", KeyUtil.createKey("a", 3));
+			Datastore.put(entity);
+		}
+		// same cond
+		List<Entity> list =
+				Datastore.find(
+						new PropertyFilter("key1", FilterOption.EQ, KeyUtil.createKey("a", "B")),
+						new PropertyFilter("key2", FilterOption.EQ, KeyUtil.createKey("a", 2)));
+		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), is(key1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
 	public void find_string_PROPERTY_GT_single_filter() {
 		{
 			Entity entity = new Entity();
@@ -849,6 +919,38 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.GT, 1.2));
+		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), is(key1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_key_PROPERTY_GT_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", KeyUtil.createKey("a", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", KeyUtil.createKey("a", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", KeyUtil.createKey("a", 3));
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore
+					.find(new PropertyFilter("key", FilterOption.GT, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -955,6 +1057,40 @@ public abstract class DatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
+	public void find_key_PROPERTY_GT_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", KeyUtil.createKey("a", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", KeyUtil.createKey("a", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", KeyUtil.createKey("a", 3));
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new PropertyFilter("key", FilterOption.GT_EQ, KeyUtil.createKey("a",
+						2)));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
 	public void find_string_PROPERTY_LT_single_filter() {
 		{
 			Entity entity = new Entity();
@@ -1035,6 +1171,38 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.LT, 1.2));
+		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		assertThat(list.get(0).getKey(), is(key1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_key_PROPERTY_LT_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", KeyUtil.createKey("a", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", KeyUtil.createKey("a", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", KeyUtil.createKey("a", 3));
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore
+					.find(new PropertyFilter("key", FilterOption.LT, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1129,6 +1297,40 @@ public abstract class DatastoreTestBase {
 			Datastore.put(entity);
 		}
 		List<Entity> list = Datastore.find(new PropertyFilter("key", FilterOption.LT_EQ, 1.2));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_key_PROPERTY_LT_EQ_single_filter() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("key", KeyUtil.createKey("a", 1));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity.setProperty("key", KeyUtil.createKey("a", 2));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			entity.setProperty("key", KeyUtil.createKey("a", 3));
+			Datastore.put(entity);
+		}
+		List<Entity> list =
+				Datastore.find(new PropertyFilter("key", FilterOption.LT_EQ, KeyUtil.createKey("a",
+						2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");

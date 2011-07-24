@@ -95,8 +95,6 @@ class QueryBuilder {
 			+ TABLE_VALUES + " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " <= ?";
 
 
-	// FIXME SQL_PROPERTY_KEY_EQ 的な何かが必要
-
 	static void makeGetAllQuery(StringBuilder builder, List<String> args) {
 		builder.append(SQL_ALL);
 	}

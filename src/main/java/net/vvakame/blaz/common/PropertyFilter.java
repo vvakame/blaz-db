@@ -1,6 +1,7 @@
 package net.vvakame.blaz.common;
 
 import net.vvakame.blaz.IFilter;
+import net.vvakame.blaz.Key;
 
 /**
  * Entityを検索するためのフィルタ
@@ -100,6 +101,25 @@ public class PropertyFilter implements IFilter {
 	 * @category constructor
 	 */
 	public PropertyFilter(String name, FilterOption option, double value) {
+		if (option == null) {
+			throw new IllegalArgumentException("FilterOption is required.");
+		} else if (name == null) {
+			throw new IllegalArgumentException("name is required.");
+		}
+
+		this.option = option;
+		this.name = name;
+		this.value = value;
+	}
+
+	/**
+	 * the constructor.
+	 * @param name 
+	 * @param option
+	 * @param value
+	 * @category constructor
+	 */
+	public PropertyFilter(String name, FilterOption option, Key value) {
 		if (option == null) {
 			throw new IllegalArgumentException("FilterOption is required.");
 		} else if (name == null) {
