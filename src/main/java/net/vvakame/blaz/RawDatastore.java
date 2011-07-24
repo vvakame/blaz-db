@@ -56,7 +56,17 @@ public class RawDatastore {
 	 * @return 見つかった {@link Entity}
 	 * @author vvakame
 	 */
-	static List<Entity> find(IFilter... filters) {
+	static List<Entity> find(Filter... filters) {
 		return sKvs.find(filters);
+	}
+
+	/**
+	 * データ操作に対するトランザクションを開始する.<br>
+	 * トランザクション操作が提供されるか、どういう機能かは各バックエンドに依存する.
+	 * @return トランザクション
+	 * @author vvakame
+	 */
+	public static Transaction beginTransaction() {
+		return sKvs.beginTransaction();
 	}
 }

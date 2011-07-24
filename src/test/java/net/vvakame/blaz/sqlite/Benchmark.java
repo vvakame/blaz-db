@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.vvakame.blaz.RawDatastore;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.KeyUtil;
+import net.vvakame.blaz.RawDatastore;
+import net.vvakame.blaz.Transaction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,45 @@ public class Benchmark {
 
 	IKeyValueStore kvs;
 
+
+	/**
+	 * 暖機
+	 * @author vvakame
+	 */
+	@Test
+	public void warmup() {
+		List<Entity> entities = new ArrayList<Entity>(100);
+		for (int i = 0; i < 200; i++) {
+			entities.add(genEntity(i));
+		}
+
+		{
+			System.gc();
+			long begin = System.currentTimeMillis();
+			Transaction tx = RawDatastore.beginTransaction();
+			for (Entity entity : entities) {
+				RawDatastore.put(entity);
+			}
+			tx.commit();
+			long end = System.currentTimeMillis();
+
+			Log.d(TAG, "warmup uses " + (end - begin) + " ms.");
+			System.out.println("warmup uses " + (end - begin) + " ms.");
+		}
+		{
+			System.gc();
+			long begin = System.currentTimeMillis();
+			Transaction tx = RawDatastore.beginTransaction();
+			for (Entity entity : entities) {
+				RawDatastore.get(entity.getKey());
+			}
+			tx.commit();
+			long end = System.currentTimeMillis();
+
+			Log.d(TAG, "warmup uses " + (end - begin) + " ms.");
+			System.out.println("warmup uses " + (end - begin) + " ms.");
+		}
+	}
 
 	/**
 	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
@@ -76,6 +116,56 @@ public class Benchmark {
 
 		Log.d(TAG, "get300 uses " + (end - begin) + " ms.");
 		System.out.println("get300 uses " + (end - begin) + " ms.");
+	}
+
+	/**
+	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void put100件_withTx() {
+		List<Entity> entities = new ArrayList<Entity>(100);
+		for (int i = 0; i < 100; i++) {
+			entities.add(genEntity(i));
+		}
+
+		System.gc();
+		long begin = System.currentTimeMillis();
+		Transaction tx = RawDatastore.beginTransaction();
+		for (Entity entity : entities) {
+			RawDatastore.put(entity);
+		}
+		tx.commit();
+		long end = System.currentTimeMillis();
+
+		Log.d(TAG, "put100 with Tx uses " + (end - begin) + " ms.");
+		System.out.println("put100 with Tx uses " + (end - begin) + " ms.");
+	}
+
+	/**
+	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void get300件_withTx() {
+		List<Entity> entities = new ArrayList<Entity>(300);
+		for (int i = 0; i < 300; i++) {
+			Entity entity = genEntity(i);
+			entities.add(entity);
+			RawDatastore.put(entity);
+		}
+
+		System.gc();
+		long begin = System.currentTimeMillis();
+		Transaction tx = RawDatastore.beginTransaction();
+		for (Entity entity : entities) {
+			RawDatastore.get(entity.getKey());
+		}
+		tx.commit();
+		long end = System.currentTimeMillis();
+
+		Log.d(TAG, "get300 with Tx uses " + (end - begin) + " ms.");
+		System.out.println("get300 with Tx uses " + (end - begin) + " ms.");
 	}
 
 	static Entity genEntity(int seed) {

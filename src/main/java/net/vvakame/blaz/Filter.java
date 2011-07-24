@@ -4,7 +4,7 @@ package net.vvakame.blaz;
  * Entityを検索するためのフィルタ
  * @author vvakame
  */
-public interface IFilter {
+public interface Filter {
 
 	/**
 	 * 検索対象.

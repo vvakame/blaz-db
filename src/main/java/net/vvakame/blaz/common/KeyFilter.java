@@ -1,13 +1,13 @@
 package net.vvakame.blaz.common;
 
-import net.vvakame.blaz.IFilter;
+import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 
 /**
  * Entityを検索するためのフィルタ
  * @author vvakame
  */
-public class KeyFilter implements IFilter {
+public class KeyFilter implements Filter {
 
 	final static FilterTarget target = FilterTarget.KEY;
 

@@ -8,10 +8,11 @@ import java.util.Map;
 
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.EntityNotFoundException;
-import net.vvakame.blaz.IFilter;
+import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.KeyUtil;
+import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.UnsupportedPropertyException;
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,7 +24,7 @@ import static net.vvakame.blaz.sqlite.KvsOpenHelper.*;
  * SQLiteによるKVSの実装
  * @author vvakame
  */
-public class SQLiteKVS implements IKeyValueStore {
+public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback {
 
 	static final String DB_NAME = "blaz.db";
 
@@ -391,8 +392,8 @@ public class SQLiteKVS implements IKeyValueStore {
 	}
 
 	@Override
-	public List<Key> findAsKey(IFilter... filters) {
-		for (IFilter filter : filters) {
+	public List<Key> findAsKey(Filter... filters) {
+		for (Filter filter : filters) {
 			if (filter == null) {
 				throw new IllegalArgumentException("null argment is not allowed.");
 			}
@@ -402,11 +403,11 @@ public class SQLiteKVS implements IKeyValueStore {
 		if (filters.length == 0) {
 			QueryBuilder.makeGetAllQuery(builder, args);
 		} else if (filters.length == 1) {
-			IFilter filter = filters[0];
+			Filter filter = filters[0];
 			QueryBuilder.makeQuery(filter, builder, args);
 		} else {
 			for (int i = 0; i < filters.length; i++) {
-				IFilter filter = filters[i];
+				Filter filter = filters[i];
 				builder.append(" (");
 				QueryBuilder.makeQuery(filter, builder, args);
 				builder.append(") ");
@@ -426,7 +427,7 @@ public class SQLiteKVS implements IKeyValueStore {
 	}
 
 	@Override
-	public List<Entity> find(IFilter... filters) {
+	public List<Entity> find(Filter... filters) {
 		List<Key> keys = findAsKey(filters);
 		if (keys == null || keys.size() == 0) {
 			return new ArrayList<Entity>();
@@ -447,5 +448,30 @@ public class SQLiteKVS implements IKeyValueStore {
 		}
 
 		return resultList;
+	}
+
+	/**
+	 * データ操作に対するトランザクションを開始する.<br>
+	 * トランザクションの仕様は {@link SQLiteDatabase#beginTransaction()} に準じる。
+	 * @return トランザクション
+	 * @author vvakame
+	 */
+	@Override
+	public Transaction beginTransaction() {
+		mDb.beginTransaction();
+		return new SqlTransaction(this);
+	}
+
+	@Override
+	public boolean onCommit() {
+		mDb.setTransactionSuccessful();
+		mDb.endTransaction();
+		return true;
+	}
+
+	@Override
+	public boolean onRollback() {
+		mDb.endTransaction();
+		return true;
 	}
 }

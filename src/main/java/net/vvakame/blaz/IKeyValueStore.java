@@ -36,7 +36,7 @@ public interface IKeyValueStore {
 	 * @return 見つかった {@link Entity}
 	 * @author vvakame
 	 */
-	public List<Entity> find(IFilter... filters);
+	public List<Entity> find(Filter... filters);
 
 	/**
 	 * 指定の条件に合致する {@link Entity} の {@link Key} を探して返す
@@ -44,5 +44,13 @@ public interface IKeyValueStore {
 	 * @return 見つかった {@link Entity} の {@link Key}
 	 * @author vvakame
 	 */
-	public List<Key> findAsKey(IFilter... filters);
+	public List<Key> findAsKey(Filter... filters);
+
+	/**
+	 * データ操作に対するトランザクションを開始する.<br>
+	 * トランザクション操作が提供されるか、どういう機能かは各バックエンドに依存する.
+	 * @return トランザクション
+	 * @author vvakame
+	 */
+	public Transaction beginTransaction();
 }

@@ -2,7 +2,7 @@ package net.vvakame.blaz.sqlite;
 
 import java.util.List;
 
-import net.vvakame.blaz.IFilter;
+import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.KeyUtil;
 import static net.vvakame.blaz.sqlite.KvsOpenHelper.*;
@@ -99,7 +99,7 @@ class QueryBuilder {
 		builder.append(SQL_ALL);
 	}
 
-	static void makeQuery(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQuery(Filter filter, StringBuilder builder, List<String> args) {
 		switch (filter.getTarget()) {
 			case KEY:
 				makeQueryKey(filter, builder, args);
@@ -118,7 +118,7 @@ class QueryBuilder {
 		}
 	}
 
-	static void makeQueryKey(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryKey(Filter filter, StringBuilder builder, List<String> args) {
 		Key key = (Key) filter.getValue();
 		args.add(key.getKind());
 
@@ -177,7 +177,7 @@ class QueryBuilder {
 		}
 	}
 
-	static void makeQueryKind(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryKind(Filter filter, StringBuilder builder, List<String> args) {
 		switch (filter.getOption()) {
 			case EQ:
 				builder.append(SQL_KIND);
@@ -188,7 +188,7 @@ class QueryBuilder {
 		args.add(filter.getName());
 	}
 
-	static void makeQueryProperty(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryProperty(Filter filter, StringBuilder builder, List<String> args) {
 		Object obj = filter.getValue();
 		if (obj instanceof Key) {
 			makeQueryPropertyKey(filter, builder, args);
@@ -206,7 +206,7 @@ class QueryBuilder {
 		}
 	}
 
-	static void makeQueryPropertyKey(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryPropertyKey(Filter filter, StringBuilder builder, List<String> args) {
 		String name = filter.getName();
 		Object obj = filter.getValue();
 		switch (filter.getOption()) {
@@ -233,7 +233,7 @@ class QueryBuilder {
 		args.add(KeyUtil.keyToString((Key) obj));
 	}
 
-	static void makeQueryPropertyString(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryPropertyString(Filter filter, StringBuilder builder, List<String> args) {
 		String name = filter.getName();
 		Object obj = filter.getValue();
 		switch (filter.getOption()) {
@@ -260,7 +260,7 @@ class QueryBuilder {
 		args.add((String) obj);
 	}
 
-	static void makeQueryPropertyBoolean(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryPropertyBoolean(Filter filter, StringBuilder builder, List<String> args) {
 		String name = filter.getName();
 		Object obj = filter.getValue();
 		switch (filter.getOption()) {
@@ -291,7 +291,7 @@ class QueryBuilder {
 		}
 	}
 
-	static void makeQueryPropertyInteger(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryPropertyInteger(Filter filter, StringBuilder builder, List<String> args) {
 		String name = filter.getName();
 		Object obj = filter.getValue();
 		switch (filter.getOption()) {
@@ -317,7 +317,7 @@ class QueryBuilder {
 		args.add(String.valueOf(obj));
 	}
 
-	static void makeQueryPropertyReal(IFilter filter, StringBuilder builder, List<String> args) {
+	static void makeQueryPropertyReal(Filter filter, StringBuilder builder, List<String> args) {
 		String name = filter.getName();
 		Object obj = filter.getValue();
 		switch (filter.getOption()) {

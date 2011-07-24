@@ -1,12 +1,12 @@
 package net.vvakame.blaz.common;
 
-import net.vvakame.blaz.IFilter;
+import net.vvakame.blaz.Filter;
 
 /**
  * Entityを検索するためのフィルタ
  * @author vvakame
  */
-public class KindFilter implements IFilter {
+public class KindFilter implements Filter {
 
 	final static FilterTarget target = FilterTarget.KIND;
 

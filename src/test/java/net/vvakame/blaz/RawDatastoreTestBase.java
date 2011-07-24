@@ -3,7 +3,7 @@ package net.vvakame.blaz;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.vvakame.blaz.IFilter.FilterOption;
+import net.vvakame.blaz.Filter.FilterOption;
 import net.vvakame.blaz.common.KeyFilter;
 import net.vvakame.blaz.common.KindFilter;
 import net.vvakame.blaz.common.PropertyFilter;
@@ -20,6 +20,9 @@ import static org.junit.Assert.*;
  * @author vvakame
  */
 public abstract class RawDatastoreTestBase {
+
+	protected boolean supportTransaction = true;
+
 
 	/**
 	 * {@link RawDatastore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
@@ -756,8 +759,8 @@ public abstract class RawDatastoreTestBase {
 			RawDatastore.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("name1", FilterOption.EQ, 1), new PropertyFilter(
-						"name2", FilterOption.EQ, 3));
+				RawDatastore.find(new PropertyFilter("name1", FilterOption.EQ, 1),
+						new PropertyFilter("name2", FilterOption.EQ, 3));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1015,8 +1018,8 @@ public abstract class RawDatastoreTestBase {
 			RawDatastore.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore
-					.find(new PropertyFilter("key", FilterOption.GT, KeyUtil.createKey("a", 2)));
+				RawDatastore.find(new PropertyFilter("key", FilterOption.GT, KeyUtil.createKey("a",
+						2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1046,7 +1049,8 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			RawDatastore.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, "value2"));
+		List<Entity> list =
+				RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1143,8 +1147,8 @@ public abstract class RawDatastoreTestBase {
 			RawDatastore.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, KeyUtil.createKey("a",
-						2)));
+				RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, KeyUtil.createKey(
+						"a", 2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1267,8 +1271,8 @@ public abstract class RawDatastoreTestBase {
 			RawDatastore.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore
-					.find(new PropertyFilter("key", FilterOption.LT, KeyUtil.createKey("a", 2)));
+				RawDatastore.find(new PropertyFilter("key", FilterOption.LT, KeyUtil.createKey("a",
+						2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1298,7 +1302,8 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			RawDatastore.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, "value2"));
+		List<Entity> list =
+				RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1395,8 +1400,8 @@ public abstract class RawDatastoreTestBase {
 			RawDatastore.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, KeyUtil.createKey("a",
-						2)));
+				RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, KeyUtil.createKey(
+						"a", 2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1496,11 +1501,71 @@ public abstract class RawDatastoreTestBase {
 		}
 
 		List<Entity> list =
-				RawDatastore.find(new KindFilter("fuga"), new PropertyFilter("real", FilterOption.EQ,
-						1.2), new PropertyFilter("int", FilterOption.EQ, 2));
+				RawDatastore.find(new KindFilter("fuga"), new PropertyFilter("real",
+						FilterOption.EQ, 1.2), new PropertyFilter("int", FilterOption.EQ, 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("fuga", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
+	}
+
+	/**
+	 * {@link IKeyValueStore#beginTransaction()} のテスト.
+	 * @author vvakame
+	 */
+	@Test
+	public void transation_success() {
+		if (!supportTransaction) {
+			return;
+		}
+
+		Transaction tx = RawDatastore.beginTransaction();
+		try {
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("value", 111);
+			RawDatastore.put(entity);
+
+			tx.commit();
+
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+				fail("commit is not successfull.");
+			}
+		}
+
+		RawDatastore.get(KeyUtil.createKey("hoge", "piyo1"));
+	}
+
+	/**
+	 * {@link IKeyValueStore#beginTransaction()} のテスト.
+	 * @author vvakame
+	 */
+	@Test(expected = EntityNotFoundException.class)
+	public void transation_rollback() {
+		if (!supportTransaction) {
+			return;
+		}
+
+		Transaction tx = RawDatastore.beginTransaction();
+		try {
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity.setProperty("value", 111);
+			RawDatastore.put(entity);
+
+			// tx.commit();
+
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			} else {
+				fail("committed.");
+			}
+		}
+
+		// rollbacked. raise ENFE.
+		RawDatastore.get(KeyUtil.createKey("hoge", "piyo1"));
 	}
 
 	/**
