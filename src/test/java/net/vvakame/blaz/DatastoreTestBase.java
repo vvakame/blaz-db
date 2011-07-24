@@ -200,6 +200,16 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
+	 * {@link Datastore#delete(Key)} の動作確認
+	 * @author vvakame
+	 */
+	@Test(expected = EntityNotFoundException.class)
+	public void get_not_exists() {
+		Key key = KeyUtil.createKey("hoge", "piyo");
+		Datastore.get(key);
+	}
+
+	/**
 	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
