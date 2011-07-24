@@ -15,17 +15,19 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
- * {@link RawDatastore} のテスト用クラス.<br>
+ * {@link IKeyValueStore} のテスト用クラス.<br>
  * 各 {@link IKeyValueStore} 実装は本クラスを継承し、 {@link #before()} のみ実装すること.
  * @author vvakame
  */
 public abstract class RawDatastoreTestBase {
 
+	protected IKeyValueStore kvs;
+
 	protected boolean supportTransaction = true;
 
 
 	/**
-	 * {@link RawDatastore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
+	 * {@link IKeyValueStore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
 	 * @author vvakame
 	 */
 	@Test
@@ -70,10 +72,10 @@ public abstract class RawDatastoreTestBase {
 				3
 			});
 			entity.setProperty("List", list);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
-			Entity entity = RawDatastore.get(key);
+			Entity entity = kvs.get(key);
 			assertThat(entity.getProperties().size(), is(14));
 			assertThat(entity.getProperty("null"), nullValue());
 			assertThat(entity.getProperty("String"), is((Object) "str"));
@@ -116,7 +118,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
+	 * {@link IKeyValueStore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
 	 * @author vvakame
 	 */
 	@Test
@@ -126,17 +128,17 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(key);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
-			Entity entity = RawDatastore.get(key);
+			Entity entity = kvs.get(key);
 			assertThat(entity.getKey(), is(key));
 			assertThat(entity.getProperties().size(), is(0));
 		}
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -150,7 +152,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
 			entity.setProperty("key4", "value4");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		Key key2;
 		{
@@ -158,20 +160,20 @@ public abstract class RawDatastoreTestBase {
 			key2 = KeyUtil.createKey("hoge", "puyo");
 			entity.setKey(key2);
 			entity.setProperty("key1", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		Entity entity;
 
-		entity = RawDatastore.get(key1);
+		entity = kvs.get(key1);
 		assertThat(entity.getProperties().size(), is(4));
 
-		entity = RawDatastore.get(key2);
+		entity = kvs.get(key2);
 		assertThat(entity.getProperties().size(), is(1));
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} の上書きの動作確認
+	 * {@link IKeyValueStore#put(Entity)} の上書きの動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -184,52 +186,52 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
 			entity.setProperty("key4", "value4");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
-			Entity entity = RawDatastore.get(key);
+			Entity entity = kvs.get(key);
 			assertThat(entity.getProperties().size(), is(4));
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(key);
 			entity.setProperty("keyA", "valueA");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
-			Entity entity = RawDatastore.get(key);
+			Entity entity = kvs.get(key);
 			assertThat(entity.getProperties().size(), is(1));
 		}
 	}
 
 	/**
-	 * {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)
 	public void get_not_exists() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
-		RawDatastore.get(key);
+		kvs.get(key);
 	}
 
 	/**
-	 * {@link RawDatastore#delete(Key)} の動作確認
+	 * {@link IKeyValueStore#delete(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
 	public void getOrNull() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 		try {
-			RawDatastore.get(key);
+			kvs.get(key);
 			fail("ENFE expected!");
 		} catch (EntityNotFoundException e) {
 		}
 
-		RawDatastore.getOrNull(key);
+		kvs.getOrNull(key);
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)
@@ -242,13 +244,13 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
 			entity.setProperty("key4", "value4");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
-			RawDatastore.delete(key);
+			kvs.delete(key);
 		}
 		{
-			RawDatastore.get(key);
+			kvs.get(key);
 		}
 	}
 
@@ -262,21 +264,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo3"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new KindFilter("hoge"));
+		List<Entity> list = kvs.find(new KindFilter("hoge"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -293,44 +295,44 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		Key key;
 		List<Entity> list;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = RawDatastore.find(new KeyFilter(FilterOption.EQ, key));
+		list = kvs.find(new KeyFilter(FilterOption.EQ, key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(key));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = RawDatastore.find(new KeyFilter(FilterOption.EQ, key));
+		list = kvs.find(new KeyFilter(FilterOption.EQ, key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(key));
 	}
@@ -344,44 +346,44 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		Key key;
 		List<Entity> list;
 
 		key = KeyUtil.createKey("hoge", "1");
-		list = RawDatastore.find(new KeyFilter(FilterOption.GT, key));
+		list = kvs.find(new KeyFilter(FilterOption.GT, key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", "2")));
 
 		key = KeyUtil.createKey("hoge", 1);
-		list = RawDatastore.find(new KeyFilter(FilterOption.GT, key));
+		list = kvs.find(new KeyFilter(FilterOption.GT, key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", 2)));
 	}
@@ -395,42 +397,42 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "3"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		Key key;
@@ -440,7 +442,7 @@ public abstract class RawDatastoreTestBase {
 		Key key2;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = RawDatastore.find(new KeyFilter(FilterOption.GT_EQ, key));
+		list = kvs.find(new KeyFilter(FilterOption.GT_EQ, key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", "2");
@@ -449,7 +451,7 @@ public abstract class RawDatastoreTestBase {
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = RawDatastore.find(new KeyFilter(FilterOption.GT_EQ, key));
+		list = kvs.find(new KeyFilter(FilterOption.GT_EQ, key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", 2);
@@ -467,44 +469,44 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		Key key;
 		List<Entity> list;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = RawDatastore.find(new KeyFilter(FilterOption.LT, key));
+		list = kvs.find(new KeyFilter(FilterOption.LT, key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", "1")));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = RawDatastore.find(new KeyFilter(FilterOption.LT, key));
+		list = kvs.find(new KeyFilter(FilterOption.LT, key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", 1)));
 	}
@@ -518,42 +520,42 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "3"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		Key key;
@@ -563,7 +565,7 @@ public abstract class RawDatastoreTestBase {
 		Key key2;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = RawDatastore.find(new KeyFilter(FilterOption.LT_EQ, key));
+		list = kvs.find(new KeyFilter(FilterOption.LT_EQ, key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", "1");
@@ -572,7 +574,7 @@ public abstract class RawDatastoreTestBase {
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = RawDatastore.find(new KeyFilter(FilterOption.LT_EQ, key));
+		list = kvs.find(new KeyFilter(FilterOption.LT_EQ, key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", 1);
@@ -591,21 +593,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.EQ, "value2"));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -624,24 +626,24 @@ public abstract class RawDatastoreTestBase {
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("name1", "value1");
 			entity.setProperty("name2", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("name1", "value2");
 			entity.setProperty("name2", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("name1", "value2");
 			entity.setProperty("name2", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("name1", FilterOption.EQ, "value2"),
+				kvs.find(new PropertyFilter("name1", FilterOption.EQ, "value2"),
 						new PropertyFilter("name2", FilterOption.EQ, "value1"));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
@@ -658,21 +660,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", true);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", true);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", false);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.EQ, true));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, true));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -691,25 +693,25 @@ public abstract class RawDatastoreTestBase {
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("name1", true);
 			entity.setProperty("name2", true);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("name1", true);
 			entity.setProperty("name2", false);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("name1", false);
 			entity.setProperty("name2", false);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("name1", FilterOption.EQ, true),
-						new PropertyFilter("name2", FilterOption.EQ, false));
+				kvs.find(new PropertyFilter("name1", FilterOption.EQ, true), new PropertyFilter(
+						"name2", FilterOption.EQ, false));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -725,21 +727,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.EQ, 1));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, 1));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -758,25 +760,25 @@ public abstract class RawDatastoreTestBase {
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("name1", 1);
 			entity.setProperty("name2", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("name1", 1);
 			entity.setProperty("name2", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("name1", 2);
 			entity.setProperty("name2", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("name1", FilterOption.EQ, 1),
-						new PropertyFilter("name2", FilterOption.EQ, 3));
+				kvs.find(new PropertyFilter("name1", FilterOption.EQ, 1), new PropertyFilter(
+						"name2", FilterOption.EQ, 3));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -792,21 +794,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1.1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.EQ, 1.3));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, 1.3));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -825,25 +827,25 @@ public abstract class RawDatastoreTestBase {
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("name1", 1.1);
 			entity.setProperty("name2", 1.2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("name1", 1.1);
 			entity.setProperty("name2", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("name1", 1.2);
 			entity.setProperty("name2", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("name1", FilterOption.EQ, 1.1),
-						new PropertyFilter("name2", FilterOption.EQ, 1.3));
+				kvs.find(new PropertyFilter("name1", FilterOption.EQ, 1.1), new PropertyFilter(
+						"name2", FilterOption.EQ, 1.3));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -859,22 +861,22 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", KeyUtil.createKey("a", "A"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", KeyUtil.createKey("a", "B"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", KeyUtil.createKey("a", "B"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		Key key = KeyUtil.createKey("a", "B");
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.EQ, key));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, key));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -893,26 +895,25 @@ public abstract class RawDatastoreTestBase {
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key1", KeyUtil.createKey("a", "A"));
 			entity.setProperty("key2", KeyUtil.createKey("a", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key1", KeyUtil.createKey("a", "B"));
 			entity.setProperty("key2", KeyUtil.createKey("a", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key1", KeyUtil.createKey("a", "B"));
 			entity.setProperty("key2", KeyUtil.createKey("a", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		// same cond
 		List<Entity> list =
-				RawDatastore.find(
-						new PropertyFilter("key1", FilterOption.EQ, KeyUtil.createKey("a", "B")),
+				kvs.find(new PropertyFilter("key1", FilterOption.EQ, KeyUtil.createKey("a", "B")),
 						new PropertyFilter("key2", FilterOption.EQ, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
@@ -929,21 +930,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", "value3");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.GT, "value2"));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT, "value2"));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -959,21 +960,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.GT, 2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT, 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -989,21 +990,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1.1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 1.2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.GT, 1.2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT, 1.2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1019,23 +1020,22 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.GT, KeyUtil.createKey("a",
-						2)));
+				kvs.find(new PropertyFilter("key", FilterOption.GT, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1051,22 +1051,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", "value3");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, "value2"));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1084,21 +1083,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, 2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, 2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1116,21 +1115,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1.1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 1.2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, 1.2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, 1.2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1148,23 +1147,22 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.GT_EQ, KeyUtil.createKey(
-						"a", 2)));
+				kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1182,21 +1180,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", "value3");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.LT, "value2"));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT, "value2"));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1212,21 +1210,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.LT, 2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT, 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1242,21 +1240,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1.1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 1.2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.LT, 1.2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT, 1.2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1272,23 +1270,22 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.LT, KeyUtil.createKey("a",
-						2)));
+				kvs.find(new PropertyFilter("key", FilterOption.LT, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1304,22 +1301,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", "value1");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", "value2");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", "value3");
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, "value2"));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1337,21 +1333,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, 2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, 2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1369,21 +1365,21 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", 1.1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", 1.2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", 1.3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
-		List<Entity> list = RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, 1.2));
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, 1.2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1401,23 +1397,22 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		List<Entity> list =
-				RawDatastore.find(new PropertyFilter("key", FilterOption.LT_EQ, KeyUtil.createKey(
-						"a", 2)));
+				kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1434,30 +1429,30 @@ public abstract class RawDatastoreTestBase {
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo1"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo2"));
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
-		List<Entity> list = RawDatastore.find();
+		List<Entity> list = kvs.find();
 		assertThat(list.size(), is(5));
 	}
 
@@ -1471,54 +1466,54 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("real", 1.1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
 			entity.setProperty("real", 1.2);
 			entity.setProperty("int", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
 			entity.setProperty("real", 1.3);
 			entity.setProperty("int", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo1"));
 			entity.setProperty("real", 1.1);
 			entity.setProperty("int", 1);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo2"));
 			entity.setProperty("real", 1.2);
 			entity.setProperty("int", 2);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo3"));
 			entity.setProperty("real", 1.3);
 			entity.setProperty("int", 3);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		{
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("fuga", "piyo4"));
 			entity.setProperty("real", 1.2);
 			entity.setProperty("int", 4);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		List<Entity> list =
-				RawDatastore.find(new KindFilter("fuga"), new PropertyFilter("real",
-						FilterOption.EQ, 1.2), new PropertyFilter("int", FilterOption.EQ, 2));
+				kvs.find(new KindFilter("fuga"), new PropertyFilter("real", FilterOption.EQ, 1.2),
+						new PropertyFilter("int", FilterOption.EQ, 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("fuga", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1534,12 +1529,12 @@ public abstract class RawDatastoreTestBase {
 			return;
 		}
 
-		Transaction tx = RawDatastore.beginTransaction();
+		Transaction tx = kvs.beginTransaction();
 		try {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("value", 111);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 
 			tx.commit();
 
@@ -1550,7 +1545,7 @@ public abstract class RawDatastoreTestBase {
 			}
 		}
 
-		RawDatastore.get(KeyUtil.createKey("hoge", "piyo1"));
+		kvs.get(KeyUtil.createKey("hoge", "piyo1"));
 	}
 
 	/**
@@ -1563,12 +1558,12 @@ public abstract class RawDatastoreTestBase {
 			return;
 		}
 
-		Transaction tx = RawDatastore.beginTransaction();
+		Transaction tx = kvs.beginTransaction();
 		try {
 			Entity entity = new Entity();
 			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
 			entity.setProperty("value", 111);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 
 			// tx.commit();
 
@@ -1581,11 +1576,11 @@ public abstract class RawDatastoreTestBase {
 		}
 
 		// rollbacked. raise ENFE.
-		RawDatastore.get(KeyUtil.createKey("hoge", "piyo1"));
+		kvs.get(KeyUtil.createKey("hoge", "piyo1"));
 	}
 
 	/**
-	 * {@link RawDatastore} を呼出し可能なようにセットアップすること.
+	 * kvsを呼出し可能なようにセットアップすること.
 	 * @author vvakame
 	 */
 	public abstract void before();

@@ -1,6 +1,5 @@
 package net.vvakame.blaz.sqlite;
 
-import net.vvakame.blaz.RawDatastore;
 import net.vvakame.blaz.RawDatastoreTestBase;
 
 import org.junit.Before;
@@ -25,7 +24,6 @@ public class SQLiteKVSTest extends RawDatastoreTestBase {
 	@Before
 	public void before() {
 		ShadowApplication application = Robolectric.getShadowApplication();
-		SQLiteKVS kvs = new SQLiteKVS(application.getApplicationContext());
-		RawDatastore.init(kvs);
+		kvs = new SQLiteKVS(application.getApplicationContext());
 	}
 }

@@ -8,7 +8,6 @@ import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.KeyUtil;
-import net.vvakame.blaz.RawDatastore;
 import net.vvakame.blaz.Transaction;
 
 import org.junit.Before;
@@ -47,9 +46,9 @@ public class Benchmark {
 		{
 			System.gc();
 			long begin = System.currentTimeMillis();
-			Transaction tx = RawDatastore.beginTransaction();
+			Transaction tx = kvs.beginTransaction();
 			for (Entity entity : entities) {
-				RawDatastore.put(entity);
+				kvs.put(entity);
 			}
 			tx.commit();
 			long end = System.currentTimeMillis();
@@ -60,9 +59,9 @@ public class Benchmark {
 		{
 			System.gc();
 			long begin = System.currentTimeMillis();
-			Transaction tx = RawDatastore.beginTransaction();
+			Transaction tx = kvs.beginTransaction();
 			for (Entity entity : entities) {
-				RawDatastore.get(entity.getKey());
+				kvs.get(entity.getKey());
 			}
 			tx.commit();
 			long end = System.currentTimeMillis();
@@ -73,7 +72,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -86,7 +85,7 @@ public class Benchmark {
 		System.gc();
 		long begin = System.currentTimeMillis();
 		for (Entity entity : entities) {
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		long end = System.currentTimeMillis();
 
@@ -95,7 +94,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -104,13 +103,13 @@ public class Benchmark {
 		for (int i = 0; i < 300; i++) {
 			Entity entity = genEntity(i);
 			entities.add(entity);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		System.gc();
 		long begin = System.currentTimeMillis();
 		for (Entity entity : entities) {
-			RawDatastore.get(entity.getKey());
+			kvs.get(entity.getKey());
 		}
 		long end = System.currentTimeMillis();
 
@@ -119,7 +118,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -131,9 +130,9 @@ public class Benchmark {
 
 		System.gc();
 		long begin = System.currentTimeMillis();
-		Transaction tx = RawDatastore.beginTransaction();
+		Transaction tx = kvs.beginTransaction();
 		for (Entity entity : entities) {
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 		tx.commit();
 		long end = System.currentTimeMillis();
@@ -143,7 +142,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
+	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -152,14 +151,14 @@ public class Benchmark {
 		for (int i = 0; i < 300; i++) {
 			Entity entity = genEntity(i);
 			entities.add(entity);
-			RawDatastore.put(entity);
+			kvs.put(entity);
 		}
 
 		System.gc();
 		long begin = System.currentTimeMillis();
-		Transaction tx = RawDatastore.beginTransaction();
+		Transaction tx = kvs.beginTransaction();
 		for (Entity entity : entities) {
-			RawDatastore.get(entity.getKey());
+			kvs.get(entity.getKey());
 		}
 		tx.commit();
 		long end = System.currentTimeMillis();
@@ -190,6 +189,5 @@ public class Benchmark {
 	public void before() {
 		ShadowApplication application = Robolectric.getShadowApplication();
 		kvs = new SQLiteKVS(application.getApplicationContext());
-		RawDatastore.init(kvs);
 	}
 }
