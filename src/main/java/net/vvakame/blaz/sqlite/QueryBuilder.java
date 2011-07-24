@@ -9,6 +9,8 @@ import static net.vvakame.blaz.sqlite.KvsOpenHelper.*;
 
 class QueryBuilder {
 
+	static final String SQL_ALL = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS;
+
 	static final String SQL_KEY_ID_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_KEYS
 			+ " WHERE " + COL_KIND + " = ? AND " + COL_ID + " = ?";
 
@@ -94,6 +96,10 @@ class QueryBuilder {
 
 
 	// FIXME SQL_PROPERTY_KEY_EQ 的な何かが必要
+
+	static void makeGetAllQuery(StringBuilder builder, List<String> args) {
+		builder.append(SQL_ALL);
+	}
 
 	static void makeQuery(IFilter filter, StringBuilder builder, List<String> args) {
 		switch (filter.getTarget()) {

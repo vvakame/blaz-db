@@ -1141,6 +1141,42 @@ public abstract class DatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
+	public void find_all() {
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo1"));
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(KeyUtil.createKey("fuga", "piyo2"));
+			Datastore.put(entity);
+		}
+
+		List<Entity> list = Datastore.find();
+		assertThat(list.size(), is(5));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
 	public void find_complex_query() {
 		{
 			Entity entity = new Entity();

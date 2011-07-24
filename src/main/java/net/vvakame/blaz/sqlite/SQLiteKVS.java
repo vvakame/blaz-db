@@ -378,9 +378,6 @@ public class SQLiteKVS implements IKeyValueStore {
 
 	@Override
 	public List<Key> findAsKey(IFilter... filters) {
-		if (filters.length == 0) {
-			throw new IllegalArgumentException("must need 1 filter option required.");
-		}
 		for (IFilter filter : filters) {
 			if (filter == null) {
 				throw new IllegalArgumentException("null argment is not allowed.");
@@ -388,13 +385,14 @@ public class SQLiteKVS implements IKeyValueStore {
 		}
 		StringBuilder builder = new StringBuilder();
 		List<String> args = new ArrayList<String>();
-		IFilter filter;
-		if (filters.length == 1) {
-			filter = filters[0];
+		if (filters.length == 0) {
+			QueryBuilder.makeGetAllQuery(builder, args);
+		} else if (filters.length == 1) {
+			IFilter filter = filters[0];
 			QueryBuilder.makeQuery(filter, builder, args);
 		} else {
 			for (int i = 0; i < filters.length; i++) {
-				filter = filters[i];
+				IFilter filter = filters[i];
 				builder.append(" (");
 				QueryBuilder.makeQuery(filter, builder, args);
 				builder.append(") ");
