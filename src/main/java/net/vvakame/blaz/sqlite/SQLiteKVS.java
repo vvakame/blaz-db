@@ -46,6 +46,7 @@ public class SQLiteKVS implements IKeyValueStore {
 
 	@Override
 	public void put(Entity entity) {
+		delete(entity.getKey());
 		{
 			ContentValues values = convKeyToValues(entity.getKey());
 			mDb.insert(TABLE_KEYS, null, values);
@@ -54,6 +55,19 @@ public class SQLiteKVS implements IKeyValueStore {
 		for (ContentValues values : list) {
 			mDb.insert(TABLE_VALUES, null, values);
 		}
+	}
+
+	@Override
+	public void delete(Key key) {
+		if (key == null) {
+			throw new IllegalArgumentException("key is required.");
+		}
+		mDb.delete(TABLE_KEYS, COL_KEY_STRING + " = ?", new String[] {
+			KeyUtil.keyToString(key)
+		});
+		mDb.delete(TABLE_VALUES, COL_KEY_STRING + " = ?", new String[] {
+			KeyUtil.keyToString(key)
+		});
 	}
 
 	static ContentValues convKeyToValues(Key key) {

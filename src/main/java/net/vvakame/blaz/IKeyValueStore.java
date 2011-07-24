@@ -24,6 +24,13 @@ public interface IKeyValueStore {
 	public void put(Entity entity);
 
 	/**
+	 * Entityを削除する
+	 * @param key
+	 * @author vvakame
+	 */
+	public void delete(Key key);
+
+	/**
 	 * 指定の条件に合致する {@link Entity} を探して返す
 	 * @param filters
 	 * @return 見つかった {@link Entity}

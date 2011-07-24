@@ -168,6 +168,38 @@ public abstract class DatastoreTestBase {
 	}
 
 	/**
+	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void put_update() {
+		Key key = KeyUtil.createKey("hoge", "piyo");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key);
+			entity.setProperty("key1", "value1");
+			entity.setProperty("key2", "value2");
+			entity.setProperty("key3", "value3");
+			entity.setProperty("key4", "value4");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = Datastore.get(key);
+			assertThat(entity.getProperties().size(), is(4));
+		}
+		{
+			Entity entity = new Entity();
+			entity.setKey(key);
+			entity.setProperty("keyA", "valueA");
+			Datastore.put(entity);
+		}
+		{
+			Entity entity = Datastore.get(key);
+			assertThat(entity.getProperties().size(), is(1));
+		}
+	}
+
+	/**
 	 * 動作確認.
 	 * @author vvakame
 	 */
