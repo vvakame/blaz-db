@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.vvakame.blaz.Datastore;
+import net.vvakame.blaz.RawDatastore;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
@@ -33,7 +33,7 @@ public class Benchmark {
 
 
 	/**
-	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
+	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -46,7 +46,7 @@ public class Benchmark {
 		System.gc();
 		long begin = System.currentTimeMillis();
 		for (Entity entity : entities) {
-			Datastore.put(entity);
+			RawDatastore.put(entity);
 		}
 		long end = System.currentTimeMillis();
 
@@ -55,7 +55,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link Datastore#put(Entity)} と {@link Datastore#get(Key)} の動作確認
+	 * {@link RawDatastore#put(Entity)} と {@link RawDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -64,13 +64,13 @@ public class Benchmark {
 		for (int i = 0; i < 300; i++) {
 			Entity entity = genEntity(i);
 			entities.add(entity);
-			Datastore.put(entity);
+			RawDatastore.put(entity);
 		}
 
 		System.gc();
 		long begin = System.currentTimeMillis();
 		for (Entity entity : entities) {
-			Datastore.get(entity.getKey());
+			RawDatastore.get(entity.getKey());
 		}
 		long end = System.currentTimeMillis();
 
@@ -100,6 +100,6 @@ public class Benchmark {
 	public void before() {
 		ShadowApplication application = Robolectric.getShadowApplication();
 		kvs = new SQLiteKVS(application.getApplicationContext());
-		Datastore.init(kvs);
+		RawDatastore.init(kvs);
 	}
 }

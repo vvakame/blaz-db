@@ -6,7 +6,7 @@ import java.util.List;
  * {@link IKeyValueStore} 実装を利用したDatastore.
  * @author vvakame
  */
-public class Datastore {
+public class RawDatastore {
 
 	static IKeyValueStore sKvs;
 
