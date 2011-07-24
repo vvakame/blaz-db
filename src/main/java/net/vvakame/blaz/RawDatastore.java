@@ -31,14 +31,26 @@ public class RawDatastore {
 	}
 
 	/**
-	 * Entityを取得する.<br>指定のKeyに対応するEntityが存在しない場合例外が発生する.
+	 * {@link Key} を元に {@link Entity} を取得する.<br>
+	 * Entityが取得できなかった場合、例外が発生する.
 	 * @param key
-	 * @return keyに対応するEntity
-	 * @throws EntityNotFoundException Keyに体操するEntityが存在しなかった場合発生
+	 * @return {@link Entity}
+	 * @throws EntityNotFoundException Entityが取得できなかった場合
 	 * @author vvakame
 	 */
 	public static Entity get(Key key) throws EntityNotFoundException {
 		return sKvs.get(key);
+	}
+
+	/**
+	 * {@link Key} を元に {@link Entity} を取得する.<br>
+	 * Entityが取得できなかった場合、nullを返す.
+	 * @param key
+	 * @return {@link Entity}
+	 * @author vvakame
+	 */
+	public static Entity getOrNull(Key key) {
+		return sKvs.getOrNull(key);
 	}
 
 	/**

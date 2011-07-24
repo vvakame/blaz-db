@@ -172,15 +172,25 @@ public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Entity get(Key key) {
+		Entity entity = getOrNull(key);
+		if (entity == null) {
+			throw new EntityNotFoundException("key=" + key.toString() + " is not found.");
+		}
+
+		return entity;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Entity getOrNull(Key key) {
 		Cursor c;
 		c = mDb.query(TABLE_KEYS, null, "KEY_STR = ?", new String[] {
 			KeyUtil.keyToString(key)
 		}, null, null, null);
 		if (!c.moveToFirst()) {
-			throw new EntityNotFoundException("key=" + key.toString() + " is not found.");
+			return null;
 		}
 		Key newKey = cursorToKey(c);
 

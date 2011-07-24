@@ -203,13 +203,29 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link RawDatastore#delete(Key)} の動作確認
+	 * {@link RawDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)
 	public void get_not_exists() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 		RawDatastore.get(key);
+	}
+
+	/**
+	 * {@link RawDatastore#delete(Key)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void getOrNull() {
+		Key key = KeyUtil.createKey("hoge", "piyo");
+		try {
+			RawDatastore.get(key);
+			fail("ENFE expected!");
+		} catch (EntityNotFoundException e) {
+		}
+
+		RawDatastore.getOrNull(key);
 	}
 
 	/**

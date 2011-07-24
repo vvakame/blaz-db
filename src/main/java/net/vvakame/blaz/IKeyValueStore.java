@@ -9,12 +9,23 @@ import java.util.List;
 public interface IKeyValueStore {
 
 	/**
-	 * {@link Key} を元に {@link Entity} を取得する.
+	 * {@link Key} を元に {@link Entity} を取得する.<br>
+	 * Entityが取得できなかった場合、例外が発生する.
+	 * @param key
+	 * @return {@link Entity}
+	 * @throws EntityNotFoundException Entityが取得できなかった場合
+	 * @author vvakame
+	 */
+	public Entity get(Key key) throws EntityNotFoundException;
+
+	/**
+	 * {@link Key} を元に {@link Entity} を取得する.<br>
+	 * Entityが取得できなかった場合、nullを返す.
 	 * @param key
 	 * @return {@link Entity}
 	 * @author vvakame
 	 */
-	public Entity get(Key key);
+	public Entity getOrNull(Key key);
 
 	/**
 	 * {@link Entity} を保存する.
