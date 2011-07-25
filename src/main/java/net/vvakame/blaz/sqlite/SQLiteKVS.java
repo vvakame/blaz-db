@@ -267,15 +267,21 @@ public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback 
 		return entity;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	Map<Key, Entity> getAsMap(Iterable<Key> keys) {
+	public Map<Key, Entity> getAsMap(Iterable<Key> keys) {
 		if (keys == null) {
 			return new HashMap<Key, Entity>();
 		}
 
-		ArrayList<Key> keyList = new ArrayList<Key>();
-		for (Key key : keys) {
-			keyList.add(key);
+		List<Key> keyList;
+		if (keys instanceof List) {
+			keyList = (List<Key>) keys;
+		} else {
+			keyList = new ArrayList<Key>();
+			for (Key key : keys) {
+				keyList.add(key);
+			}
 		}
 
 		if (keyList.size() == 0) {
@@ -294,12 +300,28 @@ public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback 
 		}
 		builder.append(")");
 
+		Map<Key, Entity> resultMap = new HashMap<Key, Entity>();
+		{ // for propertyless entity...
+			Cursor c =
+					mDb.query(TABLE_KEYS, null, builder.toString(), args.toArray(new String[] {}),
+							null, null, null);
+			if (!c.moveToFirst()) {
+				return resultMap;
+			}
+			List<Key> tmpKeyList = cursorToKeys(c);
+			for (Key key : tmpKeyList) {
+				Entity entity = new Entity();
+				entity.setKey(key);
+				resultMap.put(key, entity);
+			}
+		}
+
 		Cursor c =
 				mDb.query(TABLE_VALUES, null, builder.toString(), args.toArray(new String[] {}),
 						null, null, COL_KEY_STRING + "," + COL_NAME + "," + COL_SEQ);
 
 		if (!c.moveToFirst()) {
-			return new HashMap<Key, Entity>();
+			return resultMap;
 		}
 
 		final int keyIdx = c.getColumnIndex(COL_KEY_STRING);
@@ -309,8 +331,6 @@ public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback 
 		final int valIntIdx = c.getColumnIndex(COL_VALUE_INTEGER);
 		final int valRealIdx = c.getColumnIndex(COL_VALUE_REAL);
 		final int valBlobIdx = c.getColumnIndex(COL_VALUE_BLOB);
-
-		Map<Key, Entity> resultMap = new HashMap<Key, Entity>();
 
 		String oldKeyStr = c.getString(keyIdx);
 		String keyStr = c.getString(keyIdx);

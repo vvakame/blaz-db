@@ -2,6 +2,7 @@ package net.vvakame.blaz;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.vvakame.blaz.Filter.FilterOption;
 import net.vvakame.blaz.common.KeyFilter;
@@ -266,6 +267,35 @@ public abstract class RawDatastoreTestBase {
 		}
 
 		kvs.getOrNull(key);
+	}
+
+	/**
+	 * {@link IKeyValueStore#get(Key...)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void getAsMap() {
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key1);
+			kvs.put(entity);
+		}
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key2);
+			entity.setProperty("value", 1);
+			kvs.put(entity);
+		}
+		Key key3 = KeyUtil.createKey("hoge", "piyo3");
+
+		List<Key> keyList = new ArrayList<Key>();
+		keyList.add(key1);
+		keyList.add(key2);
+		keyList.add(key3);
+		Map<Key, Entity> entities = kvs.getAsMap(keyList);
+		assertThat(entities.size(), is(2));
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package net.vvakame.blaz;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * KVSのラッパ.
@@ -36,6 +37,15 @@ public interface IKeyValueStore {
 	 * @author vvakame
 	 */
 	public Entity getOrNull(Key key);
+
+	/**
+	 * {@link Key} を元に {@link Entity} を取得する.<br>
+	 * Entityが取得できなかった場合、結果のMapには含まれない.
+	 * @param keys
+	 * @return {@link Key} と対応する {@link Entity} の {@link Map}
+	 * @author vvakame
+	 */
+	Map<Key, Entity> getAsMap(Iterable<Key> keys);
 
 	/**
 	 * {@link Entity} を保存する.
