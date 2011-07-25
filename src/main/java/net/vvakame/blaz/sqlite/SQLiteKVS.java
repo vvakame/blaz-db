@@ -44,6 +44,9 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 
 	@Override
 	public void put(Entity entity) {
+		if (entity == null) {
+			throw new NullPointerException("entity is null.");
+		}
 		delete(entity.getKey());
 		KeysDao.insert(mDb, entity.getKey());
 		ValuesDao.insert(mDb, entity);

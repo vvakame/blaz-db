@@ -142,6 +142,15 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
+	 * {@link BareDatastore#put(Entity)} に対してnullを突っ込む
+	 * @author vvakame
+	 */
+	@Test(expected = NullPointerException.class)
+	public void put_null() {
+		kvs.put(null);
+	}
+
+	/**
 	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */

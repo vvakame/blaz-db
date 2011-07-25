@@ -56,9 +56,10 @@ public abstract class BareDatastore {
 	/**
 	 * {@link Entity} を保存する.
 	 * @param entity
+	 * @throws NullPointerException 引数にnullを与えると発生する
 	 * @author vvakame
 	 */
-	public abstract void put(Entity entity);
+	public abstract void put(Entity entity) throws NullPointerException;
 
 	/**
 	 * Entityを削除する
