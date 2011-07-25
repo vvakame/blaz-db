@@ -1,5 +1,8 @@
 package net.vvakame.blaz;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.vvakame.repackage.android.util.Base64;
 
 /**
@@ -81,5 +84,24 @@ public class KeyUtil {
 		} else {
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	/**
+	 * {@link Iterable} から {@link List} に変換します.
+	 * @param keys
+	 * @return {@link List}
+	 * @author vvakame
+	 */
+	public static List<Key> conv(Iterable<Key> keys) {
+		List<Key> keyList;
+		if (keys instanceof List) {
+			keyList = (List<Key>) keys;
+		} else {
+			keyList = new ArrayList<Key>();
+			for (Key key : keys) {
+				keyList.add(key);
+			}
+		}
+		return keyList;
 	}
 }
