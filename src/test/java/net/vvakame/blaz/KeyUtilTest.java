@@ -1,5 +1,7 @@
 package net.vvakame.blaz;
 
+import net.vvakame.blaz.util.KeyUtil;
+
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;

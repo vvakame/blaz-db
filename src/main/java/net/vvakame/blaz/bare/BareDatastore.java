@@ -1,13 +1,19 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.bare;
 
 import java.util.List;
 import java.util.Map;
+
+import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.Filter;
+import net.vvakame.blaz.Key;
+import net.vvakame.blaz.Transaction;
+import net.vvakame.blaz.exception.EntityNotFoundException;
 
 /**
  * KVSのラッパ.
  * @author vvakame
  */
-public interface IKeyValueStore {
+public abstract class BareDatastore {
 
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
@@ -17,7 +23,7 @@ public interface IKeyValueStore {
 	 * @throws EntityNotFoundException Entityが取得できなかった場合
 	 * @author vvakame
 	 */
-	public Entity get(Key key) throws EntityNotFoundException;
+	public abstract Entity get(Key key) throws EntityNotFoundException;
 
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
@@ -27,7 +33,7 @@ public interface IKeyValueStore {
 	 * @throws EntityNotFoundException Entityが取得できなかった場合
 	 * @author vvakame
 	 */
-	public List<Entity> get(Key... key) throws EntityNotFoundException;
+	public abstract List<Entity> get(Key... key) throws EntityNotFoundException;
 
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
@@ -36,7 +42,7 @@ public interface IKeyValueStore {
 	 * @return {@link Entity}
 	 * @author vvakame
 	 */
-	public Entity getOrNull(Key key);
+	public abstract Entity getOrNull(Key key);
 
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
@@ -45,21 +51,21 @@ public interface IKeyValueStore {
 	 * @return {@link Key} と対応する {@link Entity} の {@link Map}
 	 * @author vvakame
 	 */
-	Map<Key, Entity> getAsMap(Iterable<Key> keys);
+	public abstract Map<Key, Entity> getAsMap(Iterable<Key> keys);
 
 	/**
 	 * {@link Entity} を保存する.
 	 * @param entity
 	 * @author vvakame
 	 */
-	public void put(Entity entity);
+	public abstract void put(Entity entity);
 
 	/**
 	 * Entityを削除する
 	 * @param key
 	 * @author vvakame
 	 */
-	public void delete(Key key);
+	public abstract void delete(Key key);
 
 	/**
 	 * 指定の条件に合致する {@link Entity} を探して返す
@@ -67,7 +73,7 @@ public interface IKeyValueStore {
 	 * @return 見つかった {@link Entity}
 	 * @author vvakame
 	 */
-	public List<Entity> find(Filter... filters);
+	public abstract List<Entity> find(Filter... filters);
 
 	/**
 	 * 指定の条件に合致する {@link Entity} の {@link Key} を探して返す
@@ -75,7 +81,7 @@ public interface IKeyValueStore {
 	 * @return 見つかった {@link Entity} の {@link Key}
 	 * @author vvakame
 	 */
-	public List<Key> findAsKey(Filter... filters);
+	public abstract List<Key> findAsKey(Filter... filters);
 
 	/**
 	 * データ操作に対するトランザクションを開始する.<br>
@@ -83,5 +89,5 @@ public interface IKeyValueStore {
 	 * @return トランザクション
 	 * @author vvakame
 	 */
-	public Transaction beginTransaction();
+	public abstract Transaction beginTransaction();
 }

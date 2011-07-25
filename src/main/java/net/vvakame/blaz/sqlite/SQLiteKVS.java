@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.vvakame.blaz.Entity;
-import net.vvakame.blaz.EntityNotFoundException;
 import net.vvakame.blaz.Filter;
-import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.KeyUtil;
 import net.vvakame.blaz.Transaction;
+import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.exception.EntityNotFoundException;
+import net.vvakame.blaz.util.KeyUtil;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,7 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
  * SQLiteによるKVSの実装
  * @author vvakame
  */
-public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback {
+public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback {
 
 	static final String DB_NAME = "blaz.db";
 

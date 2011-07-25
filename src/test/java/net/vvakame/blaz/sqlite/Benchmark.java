@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 import net.vvakame.blaz.Entity;
-import net.vvakame.blaz.IKeyValueStore;
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.KeyUtil;
 import net.vvakame.blaz.Transaction;
+import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class Benchmark {
 
 	static final String TAG = "SQLiteBench";
 
-	IKeyValueStore kvs;
+	BareDatastore kvs;
 
 
 	/**
@@ -72,7 +72,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -94,7 +94,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -118,7 +118,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -142,7 +142,7 @@ public class Benchmark {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test

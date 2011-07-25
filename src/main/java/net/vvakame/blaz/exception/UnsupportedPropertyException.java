@@ -1,10 +1,10 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.exception;
 
 /**
- * 指定のEntityが発見できなかった場合に投げられる例外.
+ * Entityに保存できない要素を保存しようとしたときに投げられる例外.
  * @author vvakame
  */
-public class EntityNotFoundException extends RuntimeException {
+public class UnsupportedPropertyException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,7 +13,7 @@ public class EntityNotFoundException extends RuntimeException {
 	 * the constructor.
 	 * @category constructor
 	 */
-	public EntityNotFoundException() {
+	public UnsupportedPropertyException() {
 		super();
 	}
 
@@ -23,7 +23,7 @@ public class EntityNotFoundException extends RuntimeException {
 	 * @param cause
 	 * @category constructor
 	 */
-	public EntityNotFoundException(String message, Throwable cause) {
+	public UnsupportedPropertyException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
@@ -32,7 +32,7 @@ public class EntityNotFoundException extends RuntimeException {
 	 * @param message
 	 * @category constructor
 	 */
-	public EntityNotFoundException(String message) {
+	public UnsupportedPropertyException(String message) {
 		super(message);
 	}
 
@@ -41,7 +41,7 @@ public class EntityNotFoundException extends RuntimeException {
 	 * @param cause
 	 * @category constructor
 	 */
-	public EntityNotFoundException(Throwable cause) {
+	public UnsupportedPropertyException(Throwable cause) {
 		super(cause);
 	}
 }

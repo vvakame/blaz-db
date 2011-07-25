@@ -1,8 +1,9 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import net.vvakame.blaz.Key;
 import net.vvakame.repackage.android.util.Base64;
 
 /**

@@ -8,8 +8,8 @@ import java.util.Map;
 
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.KeyUtil;
-import net.vvakame.blaz.UnsupportedPropertyException;
+import net.vvakame.blaz.exception.UnsupportedPropertyException;
+import net.vvakame.blaz.util.KeyUtil;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

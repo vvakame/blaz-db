@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.KeyUtil;
+import net.vvakame.blaz.util.KeyUtil;
 import static net.vvakame.blaz.sqlite.KvsOpenHelper.*;
 
 class QueryBuilder {

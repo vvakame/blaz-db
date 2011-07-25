@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.KeyUtil;
+import net.vvakame.blaz.util.KeyUtil;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

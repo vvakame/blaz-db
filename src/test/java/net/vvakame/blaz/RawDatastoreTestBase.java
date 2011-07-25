@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.vvakame.blaz.Filter.FilterOption;
-import net.vvakame.blaz.common.KeyFilter;
-import net.vvakame.blaz.common.KindFilter;
-import net.vvakame.blaz.common.PropertyFilter;
+import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.exception.EntityNotFoundException;
+import net.vvakame.blaz.filter.KeyFilter;
+import net.vvakame.blaz.filter.KindFilter;
+import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.Test;
 
@@ -16,19 +19,19 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
- * {@link IKeyValueStore} のテスト用クラス.<br>
- * 各 {@link IKeyValueStore} 実装は本クラスを継承し、 {@link #before()} のみ実装すること.
+ * {@link BareDatastore} のテスト用クラス.<br>
+ * 各 {@link BareDatastore} 実装は本クラスを継承し、 {@link #before()} のみ実装すること.
  * @author vvakame
  */
 public abstract class RawDatastoreTestBase {
 
-	protected IKeyValueStore kvs;
+	protected BareDatastore kvs;
 
 	protected boolean supportTransaction = true;
 
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
+	 * {@link BareDatastore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
 	 * @author vvakame
 	 */
 	@Test
@@ -119,7 +122,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
+	 * {@link BareDatastore#put(Entity)} に対して対応しているはずの全ての型を突っ込む.
 	 * @author vvakame
 	 */
 	@Test
@@ -139,7 +142,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -174,7 +177,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} の上書きの動作確認
+	 * {@link BareDatastore#put(Entity)} の上書きの動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -206,7 +209,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)
@@ -216,7 +219,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#get(Key...)} の動作確認
+	 * {@link BareDatastore#get(Key...)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -238,7 +241,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#get(Key...)} の動作確認
+	 * {@link BareDatastore#get(Key...)} の動作確認
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)
@@ -254,7 +257,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#delete(Key)} の動作確認
+	 * {@link BareDatastore#delete(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -270,7 +273,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#get(Key...)} の動作確認
+	 * {@link BareDatastore#get(Key...)} の動作確認
 	 * @author vvakame
 	 */
 	@Test
@@ -299,7 +302,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#put(Entity)} と {@link IKeyValueStore#get(Key)} の動作確認
+	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)
@@ -1588,7 +1591,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#beginTransaction()} のテスト.
+	 * {@link BareDatastore#beginTransaction()} のテスト.
 	 * @author vvakame
 	 */
 	@Test
@@ -1617,7 +1620,7 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link IKeyValueStore#beginTransaction()} のテスト.
+	 * {@link BareDatastore#beginTransaction()} のテスト.
 	 * @author vvakame
 	 */
 	@Test(expected = EntityNotFoundException.class)

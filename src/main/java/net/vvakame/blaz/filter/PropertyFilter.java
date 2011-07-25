@@ -1,4 +1,4 @@
-package net.vvakame.blaz.common;
+package net.vvakame.blaz.filter;
 
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
