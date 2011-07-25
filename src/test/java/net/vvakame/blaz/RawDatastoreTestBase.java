@@ -215,6 +215,44 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
+	 * {@link IKeyValueStore#get(Key...)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void get_multi() {
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key1);
+			kvs.put(entity);
+		}
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key2);
+			kvs.put(entity);
+		}
+		List<Entity> entities = kvs.get(key1, key2);
+		assertThat(entities.size(), is(2));
+	}
+
+	/**
+	 * {@link IKeyValueStore#get(Key...)} の動作確認
+	 * @author vvakame
+	 */
+	@Test(expected = EntityNotFoundException.class)
+	public void get_multi_not_exists() {
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key1);
+			kvs.put(entity);
+		}
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		kvs.get(key1, key2);
+	}
+
+	/**
 	 * {@link IKeyValueStore#delete(Key)} の動作確認
 	 * @author vvakame
 	 */

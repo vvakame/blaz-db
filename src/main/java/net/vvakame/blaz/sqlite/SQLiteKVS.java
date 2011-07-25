@@ -1,6 +1,7 @@
 package net.vvakame.blaz.sqlite;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -483,5 +484,17 @@ public class SQLiteKVS implements IKeyValueStore, SqlTransaction.ActionCallback 
 	public boolean onRollback() {
 		mDb.endTransaction();
 		return true;
+	}
+
+	@Override
+	public List<Entity> get(Key... keys) throws EntityNotFoundException {
+		List<Key> keyList = Arrays.asList(keys);
+		Map<Key, Entity> entities = getAsMap(keyList);
+		List<Entity> resultList = new ArrayList<Entity>(entities.values());
+		if (keyList.size() == entities.size()) {
+			return resultList;
+		}
+		throw new EntityNotFoundException("size expected=" + keyList.size() + ", but got="
+				+ entities.size());
 	}
 }
