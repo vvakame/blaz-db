@@ -1,5 +1,6 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.util;
 
+import net.vvakame.blaz.Key;
 import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.Test;
