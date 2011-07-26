@@ -1,6 +1,7 @@
 package net.vvakame.blaz.util;
 
 import net.vvakame.blaz.Filter;
+import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.KeyFilter;
 import net.vvakame.blaz.filter.KindFilter;
 
@@ -16,12 +17,14 @@ public class FilterChecker {
 	/**
 	 * 組み合わせのチェックを行う.<br>
 	 * 汎用的なKVSを想定する場合、このメソッドで {@code false} が返った場合、そのフィルタは適用しないようにするべき.<br>
-	 * バックヤードのKVSを固定する場合はその限りではない.
+	 * バックヤードのKVSを固定する場合はその限りではない.<br>
+	 * {@link BareDatastore#checkFilter(Filter...)} を通じて、各実装固有のチェックを行う.
+	 * @param kvs 
 	 * @param filters
 	 * @return クエリ発行可否
 	 * @author vvakame
 	 */
-	public static boolean check(Filter... filters) {
+	public static boolean check(BareDatastore kvs, Filter... filters) {
 		if (filters.length == 0) {
 			return true;
 		}
@@ -47,8 +50,9 @@ public class FilterChecker {
 				}
 			}
 		}
-
-		return true;
+		{ // PropertyFilter
+		}
+		return kvs.checkFilter(filters);
 	}
 
 	static boolean hasKindFilter(Filter... filters) {

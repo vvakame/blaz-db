@@ -217,4 +217,9 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		mDb.endTransaction();
 		return true;
 	}
+
+	@Override
+	public boolean checkFilter(Filter... filters) {
+		return true;
+	}
 }

@@ -10,6 +10,7 @@ import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.exception.EntityNotFoundException;
+import net.vvakame.blaz.util.FilterChecker;
 
 /**
  * KVSのラッパ.
@@ -131,4 +132,13 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public abstract Transaction beginTransaction();
+
+	/**
+	 * 渡されたFilterのリストをクエリとして発行可能かチェックする.<br>
+	 * 基本的なチェックは {@link FilterChecker#check(BareDatastore, Filter...)} にて行われる.
+	 * @param filters
+	 * @return クエリ発行可否
+	 * @author vvakame
+	 */
+	public abstract boolean checkFilter(Filter... filters);
 }

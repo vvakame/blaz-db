@@ -3,11 +3,19 @@ package net.vvakame.blaz.util;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Filter.FilterOption;
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.KeyFilter;
 import net.vvakame.blaz.filter.KindFilter;
 import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.sqlite.SQLiteKVS;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.xtremelabs.robolectric.Robolectric;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
+import com.xtremelabs.robolectric.shadows.ShadowApplication;
 
 import static org.hamcrest.CoreMatchers.*;
 
@@ -17,7 +25,11 @@ import static org.junit.Assert.*;
  * {@link FilterChecker} のテストケース.
  * @author vvakame
  */
+@RunWith(RobolectricTestRunner.class)
 public class FilterCheckerTest {
+
+	SQLiteKVS kvs;
+
 
 	/**
 	 * 動作確認
@@ -25,7 +37,7 @@ public class FilterCheckerTest {
 	 */
 	@Test
 	public void check_empty() {
-		assertThat(FilterChecker.check(), is(true));
+		assertThat(FilterChecker.check(kvs), is(true));
 	}
 
 	/**
@@ -40,10 +52,10 @@ public class FilterCheckerTest {
 		Filter kindFilter2 = new KindFilter("fuga");
 		Filter propertyFilter = new PropertyFilter("name", true);
 
-		assertThat(FilterChecker.check(kindFilter1), is(true));
-		assertThat(FilterChecker.check(kindFilter1, propertyFilter), is(true));
-		assertThat(FilterChecker.check(kindFilter2, kindFilter2), is(false));
-		assertThat(FilterChecker.check(kindFilter1, keyFilter, propertyFilter), is(false));
+		assertThat(FilterChecker.check(kvs, kindFilter1), is(true));
+		assertThat(FilterChecker.check(kvs, kindFilter1, propertyFilter), is(true));
+		assertThat(FilterChecker.check(kvs, kindFilter2, kindFilter2), is(false));
+		assertThat(FilterChecker.check(kvs, kindFilter1, keyFilter, propertyFilter), is(false));
 	}
 
 	/**
@@ -57,9 +69,9 @@ public class FilterCheckerTest {
 		Filter kindFilter = new KindFilter("hoge");
 		Filter propertyFilter = new PropertyFilter("name", true);
 
-		assertThat(FilterChecker.check(keyFilter), is(true));
-		assertThat(FilterChecker.check(keyFilter, kindFilter), is(false));
-		assertThat(FilterChecker.check(keyFilter, propertyFilter), is(false));
+		assertThat(FilterChecker.check(kvs, keyFilter), is(true));
+		assertThat(FilterChecker.check(kvs, keyFilter, kindFilter), is(false));
+		assertThat(FilterChecker.check(kvs, keyFilter, propertyFilter), is(false));
 	}
 
 	/**
@@ -104,5 +116,15 @@ public class FilterCheckerTest {
 			Filter filter2 = new PropertyFilter("name", true);
 			assertThat(FilterChecker.hasKeyFilter(filter1, filter2), is(false));
 		}
+	}
+
+	/**
+	 * {@link BareDatastore} のセットアップ
+	 * @author vvakame
+	 */
+	@Before
+	public void setUp() {
+		ShadowApplication application = Robolectric.getShadowApplication();
+		kvs = new SQLiteKVS(application.getApplicationContext());
 	}
 }
