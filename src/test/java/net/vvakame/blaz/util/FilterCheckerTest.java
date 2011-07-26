@@ -33,6 +33,24 @@ public class FilterCheckerTest {
 	 * @author vvakame
 	 */
 	@Test
+	public void check_SingleKind() {
+		Key key = KeyUtil.createKey("hoge", 1);
+		Filter keyFilter = new KeyFilter(FilterOption.EQ, key);
+		Filter kindFilter1 = new KindFilter("hoge");
+		Filter kindFilter2 = new KindFilter("fuga");
+		Filter propertyFilter = new PropertyFilter("name", true);
+
+		assertThat(FilterChecker.check(kindFilter1), is(true));
+		assertThat(FilterChecker.check(kindFilter1, propertyFilter), is(true));
+		assertThat(FilterChecker.check(kindFilter2, kindFilter2), is(false));
+		assertThat(FilterChecker.check(kindFilter1, keyFilter, propertyFilter), is(false));
+	}
+
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
+	@Test
 	public void check_KeyOnly() {
 		Key key = KeyUtil.createKey("hoge", 1);
 		Filter keyFilter = new KeyFilter(FilterOption.EQ, key);
@@ -42,6 +60,28 @@ public class FilterCheckerTest {
 		assertThat(FilterChecker.check(keyFilter), is(true));
 		assertThat(FilterChecker.check(keyFilter, kindFilter), is(false));
 		assertThat(FilterChecker.check(keyFilter, propertyFilter), is(false));
+	}
+
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void hasKindFilter() {
+		{
+			Filter filter = new KindFilter("hoge");
+			assertThat(FilterChecker.hasKindFilter(filter), is(true));
+		}
+		{
+			Filter filter1 = new KindFilter("hoge");
+			Filter filter2 = new PropertyFilter("name", true);
+			assertThat(FilterChecker.hasKindFilter(filter1, filter2), is(true));
+		}
+		{
+			Filter filter1 = new PropertyFilter("name", true);
+			Filter filter2 = new PropertyFilter("name", true);
+			assertThat(FilterChecker.hasKindFilter(filter1, filter2), is(false));
+		}
 	}
 
 	/**
