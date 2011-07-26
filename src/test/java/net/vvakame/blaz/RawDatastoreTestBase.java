@@ -39,8 +39,7 @@ public abstract class RawDatastoreTestBase {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 
 		{
-			Entity entity = new Entity();
-			entity.setKey(key);
+			Entity entity = new Entity(key);
 			entity.setProperty("null", null);
 			entity.setProperty("String", "str");
 			entity.setProperty("Byte", (byte) 1);
@@ -130,8 +129,7 @@ public abstract class RawDatastoreTestBase {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 
 		{
-			Entity entity = new Entity();
-			entity.setKey(key);
+			Entity entity = new Entity(key);
 			kvs.put(entity);
 		}
 		{
@@ -158,9 +156,8 @@ public abstract class RawDatastoreTestBase {
 	public void put_get_pickup_1() {
 		Key key1;
 		{
-			Entity entity = new Entity();
 			key1 = KeyUtil.createKey("hoge", "piyo");
-			entity.setKey(key1);
+			Entity entity = new Entity(key1);
 			entity.setProperty("key1", "value1");
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
@@ -169,9 +166,8 @@ public abstract class RawDatastoreTestBase {
 		}
 		Key key2;
 		{
-			Entity entity = new Entity();
 			key2 = KeyUtil.createKey("hoge", "puyo");
-			entity.setKey(key2);
+			Entity entity = new Entity(key2);
 			entity.setProperty("key1", "value1");
 			kvs.put(entity);
 		}
@@ -193,8 +189,7 @@ public abstract class RawDatastoreTestBase {
 	public void put_update() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key);
+			Entity entity = new Entity(key);
 			entity.setProperty("key1", "value1");
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
@@ -206,8 +201,7 @@ public abstract class RawDatastoreTestBase {
 			assertThat(entity.getProperties().size(), is(4));
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(key);
+			Entity entity = new Entity(key);
 			entity.setProperty("keyA", "valueA");
 			kvs.put(entity);
 		}
@@ -225,8 +219,7 @@ public abstract class RawDatastoreTestBase {
 	public void put_multi() {
 		Entity entity1;
 		{
-			entity1 = new Entity();
-			entity1.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity1 = new Entity("hoge", "piyo1");
 			entity1.setProperty("key1", "value1");
 			entity1.setProperty("key2", "value2");
 			entity1.setProperty("key3", "value3");
@@ -235,8 +228,7 @@ public abstract class RawDatastoreTestBase {
 		}
 		Entity entity2;
 		{
-			entity2 = new Entity();
-			entity2.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity2 = new Entity("hoge", "piyo2");
 			entity2.setProperty("keyA", "valueA");
 		}
 		kvs.put(entity1, entity2);
@@ -262,14 +254,12 @@ public abstract class RawDatastoreTestBase {
 	public void get_multi() {
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key1);
+			Entity entity = new Entity(key1);
 			kvs.put(entity);
 		}
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key2);
+			Entity entity = new Entity(key2);
 			kvs.put(entity);
 		}
 		List<Entity> entities = kvs.get(key1, key2);
@@ -284,8 +274,7 @@ public abstract class RawDatastoreTestBase {
 	public void get_multi_not_exists() {
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key1);
+			Entity entity = new Entity(key1);
 			kvs.put(entity);
 		}
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -316,14 +305,12 @@ public abstract class RawDatastoreTestBase {
 	public void getAsMap() {
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key1);
+			Entity entity = new Entity(key1);
 			kvs.put(entity);
 		}
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key2);
+			Entity entity = new Entity(key2);
 			entity.setProperty("value", 1);
 			kvs.put(entity);
 		}
@@ -345,8 +332,7 @@ public abstract class RawDatastoreTestBase {
 	public void delete_single() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key);
+			Entity entity = new Entity(key);
 			entity.setProperty("key1", "value1");
 			entity.setProperty("key2", "value2");
 			entity.setProperty("key3", "value3");
@@ -369,21 +355,18 @@ public abstract class RawDatastoreTestBase {
 	public void delete_multi() {
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key1);
+			Entity entity = new Entity(key1);
 			entity.setProperty("key1", "value1");
 			kvs.put(entity);
 		}
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key2);
+			Entity entity = new Entity(key2);
 			kvs.put(entity);
 		}
 		Key key3 = KeyUtil.createKey("hoge", "piyo3");
 		{
-			Entity entity = new Entity();
-			entity.setKey(key3);
+			Entity entity = new Entity(key3);
 			entity.setProperty("key1", "value1");
 			kvs.put(entity);
 		}
@@ -402,20 +385,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_KIND_EQ_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo3"));
+			Entity entity = new Entity("fuga", "piyo3");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
@@ -434,33 +414,27 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_Key_EQ_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Entity entity = new Entity("hoge", "1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Entity entity = new Entity("hoge", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Entity entity = new Entity("fuga", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Entity entity = new Entity(KeyUtil.createKey("fuga", 2));
 			kvs.put(entity);
 		}
 
@@ -485,33 +459,27 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_Key_GT_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Entity entity = new Entity("hoge", "1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Entity entity = new Entity("hoge", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Entity entity = new Entity("fuga", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Entity entity = new Entity(KeyUtil.createKey("fuga", 2));
 			kvs.put(entity);
 		}
 
@@ -536,43 +504,35 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_Key_GT_EQ_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Entity entity = new Entity("hoge", "1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Entity entity = new Entity("hoge", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "3"));
+			Entity entity = new Entity("hoge", "3");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Entity entity = new Entity("fuga", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 3));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 3));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Entity entity = new Entity(KeyUtil.createKey("fuga", 2));
 			kvs.put(entity);
 		}
 
@@ -608,33 +568,27 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_Key_LT_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Entity entity = new Entity("hoge", "1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Entity entity = new Entity("hoge", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "1"));
+			Entity entity = new Entity("fuga", "1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", 1));
+			Entity entity = new Entity(KeyUtil.createKey("fuga", 1));
 			kvs.put(entity);
 		}
 
@@ -659,43 +613,35 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_Key_LT_EQ_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "1"));
+			Entity entity = new Entity("hoge", "1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "2"));
+			Entity entity = new Entity("hoge", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "3"));
+			Entity entity = new Entity("hoge", "3");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "2"));
+			Entity entity = new Entity("fuga", "2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 1));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 2));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", 3));
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 3));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", 2));
+			Entity entity = new Entity(KeyUtil.createKey("fuga", 2));
 			kvs.put(entity);
 		}
 
@@ -731,20 +677,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_string_PROPERTY_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
@@ -763,22 +706,19 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_string_PROPERTY_EQ_multi_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("name1", "value1");
 			entity.setProperty("name2", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("name1", "value2");
 			entity.setProperty("name2", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("name1", "value2");
 			entity.setProperty("name2", "value1");
 			kvs.put(entity);
@@ -798,20 +738,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_boolean_PROPERTY_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", true);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", true);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", false);
 			kvs.put(entity);
 		}
@@ -830,22 +767,19 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_boolean_PROPERTY_EQ_multi_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("name1", true);
 			entity.setProperty("name2", true);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("name1", true);
 			entity.setProperty("name2", false);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("name1", false);
 			entity.setProperty("name2", false);
 			kvs.put(entity);
@@ -865,20 +799,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_integer_PROPERTY_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 2);
 			kvs.put(entity);
 		}
@@ -897,22 +828,19 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_integer_PROPERTY_EQ_multi_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("name1", 1);
 			entity.setProperty("name2", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("name1", 1);
 			entity.setProperty("name2", 3);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("name1", 2);
 			entity.setProperty("name2", 3);
 			kvs.put(entity);
@@ -932,20 +860,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_real_PROPERTY_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1.1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
@@ -964,22 +889,19 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_real_PROPERTY_EQ_multi_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("name1", 1.1);
 			entity.setProperty("name2", 1.2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("name1", 1.1);
 			entity.setProperty("name2", 1.3);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("name1", 1.2);
 			entity.setProperty("name2", 1.3);
 			kvs.put(entity);
@@ -999,20 +921,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_key_PROPERTY_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", KeyUtil.createKey("a", "A"));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", KeyUtil.createKey("a", "B"));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", KeyUtil.createKey("a", "B"));
 			kvs.put(entity);
 		}
@@ -1032,22 +951,19 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_key_PROPERTY_EQ_multi_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key1", KeyUtil.createKey("a", "A"));
 			entity.setProperty("key2", KeyUtil.createKey("a", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key1", KeyUtil.createKey("a", "B"));
 			entity.setProperty("key2", KeyUtil.createKey("a", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key1", KeyUtil.createKey("a", "B"));
 			entity.setProperty("key2", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
@@ -1068,20 +984,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_string_PROPERTY_GT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
@@ -1098,20 +1011,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_integer_PROPERTY_GT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
@@ -1128,20 +1038,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_real_PROPERTY_GT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1.1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 1.2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
@@ -1158,20 +1065,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_key_PROPERTY_GT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
@@ -1189,20 +1093,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_string_PROPERTY_GT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
@@ -1221,20 +1122,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_integer_PROPERTY_GT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
@@ -1253,20 +1151,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_real_PROPERTY_GT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1.1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 1.2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
@@ -1285,20 +1180,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_key_PROPERTY_GT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
@@ -1318,20 +1210,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_string_PROPERTY_LT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
@@ -1348,20 +1237,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_integer_PROPERTY_LT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
@@ -1378,20 +1264,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_real_PROPERTY_LT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1.1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 1.2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
@@ -1408,20 +1291,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_key_PROPERTY_LT_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
@@ -1439,20 +1319,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_string_PROPERTY_LT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", "value1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
@@ -1471,20 +1348,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_integer_PROPERTY_LT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
@@ -1503,20 +1377,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_real_PROPERTY_LT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", 1.1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", 1.2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
@@ -1535,20 +1406,17 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_key_PROPERTY_LT_EQ_single_filter() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("key", KeyUtil.createKey("a", 1));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("key", KeyUtil.createKey("a", 2));
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
@@ -1568,28 +1436,23 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_all() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo1"));
+			Entity entity = new Entity("fuga", "piyo1");
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo2"));
+			Entity entity = new Entity("fuga", "piyo2");
 			kvs.put(entity);
 		}
 
@@ -1604,49 +1467,42 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void find_complex_query() {
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("real", 1.1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			Entity entity = new Entity("hoge", "piyo2");
 			entity.setProperty("real", 1.2);
 			entity.setProperty("int", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo3"));
+			Entity entity = new Entity("hoge", "piyo3");
 			entity.setProperty("real", 1.3);
 			entity.setProperty("int", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo1"));
+			Entity entity = new Entity("fuga", "piyo1");
 			entity.setProperty("real", 1.1);
 			entity.setProperty("int", 1);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo2"));
+			Entity entity = new Entity("fuga", "piyo2");
 			entity.setProperty("real", 1.2);
 			entity.setProperty("int", 2);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo3"));
+			Entity entity = new Entity("fuga", "piyo3");
 			entity.setProperty("real", 1.3);
 			entity.setProperty("int", 3);
 			kvs.put(entity);
 		}
 		{
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("fuga", "piyo4"));
+			Entity entity = new Entity("fuga", "piyo4");
 			entity.setProperty("real", 1.2);
 			entity.setProperty("int", 4);
 			kvs.put(entity);
@@ -1672,8 +1528,7 @@ public abstract class RawDatastoreTestBase {
 
 		Transaction tx = kvs.beginTransaction();
 		try {
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("value", 111);
 			kvs.put(entity);
 
@@ -1701,8 +1556,7 @@ public abstract class RawDatastoreTestBase {
 
 		Transaction tx = kvs.beginTransaction();
 		try {
-			Entity entity = new Entity();
-			entity.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			Entity entity = new Entity("hoge", "piyo1");
 			entity.setProperty("value", 111);
 			kvs.put(entity);
 

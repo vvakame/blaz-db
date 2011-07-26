@@ -3,16 +3,72 @@ package net.vvakame.blaz;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.vvakame.blaz.util.KeyUtil;
+
 /**
  * KVS の Value
  * @author vvakame
  */
 public class Entity {
 
+	private String kind;
+
 	private Key key;
 
 	private Map<String, Object> propertyMap = new HashMap<String, Object>();
 
+
+	/**
+	 * 指定された Kind のEntityを新規作成する.
+	 * @param kind
+	 * @category constructor
+	 */
+	public Entity(String kind) {
+		if (kind == null) {
+			throw new NullPointerException("kind is required");
+		}
+		this.kind = kind;
+	}
+
+	/**
+	 * 指定された Kind と名前のEntityを新規作成する.
+	 * @param kind
+	 * @param name
+	 * @category constructor
+	 */
+	public Entity(String kind, String name) {
+		if (kind == null) {
+			throw new NullPointerException("kind is required");
+		}
+		this.kind = kind;
+		key = KeyUtil.createKey(kind, name);
+	}
+
+	/**
+	 * 指定された key のEntityを新規作成する.
+	 * @param key 
+	 * @category constructor
+	 */
+	public Entity(Key key) {
+		if (key == null) {
+			throw new NullPointerException("key is required");
+		}
+		this.kind = key.getKind();
+		this.key = key;
+	}
+
+	/**
+	 * EntityのKindを取得します.
+	 * @return Kind
+	 * @author vvakame
+	 */
+	public String getKind() {
+		if (key != null) {
+			return key.getKind();
+		} else {
+			return kind;
+		}
+	}
 
 	/**
 	 * EntityのKeyを設定する.
@@ -30,15 +86,6 @@ public class Entity {
 	 */
 	public Key getKey() {
 		return this.key;
-	}
-
-	/**
-	 * EntityのKindを取得します.
-	 * @return Kind
-	 * @author vvakame
-	 */
-	public String getKind() {
-		return this.key.getKind();
 	}
 
 	/**

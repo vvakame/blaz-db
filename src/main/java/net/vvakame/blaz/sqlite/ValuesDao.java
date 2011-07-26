@@ -23,8 +23,7 @@ class ValuesDao {
 	@SuppressWarnings("unchecked")
 	public static Entity cursorToEntityAsSingle(Key key, Cursor c) {
 
-		Entity entity = new Entity();
-		entity.setKey(key);
+		Entity entity = new Entity(key);
 		if (!c.moveToFirst()) {
 			return entity;
 		}
@@ -109,15 +108,13 @@ class ValuesDao {
 
 		String oldKeyStr = c.getString(keyIdx);
 		String keyStr = c.getString(keyIdx);
-		Entity entity = new Entity();
-		entity.setKey(KeyUtil.stringToKey(keyStr));
+		Entity entity = new Entity(KeyUtil.stringToKey(keyStr));
 		do {
 			keyStr = c.getString(keyIdx);
 			if (!keyStr.equals(oldKeyStr)) {
 				resultMap.put(entity.getKey(), entity);
 				oldKeyStr = keyStr;
-				entity = new Entity();
-				entity.setKey(KeyUtil.stringToKey(keyStr));
+				entity = new Entity(KeyUtil.stringToKey(keyStr));
 			}
 			final String name = c.getString(nameIdx);
 			String type = c.getString(typeIdx);

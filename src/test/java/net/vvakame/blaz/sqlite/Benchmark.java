@@ -170,8 +170,8 @@ public class Benchmark {
 	static Entity genEntity(int seed) {
 		Random rnd = new Random(seed);
 
-		Entity entity = new Entity();
 		Key key = KeyUtil.createKey("hoge" + rnd.nextInt(), "piyopiyo" + seed);
+		Entity entity = new Entity(key.getKind(), key.getName());
 		entity.setKey(key);
 		int max = rnd.nextInt() % 100;
 		for (int i = 0; i < max; i++) {

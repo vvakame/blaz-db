@@ -113,8 +113,7 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 			}
 			List<Key> tmpKeyList = KeysDao.cursorToKeys(c);
 			for (Key key : tmpKeyList) {
-				Entity entity = new Entity();
-				entity.setKey(key);
+				Entity entity = new Entity(key);
 				resultMap.put(key, entity);
 			}
 		}
@@ -175,8 +174,7 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 
 		for (Key key : keys) {
 			if (!entities.containsKey(key)) {
-				Entity entity = new Entity();
-				entity.setKey(key);
+				Entity entity = new Entity(key);
 				resultList.add(entity);
 			}
 		}
