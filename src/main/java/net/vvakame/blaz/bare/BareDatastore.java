@@ -1,5 +1,7 @@
 package net.vvakame.blaz.bare;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ public abstract class BareDatastore {
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
 	 * Entityが取得できなかった場合、例外が発生する.
-	 * @param key
+	 * @param key {@link Entity} のKey
 	 * @return {@link Entity}
 	 * @throws EntityNotFoundException Entityが取得できなかった場合
 	 * @author vvakame
@@ -28,12 +30,18 @@ public abstract class BareDatastore {
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
 	 * 1つでもEntityが取得できなかった場合、例外が発生する.
-	 * @param key
+	 * @param keys {@link Entity} のKeyのリスト
 	 * @return {@link Entity}
 	 * @throws EntityNotFoundException Entityが取得できなかった場合
 	 * @author vvakame
 	 */
-	public abstract List<Entity> get(Key... key) throws EntityNotFoundException;
+	public List<Entity> get(Key... keys) throws EntityNotFoundException {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (Key key : keys) {
+			entities.add(get(key));
+		}
+		return entities;
+	}
 
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
@@ -51,7 +59,16 @@ public abstract class BareDatastore {
 	 * @return {@link Key} と対応する {@link Entity} の {@link Map}
 	 * @author vvakame
 	 */
-	public abstract Map<Key, Entity> getAsMap(Iterable<Key> keys);
+	public Map<Key, Entity> getAsMap(Iterable<Key> keys) {
+		Map<Key, Entity> entityMap = new HashMap<Key, Entity>();
+		for (Key key : keys) {
+			Entity entity = getOrNull(key);
+			if (entity != null) {
+				entityMap.put(key, entity);
+			}
+		}
+		return entityMap;
+	}
 
 	/**
 	 * {@link Entity} を保存する.
@@ -62,11 +79,34 @@ public abstract class BareDatastore {
 	public abstract void put(Entity entity) throws NullPointerException;
 
 	/**
+	 * {@link Entity} を保存する.
+	 * @param entities
+	 * @throws NullPointerException 引数にnullを与えると発生する
+	 * @author vvakame
+	 */
+	public void put(Entity... entities) throws NullPointerException {
+		for (Entity entity : entities) {
+			put(entity);
+		}
+	}
+
+	/**
 	 * Entityを削除する
 	 * @param key
 	 * @author vvakame
 	 */
 	public abstract void delete(Key key);
+
+	/**
+	 * Entityを全て削除する
+	 * @param keys
+	 * @author vvakame
+	 */
+	public void delete(Key... keys) {
+		for (Key key : keys) {
+			delete(key);
+		}
+	}
 
 	/**
 	 * 指定の条件に合致する {@link Entity} を探して返す

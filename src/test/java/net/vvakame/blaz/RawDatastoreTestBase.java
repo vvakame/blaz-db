@@ -147,7 +147,7 @@ public abstract class RawDatastoreTestBase {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void put_null() {
-		kvs.put(null);
+		kvs.put((Entity) null);
 	}
 
 	/**
@@ -215,6 +215,33 @@ public abstract class RawDatastoreTestBase {
 			Entity entity = kvs.get(key);
 			assertThat(entity.getProperties().size(), is(1));
 		}
+	}
+
+	/**
+	 * {@link BareDatastore#put(Entity)} の上書きの動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void put_multi() {
+		Entity entity1;
+		{
+			entity1 = new Entity();
+			entity1.setKey(KeyUtil.createKey("hoge", "piyo1"));
+			entity1.setProperty("key1", "value1");
+			entity1.setProperty("key2", "value2");
+			entity1.setProperty("key3", "value3");
+			entity1.setProperty("key4", "value4");
+			kvs.put(entity1);
+		}
+		Entity entity2;
+		{
+			entity2 = new Entity();
+			entity2.setKey(KeyUtil.createKey("hoge", "piyo2"));
+			entity2.setProperty("keyA", "valueA");
+		}
+		kvs.put(entity1, entity2);
+		List<Entity> entities = kvs.find();
+		assertThat(entities.size(), is(2));
 	}
 
 	/**
@@ -311,11 +338,11 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
-	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
+	 * {@link BareDatastore#delete(Key)} の動作確認
 	 * @author vvakame
 	 */
-	@Test(expected = EntityNotFoundException.class)
-	public void delete() {
+	@Test
+	public void delete_single() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 		{
 			Entity entity = new Entity();
@@ -330,7 +357,41 @@ public abstract class RawDatastoreTestBase {
 			kvs.delete(key);
 		}
 		{
-			kvs.get(key);
+			assertThat(kvs.find().size(), is(0));
+		}
+	}
+
+	/**
+	 * {@link BareDatastore#delete(Key...)} の動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void delete_multi() {
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key1);
+			entity.setProperty("key1", "value1");
+			kvs.put(entity);
+		}
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key2);
+			kvs.put(entity);
+		}
+		Key key3 = KeyUtil.createKey("hoge", "piyo3");
+		{
+			Entity entity = new Entity();
+			entity.setKey(key3);
+			entity.setProperty("key1", "value1");
+			kvs.put(entity);
+		}
+		{
+			kvs.delete(key1, key2);
+		}
+		{
+			assertThat(kvs.find().size(), is(1));
 		}
 	}
 
