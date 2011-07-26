@@ -18,6 +18,9 @@ import net.vvakame.blaz.util.FilterChecker;
  */
 public abstract class BareDatastore {
 
+	protected boolean checkFilter = false;
+
+
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
 	 * Entityが取得できなかった場合、例外が発生する.

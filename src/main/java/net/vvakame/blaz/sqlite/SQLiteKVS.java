@@ -12,6 +12,7 @@ import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.exception.EntityNotFoundException;
+import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 import android.content.Context;
 import android.database.Cursor;
@@ -137,6 +138,10 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 
 	@Override
 	public List<Key> findAsKey(Filter... filters) {
+		if (checkFilter && !FilterChecker.check(this, filters)) {
+			throw new IllegalArgumentException("invalid filter combination.");
+		}
+
 		for (Filter filter : filters) {
 			if (filter == null) {
 				throw new IllegalArgumentException("null argment is not allowed.");
@@ -221,5 +226,23 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 	@Override
 	public boolean checkFilter(Filter... filters) {
 		return true;
+	}
+
+	/**
+	 * フィルタの組み合わせチェックを行うかを設定する.
+	 * @param check
+	 * @author vvakame
+	 */
+	public void setCheckFilter(boolean check) {
+		this.checkFilter = check;
+	}
+
+	/**
+	 * フィルタの組み合わせチェックの設定を取得する.
+	 * @return チェックを行うか否か
+	 * @author vvakame
+	 */
+	public boolean getCheckFilter() {
+		return this.checkFilter;
 	}
 }

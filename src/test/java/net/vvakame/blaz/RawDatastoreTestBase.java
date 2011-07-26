@@ -10,6 +10,7 @@ import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.filter.KeyFilter;
 import net.vvakame.blaz.filter.KindFilter;
 import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.sqlite.SQLiteKVS;
 import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.Test;
@@ -1621,6 +1622,26 @@ public abstract class RawDatastoreTestBase {
 
 		// rollbacked. raise ENFE.
 		kvs.get(KeyUtil.createKey("hoge", "piyo1"));
+	}
+
+	/**
+	 * クエリの組み合わせのチェックのテスト.
+	 * @author vvakame
+	 */
+	@Test
+	public void checkFilter_ok() {
+		((SQLiteKVS) kvs).setCheckFilter(true);
+		kvs.find(new KindFilter("hoge"), new PropertyFilter("fuga", true));
+	}
+
+	/**
+	 * クエリの組み合わせのチェックのテスト.
+	 * @author vvakame
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void checkFilter_ng() {
+		((SQLiteKVS) kvs).setCheckFilter(true);
+		kvs.find(new KindFilter("hoge"), new KindFilter("fuga"));
 	}
 
 	/**
