@@ -47,9 +47,20 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		if (entity == null) {
 			throw new NullPointerException("entity is null.");
 		}
-		delete(entity.getKey());
+		if (entity.getKey() != null) {
+			delete(entity.getKey());
+		} else {
+			String kind = entity.getKind();
+			long id = getLatestId(kind) + 1;
+			Key key = KeyUtil.createKey(kind, id);
+			entity.setKey(key);
+		}
 		KeysDao.insert(mDb, entity.getKey());
 		ValuesDao.insert(mDb, entity);
+	}
+
+	long getLatestId(String kind) {
+		return KeysDao.getLatestId(mDb, kind);
 	}
 
 	@Override

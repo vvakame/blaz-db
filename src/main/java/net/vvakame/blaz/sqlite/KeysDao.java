@@ -78,6 +78,16 @@ class KeysDao {
 		return c;
 	}
 
+	public static long getLatestId(SQLiteDatabase db, String kind) {
+		Cursor c =
+				db.rawQuery("SELECT max(" + COL_ID + ") as maxValue FROM " + TABLE_KEYS + " WHERE "
+						+ COL_KIND + " = ?", new String[] {
+					kind
+				});
+		c.moveToFirst();
+		return c.getLong(0);
+	}
+
 	public static boolean isExists(SQLiteDatabase db, Key key) {
 		Cursor c =
 				db.rawQuery("SELECT count(*) as cnt FROM " + TABLE_KEYS + " WHERE "

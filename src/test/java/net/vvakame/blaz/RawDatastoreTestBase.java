@@ -149,6 +149,55 @@ public abstract class RawDatastoreTestBase {
 	}
 
 	/**
+	 * {@link BareDatastore#put(Entity)} に対してname, idなしを突っ込む
+	 * @author vvakame
+	 */
+	@Test
+	public void put_nameLess() {
+		List<Entity> entities = new ArrayList<Entity>();
+		{
+			Entity entity = new Entity("hoge");
+			entity.setProperty("value", 1);
+			kvs.put(entity);
+			entities.add(entity);
+		}
+		{
+			Entity entity = new Entity("hoge");
+			entity.setProperty("value", 2);
+			kvs.put(entity);
+			entities.add(entity);
+		}
+		{
+			Entity entity = new Entity("hoge");
+			entity.setProperty("value", 3);
+			kvs.put(entity);
+			entities.add(entity);
+		}
+		{
+			Entity entity = new Entity(KeyUtil.createKey("hoge", 100));
+			kvs.put(entity);
+			entities.add(entity);
+		}
+		{
+			Entity entity = new Entity("hoge");
+			kvs.put(entity);
+			entities.add(entity);
+		}
+
+		List<Entity> resultEntities = kvs.find();
+		assertThat(resultEntities.size(), is(5));
+
+		root: for (Entity entity : resultEntities) {
+			for (Entity base : entities) {
+				if (entity.getKey().equals(base.getKey())) {
+					continue root;
+				}
+			}
+			fail("key is not matched");
+		}
+	}
+
+	/**
 	 * {@link BareDatastore#put(Entity)} と {@link BareDatastore#get(Key)} の動作確認
 	 * @author vvakame
 	 */
