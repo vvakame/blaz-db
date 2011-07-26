@@ -1,6 +1,7 @@
 package net.vvakame.blaz.util;
 
 import net.vvakame.blaz.Filter;
+import net.vvakame.blaz.filter.KeyFilter;
 
 /**
  * 発行可能な {@link Filter} の組み合わせについてチェックするユーティリティ.
@@ -23,7 +24,25 @@ public class FilterChecker {
 		if (filters.length == 0) {
 			return true;
 		}
+		{ // KeyFilter
+			if (hasKeyFilter(filters)) {
+				for (Filter filter : filters) {
+					if (filter instanceof KeyFilter == false) {
+						return false;
+					}
+				}
+			}
+		}
 
+		return true;
+	}
+
+	static boolean hasKeyFilter(Filter... filters) {
+		for (Filter filter : filters) {
+			if (filter instanceof KeyFilter) {
+				return true;
+			}
+		}
 		return false;
 	}
 }
