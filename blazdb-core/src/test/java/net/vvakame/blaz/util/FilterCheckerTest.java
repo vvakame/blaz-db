@@ -7,15 +7,9 @@ import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.KeyFilter;
 import net.vvakame.blaz.filter.KindFilter;
 import net.vvakame.blaz.filter.PropertyFilter;
-import net.vvakame.blaz.sqlite.SQLiteKVS;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
-import com.xtremelabs.robolectric.shadows.ShadowApplication;
 
 import static org.hamcrest.CoreMatchers.*;
 
@@ -25,10 +19,10 @@ import static org.junit.Assert.*;
  * {@link FilterChecker} のテストケース.
  * @author vvakame
  */
-@RunWith(RobolectricTestRunner.class)
+// TODO @RunWith(RobolectricTestRunner.class)
 public class FilterCheckerTest {
 
-	SQLiteKVS kvs;
+	BareDatastore kvs;
 
 
 	/**
@@ -124,7 +118,8 @@ public class FilterCheckerTest {
 	 */
 	@Before
 	public void setUp() {
-		ShadowApplication application = Robolectric.getShadowApplication();
-		kvs = new SQLiteKVS(application.getApplicationContext());
+		// ShadowApplication application = Robolectric.getShadowApplication();
+		// TODO 復活させる
+		// kvs = new SQLiteKVS(application.getApplicationContext());
 	}
 }
