@@ -7,6 +7,7 @@ import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.KeyFilter;
 import net.vvakame.blaz.filter.KindFilter;
 import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.mock.MockKVS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,6 @@ import static org.junit.Assert.*;
  * {@link FilterChecker} のテストケース.
  * @author vvakame
  */
-// TODO @RunWith(RobolectricTestRunner.class)
 public class FilterCheckerTest {
 
 	BareDatastore kvs;
@@ -118,8 +118,6 @@ public class FilterCheckerTest {
 	 */
 	@Before
 	public void setUp() {
-		// ShadowApplication application = Robolectric.getShadowApplication();
-		// TODO 復活させる
-		// kvs = new SQLiteKVS(application.getApplicationContext());
+		kvs = new MockKVS();
 	}
 }

@@ -112,10 +112,17 @@ public class Key implements Serializable, Comparable<Key> {
 		if (result != 0) {
 			return result;
 		}
-		result = thisKey.getName().compareTo(otherKey.getName());
-		if (result != 0) {
-			return result;
+		if (thisKey.getName() != null && otherKey.getName() != null) {
+			result = thisKey.getName().compareTo(otherKey.getName());
+			if (result != 0) {
+				return result;
+			}
+		} else if (thisKey.getName() != null && otherKey.getName() == null) {
+			return 1;
+		} else if (thisKey.getName() == null && otherKey.getName() != null) {
+			return -1;
 		}
+
 		result = Long.valueOf(thisKey.getId()).compareTo(Long.valueOf(otherKey.getId()));
 		return result;
 	}

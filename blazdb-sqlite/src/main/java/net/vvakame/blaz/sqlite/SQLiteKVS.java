@@ -1,7 +1,6 @@
 package net.vvakame.blaz.sqlite;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
-import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 import android.content.Context;
@@ -43,6 +41,10 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		mDb = new KvsOpenHelper(mContext, DB_NAME, DB_VERSION).getWritableDatabase();
 	}
 
+	long getLatestId(String kind) {
+		return KeysDao.getLatestId(mDb, kind);
+	}
+
 	@Override
 	public void put(Entity entity) {
 		if (entity == null) {
@@ -60,10 +62,6 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		ValuesDao.insert(mDb, entity);
 	}
 
-	long getLatestId(String kind) {
-		return KeysDao.getLatestId(mDb, kind);
-	}
-
 	@Override
 	public void delete(Key key) {
 		if (key == null) {
@@ -71,28 +69,6 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		}
 		KeysDao.delete(mDb, key);
 		ValuesDao.delete(mDb, key);
-	}
-
-	@Override
-	public Entity get(Key key) {
-		Entity entity = getOrNull(key);
-		if (entity == null) {
-			throw new EntityNotFoundException("key=" + key.toString() + " is not found.");
-		}
-
-		return entity;
-	}
-
-	@Override
-	public List<Entity> get(Key... keys) throws EntityNotFoundException {
-		List<Key> keyList = Arrays.asList(keys);
-		Map<Key, Entity> entities = getAsMap(keyList);
-		List<Entity> resultList = new ArrayList<Entity>(entities.values());
-		if (keyList.size() == entities.size()) {
-			return resultList;
-		}
-		throw new EntityNotFoundException("size expected=" + keyList.size() + ", but got="
-				+ entities.size());
 	}
 
 	@Override
@@ -175,29 +151,6 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		return KeysDao.cursorToKeys(c);
 	}
 
-	@Override
-	public List<Entity> find(Filter... filters) {
-		List<Key> keys = findAsKey(filters);
-		if (keys == null || keys.size() == 0) {
-			return new ArrayList<Entity>();
-		}
-
-		Map<Key, Entity> entities = getAsMap(keys);
-		List<Entity> resultList = new ArrayList<Entity>(entities.values());
-		if (keys.size() == entities.size()) {
-			return resultList;
-		}
-
-		for (Key key : keys) {
-			if (!entities.containsKey(key)) {
-				Entity entity = new Entity(key);
-				resultList.add(entity);
-			}
-		}
-
-		return resultList;
-	}
-
 	/**
 	 * データ操作に対するトランザクションを開始する.<br>
 	 * トランザクションの仕様は {@link SQLiteDatabase#beginTransaction()} に準じる。
@@ -226,23 +179,5 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 	@Override
 	public boolean checkFilter(Filter... filters) {
 		return true;
-	}
-
-	/**
-	 * フィルタの組み合わせチェックを行うかを設定する.
-	 * @param check
-	 * @author vvakame
-	 */
-	public void setCheckFilter(boolean check) {
-		this.checkFilter = check;
-	}
-
-	/**
-	 * フィルタの組み合わせチェックの設定を取得する.
-	 * @return チェックを行うか否か
-	 * @author vvakame
-	 */
-	public boolean getCheckFilter() {
-		return this.checkFilter;
 	}
 }

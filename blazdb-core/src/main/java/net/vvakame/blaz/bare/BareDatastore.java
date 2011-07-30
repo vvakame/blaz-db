@@ -1,6 +1,7 @@
 package net.vvakame.blaz.bare;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,14 @@ public abstract class BareDatastore {
 	 * @throws EntityNotFoundException Entityが取得できなかった場合
 	 * @author vvakame
 	 */
-	public abstract Entity get(Key key) throws EntityNotFoundException;
+	public Entity get(Key key) throws EntityNotFoundException {
+		Entity entity = getOrNull(key);
+		if (entity == null) {
+			throw new EntityNotFoundException("key=" + key.toString() + " is not found.");
+		}
+
+		return entity;
+	}
 
 	/**
 	 * {@link Key} を元に {@link Entity} を取得する.<br>
@@ -40,11 +48,14 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public List<Entity> get(Key... keys) throws EntityNotFoundException {
-		List<Entity> entities = new ArrayList<Entity>();
-		for (Key key : keys) {
-			entities.add(get(key));
+		List<Key> keyList = Arrays.asList(keys);
+		Map<Key, Entity> entities = getAsMap(keyList);
+		List<Entity> resultList = new ArrayList<Entity>(entities.values());
+		if (keyList.size() == entities.size()) {
+			return resultList;
 		}
-		return entities;
+		throw new EntityNotFoundException("size expected=" + keyList.size() + ", but got="
+				+ entities.size());
 	}
 
 	/**
@@ -118,7 +129,27 @@ public abstract class BareDatastore {
 	 * @return 見つかった {@link Entity}
 	 * @author vvakame
 	 */
-	public abstract List<Entity> find(Filter... filters);
+	public List<Entity> find(Filter... filters) {
+		List<Key> keys = findAsKey(filters);
+		if (keys == null || keys.size() == 0) {
+			return new ArrayList<Entity>();
+		}
+
+		Map<Key, Entity> entities = getAsMap(keys);
+		List<Entity> resultList = new ArrayList<Entity>(entities.values());
+		if (keys.size() == entities.size()) {
+			return resultList;
+		}
+
+		for (Key key : keys) {
+			if (!entities.containsKey(key)) {
+				Entity entity = new Entity(key);
+				resultList.add(entity);
+			}
+		}
+
+		return resultList;
+	}
 
 	/**
 	 * 指定の条件に合致する {@link Entity} の {@link Key} を探して返す
@@ -144,4 +175,22 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public abstract boolean checkFilter(Filter... filters);
+
+	/**
+	 * フィルタの組み合わせチェックを行うかを設定する.
+	 * @param check
+	 * @author vvakame
+	 */
+	public void setCheckFilter(boolean check) {
+		this.checkFilter = check;
+	}
+
+	/**
+	 * フィルタの組み合わせチェックの設定を取得する.
+	 * @return チェックを行うか否か
+	 * @author vvakame
+	 */
+	public boolean getCheckFilter() {
+		return this.checkFilter;
+	}
 }

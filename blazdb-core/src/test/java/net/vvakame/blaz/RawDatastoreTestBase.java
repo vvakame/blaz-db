@@ -1629,9 +1629,8 @@ public abstract class RawDatastoreTestBase {
 	 */
 	@Test
 	public void checkFilter_ok() {
-		// TODO 復活させる
-		// ((SQLiteKVS) kvs).setCheckFilter(true);
-		// kvs.find(new KindFilter("hoge"), new PropertyFilter("fuga", true));
+		kvs.setCheckFilter(true);
+		kvs.find(new KindFilter("hoge"), new PropertyFilter("fuga", true));
 	}
 
 	/**
@@ -1640,9 +1639,8 @@ public abstract class RawDatastoreTestBase {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void checkFilter_ng() {
-		// TODO 復活させる
-		// ((SQLiteKVS) kvs).setCheckFilter(true);
-		// kvs.find(new KindFilter("hoge"), new KindFilter("fuga"));
+		kvs.setCheckFilter(true);
+		kvs.find(new KindFilter("hoge"), new KindFilter("fuga"));
 	}
 
 	/**
