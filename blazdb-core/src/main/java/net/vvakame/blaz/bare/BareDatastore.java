@@ -9,6 +9,7 @@ import java.util.Map;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.util.FilterChecker;
@@ -149,6 +150,21 @@ public abstract class BareDatastore {
 		}
 
 		return resultList;
+	}
+
+	/**
+	 * 指定の条件に合致する {@link Entity} を探して返す
+	 * @param filters
+	 * @param sorters 
+	 * @return 見つかった {@link Entity}
+	 * @author vvakame
+	 */
+	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+		List<Entity> entities = find(filters);
+
+		// TODO ソートを実装すること
+
+		return entities;
 	}
 
 	/**
