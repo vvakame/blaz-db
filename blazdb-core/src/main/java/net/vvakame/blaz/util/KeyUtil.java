@@ -23,6 +23,11 @@ public class KeyUtil {
 	 * @author vvakame
 	 */
 	public static Key createKey(String kind, String name) {
+		if (kind == null) {
+			throw new NullPointerException("kind is required");
+		} else if (name == null) {
+			throw new NullPointerException("name is required");
+		}
 		Key key = new Key();
 		key.setKind(kind);
 		key.setName(name);
