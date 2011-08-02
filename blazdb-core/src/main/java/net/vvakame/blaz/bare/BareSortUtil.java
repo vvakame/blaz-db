@@ -125,7 +125,20 @@ class BareSortUtil {
 			if (!(v1 instanceof Comparable)) {
 				throw new IllegalStateException("property " + name + " is not comparable.");
 			}
-			final int compareTo = ((Comparable<Object>) v1).compareTo(v2);
+
+			final int compareTo;
+			if (v1 instanceof Number && v2 instanceof Number) {
+				compareTo =
+						((Double) ((Number) v1).doubleValue()).compareTo(((Number) v2)
+							.doubleValue());
+			} else if (v1.getClass().equals(v2.getClass())) {
+				compareTo = ((Comparable<Object>) v1).compareTo(v2);
+			} else {
+				compareTo =
+						v1.getClass().getCanonicalName()
+							.compareTo(v2.getClass().getCanonicalName());
+			}
+
 			if (compareTo == 0) {
 				return 0;
 			} else if (compareTo < 0) {

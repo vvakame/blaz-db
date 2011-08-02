@@ -1,5 +1,6 @@
 package net.vvakame.blaz;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -136,6 +137,103 @@ public class Entity {
 	 * @author vvakame
 	 */
 	public void setProperty(String name, Object value) {
+		if (value == null) {
+			propertyMap.put(name, value);
+		} else if (value instanceof String) {
+			setProperty(name, (String) value);
+		} else if (value instanceof Key) {
+			setProperty(name, (Key) value);
+		} else if (value instanceof Byte) {
+			setProperty(name, (long) (Byte) value);
+		} else if (value instanceof Short) {
+			setProperty(name, (long) (Short) value);
+		} else if (value instanceof Integer) {
+			setProperty(name, (long) (Integer) value);
+		} else if (value instanceof Long) {
+			setProperty(name, (long) (Long) value);
+		} else if (value instanceof Float) {
+			setProperty(name, (double) (Float) value);
+		} else if (value instanceof Double) {
+			setProperty(name, (double) (Double) value);
+		} else if (value instanceof Boolean) {
+			setProperty(name, (boolean) (Boolean) value);
+		} else if (value instanceof Collection<?>) {
+			setProperty(name, (Collection<?>) value);
+		} else if (value instanceof byte[]) {
+			setProperty(name, (byte[]) value);
+		} else {
+			throw new IllegalArgumentException("unsupported type="
+					+ value.getClass().getCanonicalName());
+		}
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, long value) {
+		propertyMap.put(name, value);
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, double value) {
+		propertyMap.put(name, value);
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, boolean value) {
+		propertyMap.put(name, value);
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, Collection<?> value) {
+		propertyMap.put(name, value);
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, byte[] value) {
+		propertyMap.put(name, value);
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, String value) {
+		propertyMap.put(name, value);
+	}
+
+	/**
+	 * Entityのプロパティに値をセットします.
+	 * @param name
+	 * @param value
+	 * @author vvakame
+	 */
+	private void setProperty(String name, Key value) {
 		propertyMap.put(name, value);
 	}
 }

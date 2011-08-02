@@ -170,7 +170,72 @@ public class BareSortUtilTest {
 		}
 	}
 
-	// TODO プロパティの要素がリストの場合のテストを追加
+	/**
+	 * Entityの昇順・降順ソートのテスト.
+	 * @author vvakame
+	 */
+	@Test
+	public void testEntitySort_any_types() {
+		List<Entity> entities = new ArrayList<Entity>();
+		entities.add(makeEntity("a", "k1", "a", null));
+		entities.add(makeEntity("a", "k2", "a", false));
+		entities.add(makeEntity("a", "k3", "a", true));
+		entities.add(makeEntity("a", "k4", "a", (byte) 1));
+		entities.add(makeEntity("a", "k5", "a", (short) 2));
+		entities.add(makeEntity("a", "k6", "a", 3));
+		List<Object> list = new ArrayList<Object>();
+		list.add(100);
+		list.add(4);
+		entities.add(makeEntity("a", "k7", "a", list));
+		entities.add(makeEntity("a", "k8", "a", (long) 5));
+		entities.add(makeEntity("a", "k9", "a", 6.6f));
+		entities.add(makeEntity("a", "kA", "a", 7.7));
+		entities.add(makeEntity("a", "kB", "a", "str"));
+		entities.add(makeEntity("a", "kC", "a", KeyUtil.createKey("z", "a")));
+		entities.add(makeEntity("a", "kD", "a", KeyUtil.createKey("z", "b")));
+
+		// stable sort...
+
+		BareSortUtil.sort(entities, new Sorter[] {
+			new PropertyDescSorter("a")
+		});
+		{
+			int i = 0;
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kD")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kC")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kB")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kA")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k9")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k8")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k7")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k6")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k5")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k4")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k1")));
+		}
+
+		BareSortUtil.sort(entities, new Sorter[] {
+			new PropertyAscSorter("a")
+		});
+		{
+			int i = 0;
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k1")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k4")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k5")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k6")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k7")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k8")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k9")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kA")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kB")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kC")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "kD")));
+		}
+	}
 
 	Key makeKey(String kind, String name) {
 		return KeyUtil.createKey(kind, name);
