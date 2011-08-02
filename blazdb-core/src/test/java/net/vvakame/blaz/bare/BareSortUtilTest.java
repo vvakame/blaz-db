@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.sorter.KeyAscSorter;
 import net.vvakame.blaz.sorter.KeyDescSorter;
@@ -30,66 +31,32 @@ public class BareSortUtilTest {
 	@Test
 	public void testKeySort() {
 		List<Entity> entities = new ArrayList<Entity>();
-		{
-			Entity entity = new Entity("a", "a");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("a", "b");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("a", "c");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("a");
-			entity.setKey(KeyUtil.createKey("a", 1));
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("a");
-			entity.setKey(KeyUtil.createKey("a", 2));
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b", "a");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b", "b");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b", "c");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b");
-			entity.setKey(KeyUtil.createKey("b", 1));
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b");
-			entity.setKey(KeyUtil.createKey("b", 2));
-			entities.add(entity);
-		}
+		entities.add(makeEntity("a", "a"));
+		entities.add(makeEntity("a", "b"));
+		entities.add(makeEntity("a", "c"));
+		entities.add(makeEntity("a", 1));
+		entities.add(makeEntity("a", 2));
+		entities.add(makeEntity("b", "a"));
+		entities.add(makeEntity("b", "b"));
+		entities.add(makeEntity("b", "c"));
+		entities.add(makeEntity("b", 1));
+		entities.add(makeEntity("b", 2));
 
 		BareSortUtil.sort(entities, new Sorter[] {
 			new KeyDescSorter()
 		});
 		{
 			int i = 0;
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", 2)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", 1)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", 2)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", 1)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "c")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "b")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "a")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", 2)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", 1)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "c")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "b")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "a")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", 2)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", 1)));
 		}
 
 		BareSortUtil.sort(entities, new Sorter[] {
@@ -97,16 +64,16 @@ public class BareSortUtilTest {
 		});
 		{
 			int i = 0;
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", 1)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", 2)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", 1)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", 2)));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "c")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", 1)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", 2)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "a")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "b")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "c")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", 1)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", 2)));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "a")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "b")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "c")));
 		}
 	}
 
@@ -117,48 +84,24 @@ public class BareSortUtilTest {
 	@Test
 	public void testEntitySort_normal() {
 		List<Entity> entities = new ArrayList<Entity>();
-		{
-			Entity entity = new Entity("a", "a");
-			entity.setProperty("a", null);
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("a", "b");
-			entity.setProperty("a", "a");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("a", "c");
-			entity.setProperty("a", "b");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b", "a");
-			entity.setProperty("a", null);
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b", "b");
-			entity.setProperty("a", "a");
-			entities.add(entity);
-		}
-		{
-			Entity entity = new Entity("b", "c");
-			entity.setProperty("a", "b");
-			entities.add(entity);
-		}
+		entities.add(makeEntity("a", "k1", "a", null));
+		entities.add(makeEntity("a", "k2", "a", "a"));
+		entities.add(makeEntity("a", "k3", "a", "b"));
+		entities.add(makeEntity("b", "k1", "a", null));
+		entities.add(makeEntity("b", "k2", "a", "a"));
+		entities.add(makeEntity("b", "k3", "a", "b"));
 
 		BareSortUtil.sort(entities, new Sorter[] {
 			new PropertyDescSorter("a")
 		});
 		{
 			int i = 0;
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "a")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k1")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k1")));
 		}
 
 		BareSortUtil.sort(entities, new Sorter[] {
@@ -166,12 +109,12 @@ public class BareSortUtilTest {
 		});
 		{
 			int i = 0;
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "c")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k1")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k1")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k3")));
 		}
 	}
 
@@ -182,15 +125,15 @@ public class BareSortUtilTest {
 	@Test
 	public void testEntitySort_string() {
 		List<Entity> entities = new ArrayList<Entity>();
-		entities.add(makeEntity("a", "a", "2"));
-		entities.add(makeEntity("a", "a", "c"));
-		entities.add(makeEntity("a", "a", "3"));
-		entities.add(makeEntity("a", "a", "b"));
-		entities.add(makeEntity("b", "a", "b"));
-		entities.add(makeEntity("a", "a", null));
-		entities.add(makeEntity("a", "a", "1"));
-		entities.add(makeEntity("a", "a", "a"));
-		entities.add(makeEntity("a", "a", "d"));
+		entities.add(makeEntity("a", "k3", "a", "2"));
+		entities.add(makeEntity("a", "k8", "a", "c"));
+		entities.add(makeEntity("a", "k4", "a", "3"));
+		entities.add(makeEntity("a", "k6", "a", "b"));
+		entities.add(makeEntity("b", "k7", "a", "b"));
+		entities.add(makeEntity("a", "k1", "a", null));
+		entities.add(makeEntity("a", "k2", "a", "1"));
+		entities.add(makeEntity("a", "k5", "a", "a"));
+		entities.add(makeEntity("a", "k9", "a", "d"));
 
 		// stable sort...
 
@@ -199,15 +142,15 @@ public class BareSortUtilTest {
 		});
 		{
 			int i = 0;
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "d")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "3")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "2")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "1")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "null")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k9")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k8")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k6")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k7")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k5")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k4")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k1")));
 		}
 
 		BareSortUtil.sort(entities, new Sorter[] {
@@ -215,21 +158,43 @@ public class BareSortUtilTest {
 		});
 		{
 			int i = 0;
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "null")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "1")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "2")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "3")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "a")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("b", "b")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "c")));
-			assertThat(entities.get(i++).getKey(), is(KeyUtil.createKey("a", "d")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k1")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k2")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k3")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k4")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k5")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k6")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("b", "k7")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k8")));
+			assertThat(entities.get(i++).getKey(), is(makeKey("a", "k9")));
 		}
 	}
 
-	Entity makeEntity(String kind, String name, Object value) {
-		Entity entity = new Entity(kind, String.valueOf(value));
-		entity.setProperty(name, value);
+	// TODO プロパティの要素がリストの場合のテストを追加
+
+	Key makeKey(String kind, String name) {
+		return KeyUtil.createKey(kind, name);
+	}
+
+	Key makeKey(String kind, long id) {
+		return KeyUtil.createKey(kind, id);
+	}
+
+	Entity makeEntity(String kind, String keyName) {
+		Entity entity = new Entity(kind, keyName);
+		return entity;
+	}
+
+	Entity makeEntity(String kind, long keyId) {
+		Entity entity = new Entity(kind);
+		entity.setKey(KeyUtil.createKey(kind, keyId));
+		return entity;
+	}
+
+	Entity makeEntity(String kind, String keyName, String propertyName, Object value) {
+		Key key = KeyUtil.createKey(kind, keyName);
+		Entity entity = new Entity(key);
+		entity.setProperty(propertyName, value);
 		return entity;
 	}
 }
