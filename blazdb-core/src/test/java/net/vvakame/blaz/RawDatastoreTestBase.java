@@ -10,6 +10,10 @@ import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.filter.KeyFilter;
 import net.vvakame.blaz.filter.KindFilter;
 import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.sorter.KeyAscSorter;
+import net.vvakame.blaz.sorter.KeyDescSorter;
+import net.vvakame.blaz.sorter.PropertyAscSorter;
+import net.vvakame.blaz.sorter.PropertyDescSorter;
 import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.Test;
@@ -1563,6 +1567,236 @@ public abstract class RawDatastoreTestBase {
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("fuga", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_sort_by_key() {
+		{
+			Entity entity = new Entity("hoge", "C");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "A");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "B");
+			kvs.put(entity);
+		}
+
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new KeyAscSorter()
+			});
+			assertThat(entities.get(0).getKey().getName(), is("A"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("C"));
+		}
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new KeyDescSorter()
+			});
+			assertThat(entities.get(0).getKey().getName(), is("C"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("A"));
+		}
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_sort_by_property_string() {
+		{
+			Entity entity = new Entity("hoge", "C");
+			entity.setProperty("a", "3");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "A");
+			entity.setProperty("a", "1");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "B");
+			entity.setProperty("a", "2");
+			kvs.put(entity);
+		}
+
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyAscSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("A"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("C"));
+		}
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyDescSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("C"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("A"));
+		}
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_sort_by_property_integer() {
+		{
+			Entity entity = new Entity("hoge", "C");
+			entity.setProperty("a", 3);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "A");
+			entity.setProperty("a", 1);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "B");
+			entity.setProperty("a", 2);
+			kvs.put(entity);
+		}
+
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyAscSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("A"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("C"));
+		}
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyDescSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("C"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("A"));
+		}
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_sort_by_property_real() {
+		{
+			Entity entity = new Entity("hoge", "C");
+			entity.setProperty("a", 3.3);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "A");
+			entity.setProperty("a", 1.1);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "B");
+			entity.setProperty("a", 2.2);
+			kvs.put(entity);
+		}
+
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyAscSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("A"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("C"));
+		}
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyDescSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("C"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("A"));
+		}
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_sort_by_property_boolean() {
+		{
+			Entity entity = new Entity("hoge", "A");
+			entity.setProperty("a", false);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "B");
+			entity.setProperty("a", true);
+			kvs.put(entity);
+		}
+
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyAscSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("A"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+		}
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyDescSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("B"));
+			assertThat(entities.get(1).getKey().getName(), is("A"));
+		}
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_sort_by_property_key() {
+		{
+			Entity entity = new Entity("hoge", "C");
+			entity.setProperty("a", KeyUtil.createKey("fuga", 3));
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "A");
+			entity.setProperty("a", KeyUtil.createKey("fuga", 1));
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "B");
+			entity.setProperty("a", KeyUtil.createKey("fuga", 2));
+			kvs.put(entity);
+		}
+
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyAscSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("A"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("C"));
+		}
+		{
+			List<Entity> entities = kvs.find(new Filter[] {}, new Sorter[] {
+				new PropertyDescSorter("a")
+			});
+			assertThat(entities.get(0).getKey().getName(), is("C"));
+			assertThat(entities.get(1).getKey().getName(), is("B"));
+			assertThat(entities.get(2).getKey().getName(), is("A"));
+		}
 	}
 
 	/**

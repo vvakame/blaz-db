@@ -153,7 +153,8 @@ public abstract class BareDatastore {
 	}
 
 	/**
-	 * 指定の条件に合致する {@link Entity} を探して返す
+	 * 指定の条件に合致する {@link Entity} を探した後、ソートして返す<br>
+	 * 同一プロパティに複数の型がある場合、異なる型の間のソート可否や、ソート順は保証されない.<br>
 	 * @param filters
 	 * @param sorters 
 	 * @return 見つかった {@link Entity}
@@ -162,7 +163,7 @@ public abstract class BareDatastore {
 	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
 		List<Entity> entities = find(filters);
 
-		// TODO ソートを実装すること
+		BareSortUtil.sort(entities, sorters);
 
 		return entities;
 	}
