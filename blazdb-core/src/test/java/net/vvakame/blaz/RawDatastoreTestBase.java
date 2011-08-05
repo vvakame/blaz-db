@@ -1487,6 +1487,47 @@ public abstract class RawDatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
+	public void find_from_list() {
+		{
+			Entity entity = new Entity("hoge", "piyo1");
+			List<String> list = new ArrayList<String>();
+			list.add("abc");
+			list.add("cde");
+			list.add("efg");
+			entity.setProperty("a", list);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo2");
+			List<String> list = new ArrayList<String>();
+			list.add("cde");
+			list.add("efg");
+			list.add("ghi");
+			entity.setProperty("a", list);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo3");
+			List<String> list = new ArrayList<String>();
+			list.add("efg");
+			list.add("ghi");
+			list.add("ijk");
+			entity.setProperty("a", list);
+			kvs.put(entity);
+		}
+		List<Entity> list = kvs.find(new PropertyFilter("a", FilterOption.EQ, "ghi"));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
 	public void find_all() {
 		{
 			Entity entity = new Entity("hoge", "piyo1");

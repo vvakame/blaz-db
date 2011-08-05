@@ -2,6 +2,7 @@ package net.vvakame.blaz.mock;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -206,6 +207,7 @@ public class MockKVS extends BareDatastore {
 		return newWorkingMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	Map<String, Map<Key, Entity>> getKindMapByProperty(Map<String, Map<Key, Entity>> workingMap,
 			CompareBlock cmp, String name, Object value) {
 
@@ -219,8 +221,16 @@ public class MockKVS extends BareDatastore {
 			for (Key key : kindMap.keySet()) {
 				Entity entity = kindMap.get(key);
 				Object tmpValue = entity.getProperty(name);
-				if (cmp.isComparePassage(value, tmpValue)) {
-					resultMap.put(key, entity);
+				if (tmpValue instanceof Collection) {
+					for (Object tmpValue2 : (Collection<Object>) tmpValue) {
+						if (cmp.isComparePassage(value, tmpValue2)) {
+							resultMap.put(key, entity);
+						}
+					}
+				} else {
+					if (cmp.isComparePassage(value, tmpValue)) {
+						resultMap.put(key, entity);
+					}
 				}
 			}
 			newWorkingMap.put(kind, resultMap);

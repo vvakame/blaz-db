@@ -45,23 +45,23 @@ class QueryBuilder {
 			+ COL_KIND + " = ?";
 
 	static final String SQL_PROPERTY_STR_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
+			+ " WHERE " + COL_TYPE + " IN (?, ?) AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
 			+ " = ?";
 
 	static final String SQL_PROPERTY_STR_GT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
+			+ " WHERE " + COL_TYPE + " IN (?, ?) AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
 			+ " > ?";
 
 	static final String SQL_PROPERTY_STR_GT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND "
+			+ TABLE_VALUES + " WHERE " + COL_TYPE + " IN (?, ?) AND " + COL_NAME + " = ? AND "
 			+ COL_VALUE_STRING + " >= ?";
 
 	static final String SQL_PROPERTY_STR_LT = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
-			+ " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
+			+ " WHERE " + COL_TYPE + " IN (?, ?) AND " + COL_NAME + " = ? AND " + COL_VALUE_STRING
 			+ " < ?";
 
 	static final String SQL_PROPERTY_STR_LT_EQ = "SELECT " + COL_KEY_STRING + " FROM "
-			+ TABLE_VALUES + " WHERE " + COL_TYPE + " = ? AND " + COL_NAME + " = ? AND "
+			+ TABLE_VALUES + " WHERE " + COL_TYPE + " IN (?, ?) AND " + COL_NAME + " = ? AND "
 			+ COL_VALUE_STRING + " <= ?";
 
 	static final String SQL_PROPERTY_INTEGER_EQ = "SELECT " + COL_KEY_STRING + " FROM "
@@ -229,6 +229,7 @@ class QueryBuilder {
 				throw new IllegalArgumentException();
 		}
 		args.add(T_KEY);
+		args.add(T_L_KEY);
 		args.add(name);
 		args.add(KeyUtil.keyToString((Key) obj));
 	}
@@ -256,6 +257,7 @@ class QueryBuilder {
 				throw new IllegalArgumentException();
 		}
 		args.add(T_STRING);
+		args.add(T_L_STRING);
 		args.add(name);
 		args.add((String) obj);
 	}
@@ -283,6 +285,7 @@ class QueryBuilder {
 				throw new IllegalArgumentException();
 		}
 		args.add(T_BOOLEAN);
+		args.add(T_L_BOOLEAN);
 		args.add(name);
 		if ((Boolean) obj) {
 			args.add(T_V_BOOLEAN_TRUE);
