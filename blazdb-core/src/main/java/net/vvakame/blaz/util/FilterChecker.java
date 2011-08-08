@@ -2,8 +2,8 @@ package net.vvakame.blaz.util;
 
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.bare.BareDatastore;
-import net.vvakame.blaz.filter.KeyFilter;
-import net.vvakame.blaz.filter.KindFilter;
+import net.vvakame.blaz.filter.AbstractKeyFilter;
+import net.vvakame.blaz.filter.KindEqFilter;
 
 /**
  * 発行可能な {@link Filter} の組み合わせについてチェックするユーティリティ.
@@ -32,7 +32,7 @@ public class FilterChecker {
 			if (hasKindFilter(filters)) {
 				int count = 0;
 				for (Filter filter : filters) {
-					if (filter instanceof KindFilter) {
+					if (filter instanceof KindEqFilter) {
 						count++;
 					}
 				}
@@ -44,7 +44,7 @@ public class FilterChecker {
 		{ // KeyFilter
 			if (hasKeyFilter(filters)) {
 				for (Filter filter : filters) {
-					if (filter instanceof KeyFilter == false) {
+					if (filter instanceof AbstractKeyFilter == false) {
 						return false;
 					}
 				}
@@ -57,7 +57,7 @@ public class FilterChecker {
 
 	static boolean hasKindFilter(Filter... filters) {
 		for (Filter filter : filters) {
-			if (filter instanceof KindFilter) {
+			if (filter instanceof KindEqFilter) {
 				return true;
 			}
 		}
@@ -66,7 +66,7 @@ public class FilterChecker {
 
 	static boolean hasKeyFilter(Filter... filters) {
 		for (Filter filter : filters) {
-			if (filter instanceof KeyFilter) {
+			if (filter instanceof AbstractKeyFilter) {
 				return true;
 			}
 		}

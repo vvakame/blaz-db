@@ -6,7 +6,7 @@ import net.vvakame.blaz.Filter;
  * Entityを検索するためのフィルタ
  * @author vvakame
  */
-public class KindFilter implements Filter {
+public class KindEqFilter implements Filter {
 
 	final static FilterTarget target = FilterTarget.KIND;
 
@@ -20,7 +20,7 @@ public class KindFilter implements Filter {
 	 * @param kind
 	 * @category constructor
 	 */
-	public KindFilter(String kind) {
+	public KindEqFilter(String kind) {
 		if (kind == null) {
 			throw new IllegalArgumentException("kind is required.");
 		}
@@ -44,6 +44,7 @@ public class KindFilter implements Filter {
 	}
 
 	@Override
+	@Deprecated
 	public Object getValue() {
 		throw new IllegalStateException("not supported!");
 	}

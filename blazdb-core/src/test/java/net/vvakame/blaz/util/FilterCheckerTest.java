@@ -1,12 +1,11 @@
 package net.vvakame.blaz.util;
 
 import net.vvakame.blaz.Filter;
-import net.vvakame.blaz.Filter.FilterOption;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.bare.BareDatastore;
-import net.vvakame.blaz.filter.KeyFilter;
-import net.vvakame.blaz.filter.KindFilter;
-import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.filter.KeyEqFilter;
+import net.vvakame.blaz.filter.KindEqFilter;
+import net.vvakame.blaz.filter.PropertyBooleanEqFilter;
 import net.vvakame.blaz.mock.MockKVS;
 
 import org.junit.Before;
@@ -41,10 +40,10 @@ public class FilterCheckerTest {
 	@Test
 	public void check_SingleKind() {
 		Key key = KeyUtil.createKey("hoge", 1);
-		Filter keyFilter = new KeyFilter(FilterOption.EQ, key);
-		Filter kindFilter1 = new KindFilter("hoge");
-		Filter kindFilter2 = new KindFilter("fuga");
-		Filter propertyFilter = new PropertyFilter("name", true);
+		Filter keyFilter = new KeyEqFilter(key);
+		Filter kindFilter1 = new KindEqFilter("hoge");
+		Filter kindFilter2 = new KindEqFilter("fuga");
+		Filter propertyFilter = new PropertyBooleanEqFilter("name", true);
 
 		assertThat(FilterChecker.check(kvs, kindFilter1), is(true));
 		assertThat(FilterChecker.check(kvs, kindFilter1, propertyFilter), is(true));
@@ -59,9 +58,9 @@ public class FilterCheckerTest {
 	@Test
 	public void check_KeyOnly() {
 		Key key = KeyUtil.createKey("hoge", 1);
-		Filter keyFilter = new KeyFilter(FilterOption.EQ, key);
-		Filter kindFilter = new KindFilter("hoge");
-		Filter propertyFilter = new PropertyFilter("name", true);
+		Filter keyFilter = new KeyEqFilter(key);
+		Filter kindFilter = new KindEqFilter("hoge");
+		Filter propertyFilter = new PropertyBooleanEqFilter("name", true);
 
 		assertThat(FilterChecker.check(kvs, keyFilter), is(true));
 		assertThat(FilterChecker.check(kvs, keyFilter, kindFilter), is(false));
@@ -75,17 +74,17 @@ public class FilterCheckerTest {
 	@Test
 	public void hasKindFilter() {
 		{
-			Filter filter = new KindFilter("hoge");
+			Filter filter = new KindEqFilter("hoge");
 			assertThat(FilterChecker.hasKindFilter(filter), is(true));
 		}
 		{
-			Filter filter1 = new KindFilter("hoge");
-			Filter filter2 = new PropertyFilter("name", true);
+			Filter filter1 = new KindEqFilter("hoge");
+			Filter filter2 = new PropertyBooleanEqFilter("name", true);
 			assertThat(FilterChecker.hasKindFilter(filter1, filter2), is(true));
 		}
 		{
-			Filter filter1 = new PropertyFilter("name", true);
-			Filter filter2 = new PropertyFilter("name", true);
+			Filter filter1 = new PropertyBooleanEqFilter("name", true);
+			Filter filter2 = new PropertyBooleanEqFilter("name", true);
 			assertThat(FilterChecker.hasKindFilter(filter1, filter2), is(false));
 		}
 	}
@@ -97,17 +96,17 @@ public class FilterCheckerTest {
 	@Test
 	public void hasKeyFilter() {
 		{
-			Filter filter = new KeyFilter(FilterOption.EQ, KeyUtil.createKey("hoge", 1));
+			Filter filter = new KeyEqFilter(KeyUtil.createKey("hoge", 1));
 			assertThat(FilterChecker.hasKeyFilter(filter), is(true));
 		}
 		{
-			Filter filter1 = new KeyFilter(FilterOption.EQ, KeyUtil.createKey("hoge", 1));
-			Filter filter2 = new PropertyFilter("name", true);
+			Filter filter1 = new KeyEqFilter(KeyUtil.createKey("hoge", 1));
+			Filter filter2 = new PropertyBooleanEqFilter("name", true);
 			assertThat(FilterChecker.hasKeyFilter(filter1, filter2), is(true));
 		}
 		{
-			Filter filter1 = new PropertyFilter("name", true);
-			Filter filter2 = new PropertyFilter("name", true);
+			Filter filter1 = new PropertyBooleanEqFilter("name", true);
+			Filter filter2 = new PropertyBooleanEqFilter("name", true);
 			assertThat(FilterChecker.hasKeyFilter(filter1, filter2), is(false));
 		}
 	}

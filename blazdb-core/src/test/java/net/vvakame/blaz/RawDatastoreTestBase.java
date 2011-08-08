@@ -4,12 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.vvakame.blaz.Filter.FilterOption;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.exception.EntityNotFoundException;
-import net.vvakame.blaz.filter.KeyFilter;
-import net.vvakame.blaz.filter.KindFilter;
-import net.vvakame.blaz.filter.PropertyFilter;
+import net.vvakame.blaz.filter.KeyEqFilter;
+import net.vvakame.blaz.filter.KeyGtEqFilter;
+import net.vvakame.blaz.filter.KeyGtFilter;
+import net.vvakame.blaz.filter.KeyInFilter;
+import net.vvakame.blaz.filter.KeyLtEqFilter;
+import net.vvakame.blaz.filter.KeyLtFilter;
+import net.vvakame.blaz.filter.KindEqFilter;
+import net.vvakame.blaz.filter.PropertyBooleanEqFilter;
+import net.vvakame.blaz.filter.PropertyIntegerEqFilter;
+import net.vvakame.blaz.filter.PropertyIntegerGtEqFilter;
+import net.vvakame.blaz.filter.PropertyIntegerGtFilter;
+import net.vvakame.blaz.filter.PropertyIntegerInFilter;
+import net.vvakame.blaz.filter.PropertyIntegerLtEqFilter;
+import net.vvakame.blaz.filter.PropertyIntegerLtFilter;
+import net.vvakame.blaz.filter.PropertyKeyEqFilter;
+import net.vvakame.blaz.filter.PropertyKeyGtEqFilter;
+import net.vvakame.blaz.filter.PropertyKeyGtFilter;
+import net.vvakame.blaz.filter.PropertyKeyInFilter;
+import net.vvakame.blaz.filter.PropertyKeyLtEqFilter;
+import net.vvakame.blaz.filter.PropertyKeyLtFilter;
+import net.vvakame.blaz.filter.PropertyRealEqFilter;
+import net.vvakame.blaz.filter.PropertyRealGtEqFilter;
+import net.vvakame.blaz.filter.PropertyRealGtFilter;
+import net.vvakame.blaz.filter.PropertyRealInFilter;
+import net.vvakame.blaz.filter.PropertyRealLtEqFilter;
+import net.vvakame.blaz.filter.PropertyRealLtFilter;
+import net.vvakame.blaz.filter.PropertyStringEqFilter;
+import net.vvakame.blaz.filter.PropertyStringGtEqFilter;
+import net.vvakame.blaz.filter.PropertyStringGtFilter;
+import net.vvakame.blaz.filter.PropertyStringInFilter;
+import net.vvakame.blaz.filter.PropertyStringLtEqFilter;
+import net.vvakame.blaz.filter.PropertyStringLtFilter;
 import net.vvakame.blaz.sorter.KeyAscSorter;
 import net.vvakame.blaz.sorter.KeyDescSorter;
 import net.vvakame.blaz.sorter.PropertyAscSorter;
@@ -452,7 +480,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new KindFilter("hoge"));
+		List<Entity> list = kvs.find(new KindEqFilter("hoge"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -495,12 +523,12 @@ public abstract class RawDatastoreTestBase {
 		List<Entity> list;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = kvs.find(new KeyFilter(FilterOption.EQ, key));
+		list = kvs.find(new KeyEqFilter(key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(key));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = kvs.find(new KeyFilter(FilterOption.EQ, key));
+		list = kvs.find(new KeyEqFilter(key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(key));
 	}
@@ -540,12 +568,12 @@ public abstract class RawDatastoreTestBase {
 		List<Entity> list;
 
 		key = KeyUtil.createKey("hoge", "1");
-		list = kvs.find(new KeyFilter(FilterOption.GT, key));
+		list = kvs.find(new KeyGtFilter(key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", "2")));
 
 		key = KeyUtil.createKey("hoge", 1);
-		list = kvs.find(new KeyFilter(FilterOption.GT, key));
+		list = kvs.find(new KeyGtFilter(key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", 2)));
 	}
@@ -596,7 +624,7 @@ public abstract class RawDatastoreTestBase {
 		Key key2;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = kvs.find(new KeyFilter(FilterOption.GT_EQ, key));
+		list = kvs.find(new KeyGtEqFilter(key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", "2");
@@ -605,7 +633,7 @@ public abstract class RawDatastoreTestBase {
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = kvs.find(new KeyFilter(FilterOption.GT_EQ, key));
+		list = kvs.find(new KeyGtEqFilter(key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", 2);
@@ -649,12 +677,12 @@ public abstract class RawDatastoreTestBase {
 		List<Entity> list;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = kvs.find(new KeyFilter(FilterOption.LT, key));
+		list = kvs.find(new KeyLtFilter(key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", "1")));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = kvs.find(new KeyFilter(FilterOption.LT, key));
+		list = kvs.find(new KeyLtFilter(key));
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(KeyUtil.createKey("hoge", 1)));
 	}
@@ -705,7 +733,7 @@ public abstract class RawDatastoreTestBase {
 		Key key2;
 
 		key = KeyUtil.createKey("hoge", "2");
-		list = kvs.find(new KeyFilter(FilterOption.LT_EQ, key));
+		list = kvs.find(new KeyLtEqFilter(key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", "1");
@@ -714,7 +742,7 @@ public abstract class RawDatastoreTestBase {
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 
 		key = KeyUtil.createKey("hoge", 2);
-		list = kvs.find(new KeyFilter(FilterOption.LT_EQ, key));
+		list = kvs.find(new KeyLtEqFilter(key));
 
 		assertThat(list.size(), is(2));
 		key1 = KeyUtil.createKey("hoge", 1);
@@ -750,12 +778,12 @@ public abstract class RawDatastoreTestBase {
 		key1 = KeyUtil.createKey("hoge", "1");
 		key2 = KeyUtil.createKey("hoge", "2");
 
-		list = kvs.find(new KeyFilter(FilterOption.IN, key1));
+		list = kvs.find(new KeyInFilter(key1));
 
 		assertThat(list.size(), is(1));
 		assertThat(list.get(0).getKey(), is(key1));
 
-		list = kvs.find(new KeyFilter(FilterOption.IN, key1, key2));
+		list = kvs.find(new KeyInFilter(key1, key2));
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
@@ -782,7 +810,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value2");
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, "value2"));
+		List<Entity> list = kvs.find(new PropertyStringEqFilter("key", "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -815,8 +843,8 @@ public abstract class RawDatastoreTestBase {
 			kvs.put(entity);
 		}
 		List<Entity> list =
-				kvs.find(new PropertyFilter("name1", FilterOption.EQ, "value2"),
-						new PropertyFilter("name2", FilterOption.EQ, "value1"));
+				kvs.find(new PropertyStringEqFilter("name1", "value2"), new PropertyStringEqFilter(
+						"name2", "value1"));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -843,7 +871,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", false);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, true));
+		List<Entity> list = kvs.find(new PropertyBooleanEqFilter("key", true));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -876,8 +904,8 @@ public abstract class RawDatastoreTestBase {
 			kvs.put(entity);
 		}
 		List<Entity> list =
-				kvs.find(new PropertyFilter("name1", FilterOption.EQ, true), new PropertyFilter(
-						"name2", FilterOption.EQ, false));
+				kvs.find(new PropertyBooleanEqFilter("name1", true), new PropertyBooleanEqFilter(
+						"name2", false));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -904,7 +932,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 2);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, 1));
+		List<Entity> list = kvs.find(new PropertyIntegerEqFilter("key", 1));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -937,8 +965,8 @@ public abstract class RawDatastoreTestBase {
 			kvs.put(entity);
 		}
 		List<Entity> list =
-				kvs.find(new PropertyFilter("name1", FilterOption.EQ, 1), new PropertyFilter(
-						"name2", FilterOption.EQ, 3));
+				kvs.find(new PropertyIntegerEqFilter("name1", 1), new PropertyIntegerEqFilter(
+						"name2", 3));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -965,7 +993,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, 1.3));
+		List<Entity> list = kvs.find(new PropertyRealEqFilter("key", 1.3));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -998,8 +1026,8 @@ public abstract class RawDatastoreTestBase {
 			kvs.put(entity);
 		}
 		List<Entity> list =
-				kvs.find(new PropertyFilter("name1", FilterOption.EQ, 1.1), new PropertyFilter(
-						"name2", FilterOption.EQ, 1.3));
+				kvs.find(new PropertyRealEqFilter("name1", 1.1), new PropertyRealEqFilter("name2",
+						1.3));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1027,7 +1055,7 @@ public abstract class RawDatastoreTestBase {
 			kvs.put(entity);
 		}
 		Key key = KeyUtil.createKey("a", "B");
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.EQ, key));
+		List<Entity> list = kvs.find(new PropertyKeyEqFilter("key", key));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1061,8 +1089,8 @@ public abstract class RawDatastoreTestBase {
 		}
 		// same cond
 		List<Entity> list =
-				kvs.find(new PropertyFilter("key1", FilterOption.EQ, KeyUtil.createKey("a", "B")),
-						new PropertyFilter("key2", FilterOption.EQ, KeyUtil.createKey("a", 2)));
+				kvs.find(new PropertyKeyEqFilter("key1", KeyUtil.createKey("a", "B")),
+						new PropertyKeyEqFilter("key2", KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1089,7 +1117,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT, "value2"));
+		List<Entity> list = kvs.find(new PropertyStringGtFilter("key", "value2"));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1116,7 +1144,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT, 2));
+		List<Entity> list = kvs.find(new PropertyIntegerGtFilter("key", 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1143,7 +1171,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT, 1.2));
+		List<Entity> list = kvs.find(new PropertyRealGtFilter("key", 1.2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1170,8 +1198,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
-		List<Entity> list =
-				kvs.find(new PropertyFilter("key", FilterOption.GT, KeyUtil.createKey("a", 2)));
+		List<Entity> list = kvs.find(new PropertyKeyGtFilter("key", KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1198,7 +1225,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, "value2"));
+		List<Entity> list = kvs.find(new PropertyStringGtEqFilter("key", "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1227,7 +1254,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, 2));
+		List<Entity> list = kvs.find(new PropertyIntegerGtEqFilter("key", 2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1256,7 +1283,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, 1.2));
+		List<Entity> list = kvs.find(new PropertyRealGtEqFilter("key", 1.2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1285,8 +1312,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
-		List<Entity> list =
-				kvs.find(new PropertyFilter("key", FilterOption.GT_EQ, KeyUtil.createKey("a", 2)));
+		List<Entity> list = kvs.find(new PropertyKeyGtEqFilter("key", KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1315,7 +1341,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT, "value2"));
+		List<Entity> list = kvs.find(new PropertyStringLtFilter("key", "value2"));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1342,7 +1368,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT, 2));
+		List<Entity> list = kvs.find(new PropertyIntegerLtFilter("key", 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1369,7 +1395,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT, 1.2));
+		List<Entity> list = kvs.find(new PropertyRealLtFilter("key", 1.2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1396,8 +1422,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
-		List<Entity> list =
-				kvs.find(new PropertyFilter("key", FilterOption.LT, KeyUtil.createKey("a", 2)));
+		List<Entity> list = kvs.find(new PropertyKeyLtFilter("key", KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -1424,7 +1449,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, "value2"));
+		List<Entity> list = kvs.find(new PropertyStringLtEqFilter("key", "value2"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1453,7 +1478,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, 2));
+		List<Entity> list = kvs.find(new PropertyIntegerLtEqFilter("key", 2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1482,7 +1507,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 1.3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, 1.2));
+		List<Entity> list = kvs.find(new PropertyRealLtEqFilter("key", 1.2));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1511,8 +1536,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", KeyUtil.createKey("a", 3));
 			kvs.put(entity);
 		}
-		List<Entity> list =
-				kvs.find(new PropertyFilter("key", FilterOption.LT_EQ, KeyUtil.createKey("a", 2)));
+		List<Entity> list = kvs.find(new PropertyKeyLtEqFilter("key", KeyUtil.createKey("a", 2)));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1541,8 +1565,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", "value3");
 			kvs.put(entity);
 		}
-		List<Entity> list =
-				kvs.find(new PropertyFilter("key", FilterOption.IN, "value2", "value3"));
+		List<Entity> list = kvs.find(new PropertyStringInFilter("key", "value2", "value3"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1571,7 +1594,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 3);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.IN, 1L, 2L));
+		List<Entity> list = kvs.find(new PropertyIntegerInFilter("key", 1L, 2L));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
@@ -1600,7 +1623,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("key", 1.5);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.IN, 1.3, 1.5));
+		List<Entity> list = kvs.find(new PropertyRealInFilter("key", 1.3, 1.5));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1631,7 +1654,7 @@ public abstract class RawDatastoreTestBase {
 		}
 		Key keyA = KeyUtil.createKey("a", "B");
 		Key keyB = KeyUtil.createKey("a", "C");
-		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.IN, keyA, keyB));
+		List<Entity> list = kvs.find(new PropertyKeyInFilter("key", keyA, keyB));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1672,7 +1695,7 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("a", list);
 			kvs.put(entity);
 		}
-		List<Entity> list = kvs.find(new PropertyFilter("a", FilterOption.EQ, "ghi"));
+		List<Entity> list = kvs.find(new PropertyStringEqFilter("a", "ghi"));
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo2");
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
@@ -1760,8 +1783,8 @@ public abstract class RawDatastoreTestBase {
 		}
 
 		List<Entity> list =
-				kvs.find(new KindFilter("fuga"), new PropertyFilter("real", FilterOption.EQ, 1.2),
-						new PropertyFilter("int", FilterOption.EQ, 2));
+				kvs.find(new KindEqFilter("fuga"), new PropertyRealEqFilter("real", 1.2),
+						new PropertyIntegerEqFilter("int", 2));
 		assertThat(list.size(), is(1));
 		Key key1 = KeyUtil.createKey("fuga", "piyo2");
 		assertThat(list.get(0).getKey(), is(key1));
@@ -2062,7 +2085,7 @@ public abstract class RawDatastoreTestBase {
 	@Test
 	public void checkFilter_ok() {
 		kvs.setCheckFilter(true);
-		kvs.find(new KindFilter("hoge"), new PropertyFilter("fuga", true));
+		kvs.find(new KindEqFilter("hoge"), new PropertyBooleanEqFilter("fuga", true));
 	}
 
 	/**
@@ -2072,7 +2095,7 @@ public abstract class RawDatastoreTestBase {
 	@Test(expected = IllegalArgumentException.class)
 	public void checkFilter_ng() {
 		kvs.setCheckFilter(true);
-		kvs.find(new KindFilter("hoge"), new KindFilter("fuga"));
+		kvs.find(new KindEqFilter("hoge"), new KindEqFilter("fuga"));
 	}
 
 	/**
