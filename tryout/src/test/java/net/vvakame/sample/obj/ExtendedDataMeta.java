@@ -1,5 +1,7 @@
 package net.vvakame.sample.obj;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +12,13 @@ import net.vvakame.sample.KeyAttributeMeta;
 import net.vvakame.sample.ModelMeta;
 import net.vvakame.sample.PropertyAttributeMeta;
 
+/**
+ * {@link ExtendedData} の {@link ModelMeta} の実装.
+ * @author vvakame
+ */
 public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 
-	static final String KIND = "TestData";
+	static final String KIND = "RootData";
 
 	static final ExtendedDataMeta singleton = new ExtendedDataMeta();
 
@@ -28,9 +34,14 @@ public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 
 
 	protected ExtendedDataMeta() {
-		super();
+		super(RootDataMeta.get());
 	}
 
+	/**
+	 * {@link ExtendedData} の {@link ModelMeta} を取得する.
+	 * @return {@link ExtendedData} の {@link ModelMeta}
+	 * @author vvakame
+	 */
 	public static ExtendedDataMeta get() {
 		return singleton;
 	}
@@ -79,6 +90,13 @@ public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 		} else {
 			entity.setProperty("date", tmp.getTime());
 		}
+		entity.setProperty("booleanData", model.isBooleanData());
+		entity.setProperty("byteData", model.getByteData());
+		entity.setProperty("shortData", model.getShortData());
+		entity.setProperty("longData", model.getLongData());
+		entity.setProperty("floatData", model.getFloatData());
+		entity.setProperty("doubleData", model.getDoubleData());
+		entity.setProperty("list", model.getList());
 
 		return entity;
 	}
@@ -112,11 +130,50 @@ public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 		Key key = entity.getKey();
 		ExtendedData model = new ExtendedData();
 		setKey(model, key);
-		model.setStr((String) entity.getProperty("str"));
-		model.setInteger((int) (long) (Long) entity.getProperty("integer"));
-		Long tmp = (Long) entity.getProperty("date");
-		if (tmp != null) {
-			model.setDate(new Date(tmp));
+
+		if (entity.hasProperty("str")) {
+			model.setStr(entity.<String> getProperty("str"));
+		}
+		if (entity.hasProperty("integer")) {
+			Long val = entity.<Long> getProperty("integer");
+			model.setInteger(val.intValue());
+		}
+		if (entity.hasProperty("date")) {
+			Long val = entity.<Long> getProperty("date");
+			if (val != null) {
+				model.setDate(new Date(val));
+			} else {
+				model.setDate(null);
+			}
+		}
+		if (entity.hasProperty("booleanData")) {
+			Boolean val = entity.<Boolean> getProperty("booleanData");
+			model.setBooleanData(val);
+		}
+		if (entity.hasProperty("byteData")) {
+			Long val = entity.<Long> getProperty("byteData");
+			model.setByteData(val.byteValue());
+		}
+		if (entity.hasProperty("shortData")) {
+			Long val = entity.<Long> getProperty("shortData");
+			model.setShortData(val.shortValue());
+		}
+		if (entity.hasProperty("longData")) {
+			Long val = entity.<Long> getProperty("longData");
+			model.setLongData(val);
+		}
+		if (entity.hasProperty("floatData")) {
+			Double val = entity.<Double> getProperty("floatData");
+			model.setFloatData(val.floatValue());
+		}
+		if (entity.hasProperty("doubleData")) {
+			Double val = entity.<Double> getProperty("doubleData");
+			model.setDoubleData(val);
+		}
+		if (entity.hasProperty("list")) {
+			Collection<String> val = entity.<Collection<String>> getProperty("list");
+			List<String> list = new ArrayList<String>(val);
+			model.setList(list);
 		}
 
 		return model;

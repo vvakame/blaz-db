@@ -28,7 +28,7 @@ public class RootDataMeta extends ModelMeta<RootData> {
 
 
 	protected RootDataMeta() {
-		super();
+		super(null);
 	}
 
 	public static RootDataMeta get() {

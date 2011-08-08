@@ -27,13 +27,21 @@ public abstract class ModelMeta<M> {
 
 
 	protected ModelMeta() {
+		init(null);
+	}
+
+	protected ModelMeta(ModelMeta<?> meta) {
+		init(meta);
+	}
+
+	private void init(ModelMeta<?> meta) {
 		DatastoreUtil.modelMetaCache.put(getModelClass().getCanonicalName(), this);
 
-		if (classHierarchyList == null) {
+		if (meta == null || meta.classHierarchyList == null) {
 			classHierarchyList = Collections.unmodifiableList(new ArrayList<String>());
 		} else {
 			List<String> list = new ArrayList<String>();
-			list.addAll(classHierarchyList);
+			list.addAll(meta.classHierarchyList);
 			list.add(getModelName());
 			classHierarchyList = Collections.unmodifiableList(list);
 		}

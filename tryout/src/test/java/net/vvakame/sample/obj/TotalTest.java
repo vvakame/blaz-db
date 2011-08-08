@@ -1,5 +1,6 @@
 package net.vvakame.sample.obj;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,14 +22,81 @@ import static org.hamcrest.CoreMatchers.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * {@link Datastore} の全体的なテスト.
+ * @author vvakame
+ */
 @RunWith(RobolectricTestRunner.class)
-public class RootDataTest {
+public class TotalTest {
 
 	private static final RootDataMeta META = RootDataMeta.get();
+
+	private static final ExtendedDataMeta EXT_META = ExtendedDataMeta.get();
 
 	BareDatastore kvs;
 
 
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
+	@Test
+	public void test_extended() {
+		Key key = KeyUtil.createKey(META.getKind(), "a");
+		Date at = new Date();
+		{
+			ExtendedData model = new ExtendedData();
+			model.setKey(key);
+			model.setStr("str");
+			model.setDate(at);
+			model.setBooleanData(true);
+			model.setByteData((byte) 1);
+			model.setShortData((short) 2);
+			model.setInteger(3);
+			model.setLongData(4);
+			model.setFloatData(5.5f);
+			model.setDoubleData(6.75);
+			List<String> list = new ArrayList<String>();
+			list.add("hoge");
+			list.add("fuga");
+			list.add("piyo");
+			model.setList(list);
+			Datastore.put(model);
+		}
+		{
+			List<ExtendedData> list = Datastore.query(EXT_META).asList();
+			assertThat(list.size(), is(1));
+			ExtendedData model = list.get(0);
+			assertThat(model.getKey(), is(key));
+			assertThat(model.getStr(), is("str"));
+			assertThat(model.getDate(), is(at));
+			assertThat(model.isBooleanData(), is(true));
+			assertThat(model.getByteData(), is((byte) 1));
+			assertThat(model.getShortData(), is((short) 2));
+			assertThat(model.getInteger(), is(3));
+			assertThat(model.getLongData(), is(4L));
+			assertThat(model.getFloatData(), is(5.5f));
+			assertThat(model.getDoubleData(), is(6.75));
+			assertThat(model.getList().get(0), is("hoge"));
+			assertThat(model.getList().get(1), is("fuga"));
+			assertThat(model.getList().get(2), is("piyo"));
+		}
+		{
+			List<RootData> list = Datastore.query(META).asList();
+			assertThat(list.size(), is(1));
+			RootData model = list.get(0);
+			assertThat(model, instanceOf(ExtendedData.class));
+			assertThat(model.getKey(), is(key));
+			assertThat(model.getStr(), is("str"));
+			assertThat(model.getDate(), is(at));
+			assertThat(model.getInteger(), is(3));
+		}
+	}
+
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
 	@Test
 	public void testEqualCriteria() {
 		Date at = new Date();
@@ -68,9 +136,12 @@ public class RootDataTest {
 		assertThat(list.size(), is(1));
 	}
 
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
 	@Test
 	public void testKeyAttributeMeta() {
-		Date at = new Date();
 		{
 			RootData model = new RootData();
 			model.setKey(KeyUtil.createKey(META.getKind(), "a"));
@@ -112,6 +183,10 @@ public class RootDataTest {
 		}
 	}
 
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
 	@Test
 	public void testPropertySorter() {
 		{
@@ -163,6 +238,10 @@ public class RootDataTest {
 		}
 	}
 
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
 	@Test
 	public void testKeySorter() {
 		{
@@ -206,6 +285,10 @@ public class RootDataTest {
 		}
 	}
 
+	/**
+	 * 動作確認
+	 * @author vvakame
+	 */
 	@Before
 	public void setUp() {
 		ShadowApplication application = Robolectric.getShadowApplication();
