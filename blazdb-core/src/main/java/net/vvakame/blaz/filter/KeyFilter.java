@@ -15,6 +15,8 @@ public class KeyFilter implements Filter {
 
 	Key key;
 
+	Key[] keys;
+
 
 	/**
 	 * the constructor.
@@ -31,6 +33,23 @@ public class KeyFilter implements Filter {
 
 		this.option = option;
 		this.key = key;
+	}
+
+	/**
+	 * the constructor.
+	 * @param option
+	 * @param keys
+	 * @category constructor
+	 */
+	public KeyFilter(FilterOption option, Key... keys) {
+		if (option != FilterOption.IN) {
+			throw new IllegalArgumentException("FilterOption is required.");
+		} else if (keys == null || keys.length == 0) {
+			throw new IllegalArgumentException("value is required.");
+		}
+
+		this.option = option;
+		this.keys = keys;
 	}
 
 	@Override
@@ -50,6 +69,6 @@ public class KeyFilter implements Filter {
 
 	@Override
 	public Object getValue() {
-		return key;
+		return key != null ? key : keys;
 	}
 }

@@ -1,5 +1,8 @@
 package net.vvakame.blaz.filter;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 
@@ -129,6 +132,44 @@ public class PropertyFilter implements Filter {
 		this.option = option;
 		this.name = name;
 		this.value = value;
+	}
+
+	/**
+	 * the constructor.
+	 * @param name 
+	 * @param option
+	 * @param value
+	 * @category constructor
+	 */
+	public PropertyFilter(String name, FilterOption option, List<Object> value) {
+		if (option != FilterOption.IN) {
+			throw new IllegalArgumentException("FilterOption is must be IN.");
+		} else if (name == null) {
+			throw new IllegalArgumentException("name is required.");
+		}
+
+		this.option = option;
+		this.name = name;
+		this.value = value;
+	}
+
+	/**
+	 * the constructor.
+	 * @param name 	
+	 * @param option
+	 * @param values
+	 * @category constructor
+	 */
+	public PropertyFilter(String name, FilterOption option, Object... values) {
+		if (option != FilterOption.IN) {
+			throw new IllegalArgumentException("FilterOption is must be IN.");
+		} else if (name == null) {
+			throw new IllegalArgumentException("name is required.");
+		}
+
+		this.option = option;
+		this.name = name;
+		this.value = Arrays.asList(values);
 	}
 
 	@Override

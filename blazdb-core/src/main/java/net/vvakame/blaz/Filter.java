@@ -34,6 +34,8 @@ public interface Filter {
 		GT_EQ,
 		/** より小さいか、等しい */
 		LT_EQ,
+		/** 指定された何かに当てはまる */
+		IN,
 	}
 
 

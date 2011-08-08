@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
@@ -124,6 +126,7 @@ public class MockKVS extends BareDatastore {
 		getKindMap(key).remove(key);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Key> findAsKey(Filter... filters) {
 		if (checkFilter && !FilterChecker.check(this, filters)) {
@@ -138,18 +141,56 @@ public class MockKVS extends BareDatastore {
 			} else if (filter instanceof KeyFilter) {
 				KeyFilter keyFilter = (KeyFilter) filter;
 
-				Key key = (Key) keyFilter.getValue();
-				CompareBlock cmp = getCompareBlock(keyFilter.getOption());
+				Object value = keyFilter.getValue();
+				if (value instanceof Key) {
+					Key key = (Key) value;
 
-				workingMap = getKindMapByKey(workingMap, cmp, key);
+					CompareBlock cmp = getCompareBlock(keyFilter.getOption());
+					workingMap = getKindMapByKey(workingMap, cmp, key);
+				} else if (value instanceof Key[]) {
+					Key[] keys = (Key[]) value;
+
+					if (keyFilter.getOption() != FilterOption.IN) {
+						throw new IllegalArgumentException();
+					}
+					CompareBlock cmp = getCompareBlock(FilterOption.EQ);
+					Map<String, Map<Key, Entity>> tmpMap1 = new HashMap<String, Map<Key, Entity>>();
+					for (Key key : keys) {
+						Map<String, Map<Key, Entity>> tmpMap2 =
+								getKindMapByKey(workingMap, cmp, key);
+						tmpMap1 = margeKindMap(tmpMap1, tmpMap2);
+					}
+					workingMap = tmpMap1;
+				} else {
+					throw new IllegalArgumentException();
+				}
+
 			} else if (filter instanceof PropertyFilter) {
 				PropertyFilter propertyFilter = (PropertyFilter) filter;
 
 				String name = propertyFilter.getName();
-				Object value = propertyFilter.getValue();
-				CompareBlock cmp = getCompareBlock(propertyFilter.getOption());
+				if (filter.getOption() != FilterOption.IN) {
+					Object value = propertyFilter.getValue();
+					CompareBlock cmp = getCompareBlock(propertyFilter.getOption());
 
-				workingMap = getKindMapByProperty(workingMap, cmp, name, value);
+					workingMap = getKindMapByProperty(workingMap, cmp, name, value);
+				} else {
+					CompareBlock cmp = getCompareBlock(FilterOption.EQ);
+					if (propertyFilter.getValue() instanceof Collection) {
+						Map<String, Map<Key, Entity>> tmpMap1 =
+								new HashMap<String, Map<Key, Entity>>();
+						for (Object value : (List<Object>) propertyFilter.getValue()) {
+							Map<String, Map<Key, Entity>> tmpMap2 =
+									getKindMapByProperty(workingMap, cmp, name, value);
+							tmpMap1 = margeKindMap(tmpMap1, tmpMap2);
+						}
+						workingMap = tmpMap1;
+					} else {
+						Object value = propertyFilter.getValue();
+
+						workingMap = getKindMapByProperty(workingMap, cmp, name, value);
+					}
+				}
 			}
 		}
 
@@ -173,6 +214,10 @@ public class MockKVS extends BareDatastore {
 				break;
 			case LT_EQ:
 				cmp = CMP_LT_EQ;
+				break;
+			case IN:
+				// EQを複数回回してINを実現する
+				cmp = CMP_EQ;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -234,6 +279,32 @@ public class MockKVS extends BareDatastore {
 				}
 			}
 			newWorkingMap.put(kind, resultMap);
+		}
+
+		return newWorkingMap;
+	}
+
+	Map<String, Map<Key, Entity>> margeKindMap(Map<String, Map<Key, Entity>> mapA,
+			Map<String, Map<Key, Entity>> mapB) {
+
+		Map<String, Map<Key, Entity>> newWorkingMap = new HashMap<String, Map<Key, Entity>>();
+
+		Set<String> kindSet = new HashSet<String>();
+		for (String kind : mapA.keySet()) {
+			kindSet.add(kind);
+		}
+		for (String kind : mapB.keySet()) {
+			kindSet.add(kind);
+		}
+		for (String kind : kindSet) {
+			Map<Key, Entity> map = new HashMap<Key, Entity>();
+			newWorkingMap.put(kind, map);
+			if (mapA.containsKey(kind)) {
+				map.putAll(mapA.get(kind));
+			}
+			if (mapB.containsKey(kind)) {
+				map.putAll(mapB.get(kind));
+			}
 		}
 
 		return newWorkingMap;

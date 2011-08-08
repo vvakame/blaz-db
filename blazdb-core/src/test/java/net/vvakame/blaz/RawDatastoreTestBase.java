@@ -728,6 +728,44 @@ public abstract class RawDatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
+	public void find_Key_IN_filter() {
+		{
+			Entity entity = new Entity("hoge", "1");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "2");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "3");
+			kvs.put(entity);
+		}
+
+		List<Entity> list;
+
+		Key key1;
+		Key key2;
+
+		key1 = KeyUtil.createKey("hoge", "1");
+		key2 = KeyUtil.createKey("hoge", "2");
+
+		list = kvs.find(new KeyFilter(FilterOption.IN, key1));
+
+		assertThat(list.size(), is(1));
+		assertThat(list.get(0).getKey(), is(key1));
+
+		list = kvs.find(new KeyFilter(FilterOption.IN, key1, key2));
+		assertThat(list.size(), is(2));
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
 	public void find_string_PROPERTY_EQ_single_filter() {
 		{
 			Entity entity = new Entity("hoge", "piyo1");
@@ -1478,6 +1516,125 @@ public abstract class RawDatastoreTestBase {
 		assertThat(list.size(), is(2));
 		Key key1 = KeyUtil.createKey("hoge", "piyo1");
 		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_string_PROPERTY_IN_single_filter() {
+		{
+			Entity entity = new Entity("hoge", "piyo1");
+			entity.setProperty("key", "value1");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo2");
+			entity.setProperty("key", "value2");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo3");
+			entity.setProperty("key", "value3");
+			kvs.put(entity);
+		}
+		List<Entity> list =
+				kvs.find(new PropertyFilter("key", FilterOption.IN, "value2", "value3"));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_integer_PROPERTY_IN_single_filter() {
+		{
+			Entity entity = new Entity("hoge", "piyo1");
+			entity.setProperty("key", 1);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo2");
+			entity.setProperty("key", 2);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo3");
+			entity.setProperty("key", 3);
+			kvs.put(entity);
+		}
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.IN, 1L, 2L));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo1");
+		Key key2 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_real_PROPERTY_IN_single_filter() {
+		{
+			Entity entity = new Entity("hoge", "piyo1");
+			entity.setProperty("key", 1.1);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo2");
+			entity.setProperty("key", 1.3);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo3");
+			entity.setProperty("key", 1.5);
+			kvs.put(entity);
+		}
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.IN, 1.3, 1.5));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
+		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
+		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_key_PROPERTY_IN_single_filter() {
+		{
+			Entity entity = new Entity("hoge", "piyo1");
+			entity.setProperty("key", KeyUtil.createKey("a", "A"));
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo2");
+			entity.setProperty("key", KeyUtil.createKey("a", "B"));
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo3");
+			entity.setProperty("key", KeyUtil.createKey("a", "C"));
+			kvs.put(entity);
+		}
+		Key keyA = KeyUtil.createKey("a", "B");
+		Key keyB = KeyUtil.createKey("a", "C");
+		List<Entity> list = kvs.find(new PropertyFilter("key", FilterOption.IN, keyA, keyB));
+		assertThat(list.size(), is(2));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		Key key2 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
 	}
