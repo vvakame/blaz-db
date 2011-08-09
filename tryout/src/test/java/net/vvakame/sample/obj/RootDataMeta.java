@@ -5,11 +5,17 @@ import java.util.List;
 
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
+import net.vvakame.sample.Datastore;
 import net.vvakame.sample.DatastoreUtil;
 import net.vvakame.sample.KeyAttributeMeta;
 import net.vvakame.sample.ModelMeta;
 import net.vvakame.sample.PropertyAttributeMeta;
 
+/**
+ * {@link RootData} の {@link ModelMeta} 表現.<br>
+ * {@link Datastore} の各種メソッドに対して渡して利用する.
+ * @author vvakame
+ */
 public class RootDataMeta extends ModelMeta<RootData> {
 
 	static final String KIND = "RootData";
@@ -31,6 +37,11 @@ public class RootDataMeta extends ModelMeta<RootData> {
 		super(null);
 	}
 
+	/**
+	 * {@link RootDataMeta} のインスタンスを取得する.
+	 * @return {@link RootDataMeta} のインスタンスを取得する.
+	 * @author vvakame
+	 */
 	public static RootDataMeta get() {
 		return singleton;
 	}

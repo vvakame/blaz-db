@@ -7,13 +7,15 @@ import java.util.List;
 
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
+import net.vvakame.sample.Datastore;
 import net.vvakame.sample.DatastoreUtil;
 import net.vvakame.sample.KeyAttributeMeta;
 import net.vvakame.sample.ModelMeta;
 import net.vvakame.sample.PropertyAttributeMeta;
 
 /**
- * {@link ExtendedData} の {@link ModelMeta} の実装.
+ * {@link ExtendedData} の {@link ModelMeta} 表現.<br>
+ * {@link Datastore} の各種メソッドに対して渡して利用する.
  * @author vvakame
  */
 public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
@@ -38,8 +40,8 @@ public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 	}
 
 	/**
-	 * {@link ExtendedData} の {@link ModelMeta} を取得する.
-	 * @return {@link ExtendedData} の {@link ModelMeta}
+	 * {@link RootDataMeta} のインスタンスを取得する.
+	 * @return {@link RootDataMeta} のインスタンスを取得する.
 	 * @author vvakame
 	 */
 	public static ExtendedDataMeta get() {

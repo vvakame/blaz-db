@@ -3,6 +3,10 @@ package net.vvakame.sample.obj;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * テスト用クラス
+ * @author vvakame
+ */
 public class ExtendedData extends RootData {
 
 	byte byteData;
