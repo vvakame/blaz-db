@@ -18,7 +18,7 @@ import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.shadows.ShadowApplication;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 import static org.junit.Assert.*;
 
@@ -180,6 +180,42 @@ public class TotalTest {
 			list = Datastore.query(META).filter(META.key.lessThan(key)).asList();
 			assertThat(list.size(), is(1));
 			assertThat(list.get(0).getKey(), is(targetKey));
+		}
+		{
+			Key targetKey = KeyUtil.createKey(META.getKind(), "a");
+			list = Datastore.query(META).filter(META.key.lessThan(key)).asList();
+			assertThat(list.size(), is(1));
+			assertThat(list.get(0).getKey(), is(targetKey));
+		}
+		{
+			Key targetKey = KeyUtil.createKey(META.getKind(), "a");
+			list = Datastore.query(META).filter(META.key.lessThan(key)).asList();
+			assertThat(list.size(), is(1));
+			assertThat(list.get(0).getKey(), is(targetKey));
+		}
+		{
+			Key targetKey1 = KeyUtil.createKey(META.getKind(), "b");
+			Key targetKey2 = KeyUtil.createKey(META.getKind(), "c");
+			list = Datastore.query(META).filter(META.key.greaterThanOrEqual(key)).asList();
+			assertThat(list.size(), is(2));
+			assertThat(list.get(0).getKey(), isOneOf(targetKey1, targetKey2));
+			assertThat(list.get(1).getKey(), isOneOf(targetKey1, targetKey2));
+		}
+		{
+			Key targetKey1 = KeyUtil.createKey(META.getKind(), "a");
+			Key targetKey2 = KeyUtil.createKey(META.getKind(), "b");
+			list = Datastore.query(META).filter(META.key.lessThanOrEqual(key)).asList();
+			assertThat(list.size(), is(2));
+			assertThat(list.get(0).getKey(), isOneOf(targetKey1, targetKey2));
+			assertThat(list.get(1).getKey(), isOneOf(targetKey1, targetKey2));
+		}
+		{
+			Key targetKey1 = KeyUtil.createKey(META.getKind(), "a");
+			Key targetKey2 = KeyUtil.createKey(META.getKind(), "c");
+			list = Datastore.query(META).filter(META.key.in(targetKey1, targetKey2)).asList();
+			assertThat(list.size(), is(2));
+			assertThat(list.get(0).getKey(), isOneOf(targetKey1, targetKey2));
+			assertThat(list.get(1).getKey(), isOneOf(targetKey1, targetKey2));
 		}
 	}
 

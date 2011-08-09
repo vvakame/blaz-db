@@ -73,4 +73,12 @@ public abstract class CoreAttributeMeta<T> {
 	 * @author vvakame
 	 */
 	public abstract FilterCriterion greaterThanOrEqual(T value);
+
+	/**
+	 * {@link ModelQuery#filter(FilterCriterion...)} に渡す IN 検索指示子の組み立て.
+	 * @param values 検索に利用する値
+	 * @return {@link FilterCriterion}
+	 * @author vvakame
+	 */
+	public abstract FilterCriterion in(T... values);
 }

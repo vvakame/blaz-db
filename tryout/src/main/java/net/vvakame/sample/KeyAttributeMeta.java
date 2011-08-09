@@ -55,4 +55,9 @@ public class KeyAttributeMeta extends CoreAttributeMeta<Key> {
 	public FilterCriterion greaterThanOrEqual(Key value) {
 		return new GreaterThanOrEqualCriterion<Key>(this, value);
 	}
+
+	@Override
+	public FilterCriterion in(Key... values) {
+		return new InCriterion<Key>(this, values);
+	}
 }

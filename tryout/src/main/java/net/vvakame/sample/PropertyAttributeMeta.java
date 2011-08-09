@@ -58,4 +58,9 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 	public FilterCriterion greaterThanOrEqual(T value) {
 		return new GreaterThanOrEqualCriterion<T>(this, value);
 	}
+
+	@Override
+	public FilterCriterion in(T... values) {
+		return new InCriterion<T>(this, values);
+	}
 }

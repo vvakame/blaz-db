@@ -8,7 +8,7 @@ import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.bare.BareDatastore;
-import net.vvakame.blaz.filter.KindFilter;
+import net.vvakame.blaz.filter.KindEqFilter;
 
 /**
  * <M> についてのクエリビルダ
@@ -31,7 +31,7 @@ public class ModelQuery<M> {
 	 */
 	public ModelQuery(ModelMeta<M> meta) {
 		this.meta = meta;
-		filters.add(new KindFilter(meta.getKind()));
+		filters.add(new KindEqFilter(meta.getKind()));
 	}
 
 	/**
