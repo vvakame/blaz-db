@@ -26,6 +26,7 @@ import net.vvakame.blaz.filter.PropertyKeyGtFilter;
 import net.vvakame.blaz.filter.PropertyKeyInFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtEqFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtFilter;
+import net.vvakame.blaz.filter.PropertyNullEqFilter;
 import net.vvakame.blaz.filter.PropertyRealEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtFilter;
@@ -1061,6 +1062,33 @@ public abstract class RawDatastoreTestBase {
 		Key key2 = KeyUtil.createKey("hoge", "piyo3");
 		assertThat(list.get(0).getKey(), isOneOf(key1, key2));
 		assertThat(list.get(1).getKey(), isOneOf(key1, key2));
+	}
+
+	/**
+	 * 動作確認.
+	 * @author vvakame
+	 */
+	@Test
+	public void find_null_PROPERTY_EQ_single_filter() {
+		{
+			Entity entity = new Entity("hoge", "piyo1");
+			entity.setProperty("a", "1");
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo2");
+			entity.setProperty("a", null);
+			kvs.put(entity);
+		}
+		{
+			Entity entity = new Entity("hoge", "piyo3");
+			entity.setProperty("a", 1);
+			kvs.put(entity);
+		}
+		List<Entity> list = kvs.find(new PropertyNullEqFilter("a"));
+		assertThat(list.size(), is(1));
+		Key key1 = KeyUtil.createKey("hoge", "piyo2");
+		assertThat(list.get(0).getKey(), is(key1));
 	}
 
 	/**

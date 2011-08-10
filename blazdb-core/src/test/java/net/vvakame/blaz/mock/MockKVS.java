@@ -168,7 +168,10 @@ public class MockKVS extends BareDatastore {
 				AbstractPropertyFilter propertyFilter = (AbstractPropertyFilter) filter;
 
 				String name = propertyFilter.getName();
-				if (filter.getOption() != FilterOption.IN) {
+				if (filter.getOption() == FilterOption.EQ && filter.getValue() == null) {
+					CompareBlock cmp = CMP_EQ_NULL;
+					workingMap = getKindMapByProperty(workingMap, cmp, name, null);
+				} else if (filter.getOption() != FilterOption.IN) {
 					Object value = propertyFilter.getValue();
 					CompareBlock cmp = getCompareBlock(propertyFilter.getOption());
 
@@ -331,6 +334,14 @@ public class MockKVS extends BareDatastore {
 		public boolean isComparePassage(Object obj1, Object obj2);
 	}
 
+
+	final CompareBlock CMP_EQ_NULL = new CompareBlock() {
+
+		@Override
+		public boolean isComparePassage(Object obj1, Object obj2) {
+			return obj1 == null && obj2 == null;
+		}
+	};
 
 	final CompareBlock CMP_EQ = new CompareBlock() {
 
