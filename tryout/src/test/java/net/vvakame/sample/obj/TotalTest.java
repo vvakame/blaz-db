@@ -111,6 +111,7 @@ public class TotalTest {
 			RootData model = new RootData();
 			model.setKey(KeyUtil.createKey(META.getKind(), "b"));
 			model.setInteger(2);
+			model.setDate(null);
 			Datastore.put(model);
 		}
 		{
@@ -120,20 +121,27 @@ public class TotalTest {
 			model.setDate(at);
 			Datastore.put(model);
 		}
+		{
+			RootData model = new RootData();
+			model.setKey(KeyUtil.createKey(META.getKind(), "d"));
+			model.setInteger(1);
+			model.setDate(null);
+			Datastore.put(model);
+		}
 
 		List<RootData> list;
 
 		list = Datastore.query(META).asList();
-		assertThat(list.size(), is(3));
+		assertThat(list.size(), is(4));
 
 		list = Datastore.query(META).filter(META.integer.equal(2)).asList();
 		assertThat(list.size(), is(1));
 
 		list = Datastore.query(META).filter(META.integer.equal(1)).asList();
-		assertThat(list.size(), is(2));
+		assertThat(list.size(), is(3));
 
-		list = Datastore.query(META).filter(META.integer.equal(1), META.date.equal(at)).asList();
-		assertThat(list.size(), is(1));
+		list = Datastore.query(META).filter(META.date.equal(null)).asList();
+		assertThat(list.size(), is(2));
 	}
 
 	/**

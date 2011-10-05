@@ -31,6 +31,7 @@ import net.vvakame.blaz.filter.PropertyKeyGtFilter;
 import net.vvakame.blaz.filter.PropertyKeyInFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtEqFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtFilter;
+import net.vvakame.blaz.filter.PropertyNullEqFilter;
 import net.vvakame.blaz.filter.PropertyRealEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtFilter;
@@ -109,7 +110,11 @@ abstract class FilterCriterionBase implements FilterCriterion {
 
 	AbstractPropertyFilter getPropertyFilter(String name, FilterOption option, Object value) {
 
-		if (value instanceof Byte || value instanceof Short || value instanceof Integer
+		if (value == null) {
+
+			return getPropertyNullFilter(name, option);
+
+		} else if (value instanceof Byte || value instanceof Short || value instanceof Integer
 				|| value instanceof Long) {
 
 			return getPropertyIntegerFilter(name, option, ((Number) value).longValue());
@@ -265,6 +270,15 @@ abstract class FilterCriterionBase implements FilterCriterion {
 				return new PropertyStringLtEqFilter(name, value);
 			case IN:
 				return new PropertyStringInFilter(name, value);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	AbstractPropertyFilter getPropertyNullFilter(String name, FilterOption option) {
+		switch (option) {
+			case EQ:
+				return new PropertyNullEqFilter(name);
 			default:
 				throw new IllegalArgumentException();
 		}
