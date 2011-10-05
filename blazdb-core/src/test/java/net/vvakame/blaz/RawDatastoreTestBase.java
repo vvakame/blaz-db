@@ -2092,8 +2092,6 @@ public abstract class RawDatastoreTestBase {
 			entity.setProperty("value", 111);
 			kvs.put(entity);
 
-			// tx.commit();
-
 		} finally {
 			if (tx.isActive()) {
 				tx.rollback();

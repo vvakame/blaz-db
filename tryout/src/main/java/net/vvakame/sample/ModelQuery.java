@@ -79,7 +79,7 @@ public class ModelQuery<M> {
 				kvs.find(filters.toArray(new Filter[] {}), sorters.toArray(new Sorter[] {}));
 		List<M> modelList = new ArrayList<M>();
 		for (Entity entity : entities) {
-			M model = meta.entityTomodel(entity);
+			M model = meta.entityToModel(entity);
 			modelList.add(model);
 		}
 

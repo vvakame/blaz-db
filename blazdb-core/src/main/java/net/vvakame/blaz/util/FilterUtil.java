@@ -31,6 +31,7 @@ import net.vvakame.blaz.filter.PropertyKeyGtFilter;
 import net.vvakame.blaz.filter.PropertyKeyInFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtEqFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtFilter;
+import net.vvakame.blaz.filter.PropertyNullEqFilter;
 import net.vvakame.blaz.filter.PropertyRealEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtFilter;
@@ -149,6 +150,10 @@ public class FilterUtil {
 		} else if (value instanceof Date) {
 
 			return getPropertyIntegerFilter(name, option, ((Date) value).getTime());
+
+		} else if (value == null) {
+
+			return getPropertyNullFilter(name, option);
 
 		}
 
@@ -304,4 +309,14 @@ public class FilterUtil {
 				throw new IllegalArgumentException();
 		}
 	}
+
+	static Filter getPropertyNullFilter(String name, FilterOption option) {
+		switch (option) {
+			case EQ:
+				return new PropertyNullEqFilter(name);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
 }

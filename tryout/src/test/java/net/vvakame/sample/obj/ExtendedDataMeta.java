@@ -104,7 +104,7 @@ public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 	}
 
 	@Override
-	public ExtendedData entityTomodel(Entity entity) {
+	public ExtendedData entityToModel(Entity entity) {
 		if (entity == null) {
 			throw new NullPointerException("entity is required");
 		} else if (!KIND.equals(entity.getKind())) {
@@ -122,7 +122,7 @@ public class ExtendedDataMeta extends ModelMeta<ExtendedData> {
 			if (!meta.getKind().equals(entity.getKind())) {
 				throw new IllegalArgumentException("kind=" + entity.getKind() + " is not expected.");
 			}
-			return (ExtendedData) meta.entityTomodel(entity);
+			return (ExtendedData) meta.entityToModel(entity);
 		} else if (classHierarchyList.size() > classHierarchy.size()) {
 			// if entity is upper model. can't convert to model...
 			throw new IllegalArgumentException(

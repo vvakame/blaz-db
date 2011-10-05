@@ -31,6 +31,7 @@ import net.vvakame.blaz.filter.PropertyKeyGtFilter;
 import net.vvakame.blaz.filter.PropertyKeyInFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtEqFilter;
 import net.vvakame.blaz.filter.PropertyKeyLtFilter;
+import net.vvakame.blaz.filter.PropertyNullEqFilter;
 import net.vvakame.blaz.filter.PropertyRealEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtEqFilter;
 import net.vvakame.blaz.filter.PropertyRealGtFilter;
@@ -145,6 +146,9 @@ class QueryBuilder {
 
 	static final String SQL_PROPERTY_REAL_IN = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
 			+ " WHERE " + COL_NAME + " = ? AND " + COL_VALUE_REAL + " IN (";
+
+	static final String SQL_PROPERTY_NULL_EQ = "SELECT " + COL_KEY_STRING + " FROM " + TABLE_VALUES
+			+ " WHERE " + COL_TYPE + " IN (?, ?) AND " + COL_NAME + " = ?";
 
 
 	public static void makeGetAllQuery(StringBuilder builder, List<String> args) {
@@ -267,6 +271,9 @@ class QueryBuilder {
 
 			} else if (filter instanceof PropertyKeyInFilter) {
 				makeQueryPropertyKeyIn(filter, builder, args);
+
+			} else if (filter instanceof PropertyNullEqFilter) {
+				makeQueryPropertyNullEq(filter, builder, args);
 
 			} else {
 				throw new IllegalArgumentException("unknown filter");
@@ -633,6 +640,13 @@ class QueryBuilder {
 		for (Key value : values) {
 			args.add(KeyUtil.keyToString(value));
 		}
+	}
+
+	static void makeQueryPropertyNullEq(Filter filter, StringBuilder builder, List<String> args) {
+		builder.append(SQL_PROPERTY_NULL_EQ);
+		args.add(T_NULL);
+		args.add(T_L_NULL);
+		args.add(filter.getName());
 	}
 
 	static void addInSql(StringBuilder builder, int itr) {

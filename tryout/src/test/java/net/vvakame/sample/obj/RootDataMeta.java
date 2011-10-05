@@ -93,7 +93,7 @@ public class RootDataMeta extends ModelMeta<RootData> {
 	}
 
 	@Override
-	public RootData entityTomodel(Entity entity) {
+	public RootData entityToModel(Entity entity) {
 		if (entity == null) {
 			throw new NullPointerException("entity is required");
 		} else if (!KIND.equals(entity.getKind())) {
@@ -111,7 +111,7 @@ public class RootDataMeta extends ModelMeta<RootData> {
 			if (!meta.getKind().equals(entity.getKind())) {
 				throw new IllegalArgumentException("kind=" + entity.getKind() + " is not expected.");
 			}
-			return (RootData) meta.entityTomodel(entity);
+			return (RootData) meta.entityToModel(entity);
 		} else if (classHierarchyList.size() > classHierarchy.size()) {
 			// if entity is upper model. can't convert to model...
 			throw new IllegalArgumentException(

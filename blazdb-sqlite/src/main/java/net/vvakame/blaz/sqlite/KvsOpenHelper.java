@@ -10,9 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class KvsOpenHelper extends SQLiteOpenHelper {
 
-	static final String TABLE_KEYS = "KEYS";
+	static final String TABLE_KEYS = "KEY_TABLE";
 
-	static final String TABLE_VALUES = "VALUES";
+	static final String TABLE_VALUES = "VALUE_TABLE";
 
 	static final String COL_ID = "ID";
 
@@ -85,10 +85,10 @@ public class KvsOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// FIXME KEYにUniq制約が必要
-		db.execSQL("CREATE TABLE KEYS (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT)");
-		db.execSQL("CREATE TABLE VALUES (KEY_STR TEXT, KIND TEXT, NAME TEXT, TYPE TEXT, SEQ INTEGER, VAL_STR TEXT, VAL_INT INTEGER, VAL_REAL REAL, VAL_BYTES BLOB)");
-		db.execSQL("CREATE INDEX VALUES_KEY_STR ON VALUES(KEY_STR)");
-		db.execSQL("CREATE INDEX VALUES_KIND_NAME ON VALUES(KIND, NAME)");
+		db.execSQL("CREATE TABLE KEY_TABLE (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT)");
+		db.execSQL("CREATE TABLE VALUE_TABLE (KEY_STR TEXT, KIND TEXT, NAME TEXT, TYPE TEXT, SEQ INTEGER, VAL_STR TEXT, VAL_INT INTEGER, VAL_REAL REAL, VAL_BYTES BLOB)");
+		db.execSQL("CREATE INDEX VALUE_KEY_STR ON VALUE_TABLE(KEY_STR)");
+		db.execSQL("CREATE INDEX VALUE_KIND_NAME ON VALUE_TABLE(KIND, NAME)");
 	}
 
 	@Override

@@ -133,9 +133,9 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		} else {
 			for (int i = 0; i < filters.length; i++) {
 				Filter filter = filters[i];
-				builder.append(" (");
+				builder.append(" ");
 				QueryBuilder.makeQuery(filter, builder, args);
-				builder.append(") ");
+				builder.append(" ");
 				if (i != filters.length - 1) {
 					builder.append("INTERSECT");
 				}

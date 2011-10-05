@@ -97,5 +97,5 @@ public abstract class ModelMeta<M> {
 	 * @return 変換後モデル
 	 * @author vvakame
 	 */
-	public abstract M entityTomodel(Entity entity);
+	public abstract M entityToModel(Entity entity);
 }

@@ -33,9 +33,9 @@ public class KvsOpenHelperTest {
 		assertThat(database, notNullValue());
 
 		database.beginTransaction();
-		database.execSQL("INSERT INTO KEYS (KEY_STR) VALUES (1)");
+		database.execSQL("INSERT INTO KEY_TABLE (KEY_STR) VALUES (1)");
 
-		Cursor c = database.query("KEYS", null, null, null, null, null, null);
+		Cursor c = database.query("KEY_TABLE", null, null, null, null, null, null);
 		assertThat(c.getCount(), is(1));
 	}
 }
