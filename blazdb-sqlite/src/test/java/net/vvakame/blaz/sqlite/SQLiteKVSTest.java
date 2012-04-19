@@ -10,7 +10,7 @@ import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import com.xtremelabs.robolectric.shadows.ShadowApplication;
 import com.xtremelabs.robolectric.util.DatabaseConfig;
-import com.xtremelabs.robolectric.util.H2Map;
+import com.xtremelabs.robolectric.util.SQLiteMap;
 
 /**
  * {@link SQLiteKVS} のテストケース.
@@ -34,8 +34,8 @@ public class SQLiteKVSTest extends RawDatastoreTestBase {
 	@Override
 	@Before
 	public void before() {
-		// DatabaseConfig.setDatabaseMap(new SQLiteMap());
-		DatabaseConfig.setDatabaseMap(new H2Map());
+		DatabaseConfig.setDatabaseMap(new SQLiteMap());
+		// DatabaseConfig.setDatabaseMap(new H2Map());
 
 		ShadowApplication application = Robolectric.getShadowApplication();
 		kvs = new SQLiteKVS(application.getApplicationContext());

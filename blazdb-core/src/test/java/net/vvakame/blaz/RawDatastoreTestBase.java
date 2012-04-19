@@ -45,7 +45,6 @@ import net.vvakame.blaz.sorter.PropertyAscSorter;
 import net.vvakame.blaz.sorter.PropertyDescSorter;
 import net.vvakame.blaz.util.KeyUtil;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -69,7 +68,6 @@ public abstract class RawDatastoreTestBase {
 	 * @author vvakame
 	 */
 	@Test
-	@Ignore
 	public void put_get_single() {
 		Key key = KeyUtil.createKey("hoge", "piyo");
 
