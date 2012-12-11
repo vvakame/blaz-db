@@ -1,1 +1,8 @@
 .DS_Store
+
+.project
+.classpath
+.factorypath
+.settings/
+eclipse.lib/
+
