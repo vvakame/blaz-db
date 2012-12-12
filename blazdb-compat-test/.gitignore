@@ -1,0 +1,16 @@
+.DS_Store
+
+.project
+.classpath
+.factorypath
+.settings/
+target/**
+.apt_generated/**
+
+credentials.cache
+*.sqlite
+*.sqlite-journal
+
+remote.*.properties
+credentials.*.cache
+

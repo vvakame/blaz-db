@@ -1,9 +1,14 @@
-package net.vvakame.blaz;
+package net.vvakame.blaz.compat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.Filter;
+import net.vvakame.blaz.Key;
+import net.vvakame.blaz.Sorter;
+import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.filter.KeyEqFilter;

@@ -54,6 +54,7 @@ import static org.junit.Assert.*;
 /**
  * {@link BareDatastore} のテスト用クラス.<br>
  * 各 {@link BareDatastore} 実装は本クラスを継承し、 {@link #before()} のみ実装すること.
+ * blazdb-compat-test と同じもの (依存関係の処理の関係であっちを参照できない)
  * @author vvakame
  */
 public abstract class RawDatastoreTestBase {

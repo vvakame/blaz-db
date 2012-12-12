@@ -1,6 +1,5 @@
 package net.vvakame.blaz.sqlite;
 
-import net.vvakame.blaz.RawDatastoreTestBase;
 import net.vvakame.blaz.exception.EntityNotFoundException;
 
 import org.junit.Before;
@@ -9,7 +8,7 @@ import org.junit.Before;
  * {@link SQLiteKVS} のテストケース.
  * @author vvakame
  */
-public class SQLiteKVSTest extends RawDatastoreTestBase {
+public class SQLiteKVSTest extends net.vvakame.blaz.compat.RawDatastoreTestBase {
 
 	/**
 	 * SQLite JDBCだとTransactionがうまく動かないので暫定で回避

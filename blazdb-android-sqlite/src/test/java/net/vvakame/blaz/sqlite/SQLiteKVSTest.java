@@ -1,6 +1,5 @@
 package net.vvakame.blaz.sqlite;
 
-import net.vvakame.blaz.RawDatastoreTestBase;
 import net.vvakame.blaz.exception.EntityNotFoundException;
 
 import org.junit.Before;
@@ -17,7 +16,7 @@ import com.xtremelabs.robolectric.util.SQLiteMap;
  * @author vvakame
  */
 @RunWith(RobolectricTestRunner.class)
-public class SQLiteKVSTest extends RawDatastoreTestBase {
+public class SQLiteKVSTest extends net.vvakame.blaz.compat.RawDatastoreTestBase {
 
 	/**
 	 * {@link Robolectric} だとTransactionがうまく動かないので暫定で回避

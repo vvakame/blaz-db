@@ -12,6 +12,8 @@
 		<module>blazdb-parent</module>
 		<module>blazdb-core</module>
 		<module>blazdb-apt</module>
+		<module>blazdb-compat-test</module>
+		<module>blazdb-sqlite</module>
 		<module>blazdb-android-sqlite</module>
 	</modules>
 
