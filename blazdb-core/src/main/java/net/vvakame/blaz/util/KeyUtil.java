@@ -71,7 +71,7 @@ public class KeyUtil {
 			builder.append("I").append(SEPARATOR).append(String.valueOf(key.getId()));
 		}
 		return Base64.encodeToString(builder.toString().getBytes(), Base64.NO_PADDING
-				+ Base64.URL_SAFE);
+				| Base64.URL_SAFE | Base64.NO_WRAP);
 	}
 
 	/**
@@ -81,7 +81,8 @@ public class KeyUtil {
 	 * @author vvakame
 	 */
 	public static Key stringToKey(String str) {
-		String keyStr = new String(Base64.decode(str, Base64.NO_PADDING + Base64.URL_SAFE));
+		String keyStr =
+				new String(Base64.decode(str, Base64.NO_PADDING | Base64.URL_SAFE | Base64.NO_WRAP));
 		String[] split = keyStr.split(SEPARATOR);
 		if ("N".equals(split[1])) {
 			return createKey(split[0], split[2]);
