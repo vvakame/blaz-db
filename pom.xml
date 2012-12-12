@@ -12,6 +12,7 @@
 		<module>blazdb-parent</module>
 		<module>blazdb-core</module>
 		<module>blazdb-apt</module>
+		<module>blazdb-android-sqlite</module>
 	</modules>
 
 	<licenses>
