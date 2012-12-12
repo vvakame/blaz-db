@@ -56,6 +56,15 @@ Value用のテーブルの構成は以下のとおり。1レコードが1つのE
     * Listの順番を指定するのに使われているはず。
     * 今のところ有効ではないようだ。
 
+### blazdb-android-sqlite
+
+blazdb-sqlite のAndroid用。JDBCからAndroidのAPIに置き換えたもの。
+
 ### tryout
 
 Slim3相当のMetaクラスを手書きで試作する、だった気がする。
+
+### blazdb-compat-test
+
+BlazDBはBareDatastoreを実装すればどんなDBが裏側でも利用できる。その互換性を検査するためのテスト。
+net.vvakame.blaz.compat.RawDatastoreTestBase と net.vvakame.blaz.compat.Benchmark を継承したTestCaseを作る。
