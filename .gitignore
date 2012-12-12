@@ -6,3 +6,5 @@
 .settings/
 eclipse.lib/
 
+blazdb-apt/dependency-reduced-pom.xml
+
