@@ -15,17 +15,6 @@
 		<genclass.postfix>Generated</genclass.postfix>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>vvakame-blazdb-release</id>
-			<url>http://vvakame.github.com/JsonPullParser/release</url>
-		</repository>
-		<repository>
-			<id>vvakame-blazdb-snapshot</id>
-			<url>http://vvakame.github.com/JsonPullParser/snapshots</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>net.vvakame</groupId>
@@ -34,7 +23,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.vvakame</groupId>
-			<artifactId>blazdb-sqlite</artifactId>
+			<artifactId>blazdb-android-sqlite</artifactId>
 			<version>${blazdb.version}</version>
 		</dependency>
 		<dependency>

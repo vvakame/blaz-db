@@ -1,5 +1,5 @@
 mvn clean eclipse:clean eclipse:eclipse test install -DdownloadSources=true && \
-cd blazdb-sqlite && \
+cd blazdb-android-sqlite && \
 mvn clean eclipse:clean eclipse:eclipse test install -DdownloadSources=true && \
 cd ../ && \
 cd blazdb-generated && \
