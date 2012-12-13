@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.vvakame</groupId>
-	<artifactId>blazdb-generated</artifactId>
+	<artifactId>blazdb-test-generated</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
