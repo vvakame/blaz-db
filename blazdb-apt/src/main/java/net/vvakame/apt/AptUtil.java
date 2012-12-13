@@ -116,6 +116,68 @@ public class AptUtil {
 	}
 
 	/**
+	 * Tests if the given element is a primitive.
+	 * @param element
+	 * @return true if the element is a primitive, false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitive(Element element) {
+		String type = element.asType().toString();
+		if ("boolean".equals(type)) {
+			return true;
+		} else if ("char".equals(type)) {
+			return true;
+		} else if ("byte".equals(type)) {
+			return true;
+		} else if ("short".equals(type)) {
+			return true;
+		} else if ("int".equals(type)) {
+			return true;
+		} else if ("long".equals(type)) {
+			return true;
+		} else if ("float".equals(type)) {
+			return true;
+		} else if ("double".equals(type)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * convert primitive to primitive wrapper.
+	 * @param elementUtil 
+	 * @param element
+	 * @return primitive wrapper
+	 * @author vvakame
+	 */
+	public static TypeElement toPrimitiveWrapper(Elements elementUtil, Element element) {
+		if (!isPrimitive(element)) {
+			throw new IllegalArgumentException(element.toString() + " is not primitive");
+		}
+		String type = element.asType().toString();
+		if ("boolean".equals(type)) {
+			return elementUtil.getTypeElement(Boolean.class.getCanonicalName());
+		} else if ("char".equals(type)) {
+			return elementUtil.getTypeElement(Character.class.getCanonicalName());
+		} else if ("byte".equals(type)) {
+			return elementUtil.getTypeElement(Byte.class.getCanonicalName());
+		} else if ("short".equals(type)) {
+			return elementUtil.getTypeElement(Short.class.getCanonicalName());
+		} else if ("int".equals(type)) {
+			return elementUtil.getTypeElement(Integer.class.getCanonicalName());
+		} else if ("long".equals(type)) {
+			return elementUtil.getTypeElement(Long.class.getCanonicalName());
+		} else if ("float".equals(type)) {
+			return elementUtil.getTypeElement(Float.class.getCanonicalName());
+		} else if ("double".equals(type)) {
+			return elementUtil.getTypeElement(Double.class.getCanonicalName());
+		}
+
+		return null;
+	}
+
+	/**
 	 * Test if the given element is primitive boolean.
 	 * @param element
 	 * @return True if the type is a primitive boolean. false otherwise.

@@ -8,12 +8,87 @@ import net.vvakame.blaz.annotation.Attribute;
  */
 public class AttributeModel {
 
+	String typeNameFQN;
+
+	/** if typeNameFQN was premitive, this field handle wrapper class name for type cast */
+	String primitiveWrapper;
+
+	String getter;
+
+	String setter;
+
+	// info from annotation
+
 	boolean primaryKey;
 
 	String name;
 
 	boolean persistent;
 
+
+	/**
+	 * @return the typeNameFQN
+	 * @category accessor
+	 */
+	public String getTypeNameFQN() {
+		return typeNameFQN;
+	}
+
+	/**
+	 * @param typeNameFQN the typeNameFQN to set
+	 * @category accessor
+	 */
+	public void setTypeNameFQN(String typeNameFQN) {
+		this.typeNameFQN = typeNameFQN;
+	}
+
+	/**
+	 * @return the primitiveWrapper
+	 * @category accessor
+	 */
+	public String getPrimitiveWrapper() {
+		return primitiveWrapper;
+	}
+
+	/**
+	 * @param primitiveWrapper the primitiveWrapper to set
+	 * @category accessor
+	 */
+	public void setPrimitiveWrapper(String primitiveWrapper) {
+		this.primitiveWrapper = primitiveWrapper;
+	}
+
+	/**
+	 * @return the getter
+	 * @category accessor
+	 */
+	public String getGetter() {
+		return getter;
+	}
+
+	/**
+	 * @param getter the getter to set
+	 * @category accessor
+	 */
+	public void setGetter(String getter) {
+		this.getter = getter;
+	}
+
+	/**
+	 * @return the setter
+	 * @category accessor
+	 */
+	public String getSetter() {
+		return setter;
+	}
+
+	/**
+	 * @param setter the setter to set
+	 * @category accessor
+	 */
+	public void setSetter(String setter) {
+		this.setter = setter;
+	}
 
 	/**
 	 * @return the primaryKey

@@ -231,6 +231,18 @@ public class ModelGenerator {
 			attrModel.setName(simpleName);
 		}
 
+		String getter = getElementGetter(element);
+		String setter = getElementSetter(element);
+		attrModel.setGetter(getter);
+		attrModel.setSetter(setter);
+
+		String typeName = getFullQualifiedName(element.asType());
+		attrModel.setTypeNameFQN(typeName);
+		if (isPrimitive(element)) {
+			TypeElement wrapper = toPrimitiveWrapper(elementUtils, element);
+			attrModel.setPrimitiveWrapper(wrapper.asType().toString());
+		}
+
 		return attrModel;
 	}
 

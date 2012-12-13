@@ -16,8 +16,15 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	static final String KIND = "@{kind}";
 	
 	static final @{target}@{postfix} singleton = new @{target}@{postfix}();
-	
-	
+
+	final KeyAttributeMeta @{primaryKey.name} = new KeyAttributeMeta(KIND);
+
+@foreach{attr : attributes}@if{attr.primitiveWrapper != null}
+	final PropertyAttributeMeta<@{attr.primitiveWrapper}> @{attr.name} = new PropertyAttributeMeta<@{attr.primitiveWrapper}>("@{attr.name}", @{attr.primitiveWrapper}.class);
+@else{}
+	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
+@end{}@end{}
+
 	protected @{target}@{postfix}() {
 		super(null);
 	}
@@ -28,11 +35,12 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 	@Override
 	public void setKey(@{target} model, Key key) {
+		model.@{primaryKey.setter}(key);
 	}
 
 	@Override
 	public Key getKey(@{target} model) {
-		return null;
+		return model.@{primaryKey.getter}();
 	}
 
 	@Override
@@ -47,11 +55,62 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 	@Override
 	public Entity modelToEntity(@{target} model) {
-		return null;
+		if (model == null) {
+			throw new NullPointerException("model is required");
+		}
+
+		Key key = getKey(model);
+		Entity entity;
+		if (key != null) {
+			entity = new Entity(key);
+		} else {
+			entity = new Entity(KIND);
+		}
+
+@foreach{attr : attributes}
+		entity.setProperty("@{attr.name}", model.@{attr.getter}());
+@end{}
+
+		return entity;
 	}
 	
 	@Override
 	public @{target} entityToModel(Entity entity) {
-		return null;
+		if (entity == null) {
+			throw new NullPointerException("entity is required");
+		} else if (!KIND.equals(entity.getKind())) {
+			throw new IllegalArgumentException("entity kind=" + entity.getKind() + ", but expected=" + KIND);
+		}
+
+		/*
+		List<String> classHierarchy = entity.getProperty(PROPERTY_CLASS_HIERARCHY);
+		if (classHierarchy == null) {
+			// ok. only root node.
+		} else if (classHierarchyList.size() < classHierarchy.size()) {
+			// if entity is lower model...
+			String className = classHierarchy.get(classHierarchy.size() - 1);
+			ModelMeta<Object> meta = DatastoreUtil.getModelMeta(className);
+			if (!meta.getKind().equals(entity.getKind())) {
+				throw new IllegalArgumentException("kind=" + entity.getKind() + " is not expected.");
+			}
+			return (RootData) meta.entityToModel(entity);
+		} else if (classHierarchyList.size() > classHierarchy.size()) {
+			// if entity is upper model. can't convert to model...
+			throw new IllegalArgumentException(
+					"entity is not convert to model. check class hierarchy.");
+		}
+		 */
+
+		Key key = entity.getKey();
+		@{target} model = new @{target}();
+		setKey(model, key);
+		
+@foreach{attr : attributes}@if{attr.primitiveWrapper != null}
+		model.@{attr.setter}((@{attr.typeNameFQN}) (@{attr.primitiveWrapper}) entity.getProperty("@{attr.name}"));
+@else{}
+		model.@{attr.setter}((@{attr.typeNameFQN}) entity.getProperty("@{attr.name}"));
+@end{}@end{}
+
+		return model;
 	}
 }
