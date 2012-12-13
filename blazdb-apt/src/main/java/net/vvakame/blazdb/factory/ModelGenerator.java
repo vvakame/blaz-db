@@ -193,20 +193,55 @@ public class ModelGenerator {
 
 		{
 			AttributeModel keyModel = processAttribute(key);
+			keyModel.setPrimaryKey(true);
 			model.setPrimaryKey(keyModel);
 		}
 
 		// process attributes exclude pk
 		for (Element element : enclosedElements) {
 			AttributeModel attrModel = processAttribute(element);
+			if (attrModel == null) {
+				continue;
+			}
 			model.getAttributes().add(attrModel);
 		}
 	}
 
 	AttributeModel processAttribute(Element element) {
-		// TODO
+		AttributeModel attrModel = new AttributeModel();
+		{
+			Attribute a1 = element.getAnnotation(Attribute.class);
+			BlazAttribute a2 = element.getAnnotation(BlazAttribute.class);
 
-		return null;
+			if (a1 != null && a2 != null) {
+				Log.e("Do not use annotation @Model and @BlazModel at once", classElement);
+				encountError = true;
+			} else if (a1 != null) {
+				processAttribute(a1, attrModel);
+			} else if (a2 != null) {
+				processAttribute(a2, attrModel);
+			}
+		}
+		if (attrModel.isPersistent()) {
+			return null;
+		}
+
+		String simpleName = element.getSimpleName().toString();
+		if (attrModel.getName() == null || "".equals(attrModel.getName())) {
+			attrModel.setName(simpleName);
+		}
+
+		return attrModel;
+	}
+
+	void processAttribute(Attribute attr, AttributeModel attrModel) {
+		attrModel.setName(attr.name());
+		attrModel.setPersistent(attr.persistent());
+	}
+
+	void processAttribute(BlazAttribute attr, AttributeModel attrModel) {
+		attrModel.setName(attr.name());
+		attrModel.setPersistent(attr.persistent());
 	}
 
 	Element findPrimaryKeyByAnnotation(List<Element> enclosedElements) {
