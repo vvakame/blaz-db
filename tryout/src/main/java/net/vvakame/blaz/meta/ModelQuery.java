@@ -1,9 +1,10 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Sorter;
@@ -74,7 +75,7 @@ public class ModelQuery<M> {
 	 * @author vvakame
 	 */
 	public List<M> asList() {
-		final BareDatastore kvs = Datastore.kvs;
+		final BareDatastore kvs = Datastore.getBareDatastore();
 		List<Entity> entities =
 				kvs.find(filters.toArray(new Filter[] {}), sorters.toArray(new Sorter[] {}));
 		List<M> modelList = new ArrayList<M>();

@@ -1,12 +1,12 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Sorter.Order;
+import net.vvakame.blaz.meta.CoreAttributeMeta.Type;
 import net.vvakame.blaz.sorter.KeyAscSorter;
 import net.vvakame.blaz.sorter.KeyDescSorter;
 import net.vvakame.blaz.sorter.PropertyAscSorter;
 import net.vvakame.blaz.sorter.PropertyDescSorter;
-import net.vvakame.sample.CoreAttributeMeta.Type;
 
 abstract class SorterCriterionBase implements SortCriterion {
 

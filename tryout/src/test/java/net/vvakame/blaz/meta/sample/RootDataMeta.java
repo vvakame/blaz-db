@@ -1,15 +1,15 @@
-package net.vvakame.sample.obj;
+package net.vvakame.blaz.meta.sample;
 
 import java.util.Date;
 import java.util.List;
 
+import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
-import net.vvakame.sample.Datastore;
-import net.vvakame.sample.DatastoreUtil;
-import net.vvakame.sample.KeyAttributeMeta;
-import net.vvakame.sample.ModelMeta;
-import net.vvakame.sample.PropertyAttributeMeta;
+import net.vvakame.blaz.meta.DatastoreUtil;
+import net.vvakame.blaz.meta.KeyAttributeMeta;
+import net.vvakame.blaz.meta.ModelMeta;
+import net.vvakame.blaz.meta.PropertyAttributeMeta;
 
 /**
  * {@link RootData} の {@link ModelMeta} 表現.<br>

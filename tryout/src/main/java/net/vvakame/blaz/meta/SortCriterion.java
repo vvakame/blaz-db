@@ -1,4 +1,4 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 import net.vvakame.blaz.Sorter;
 

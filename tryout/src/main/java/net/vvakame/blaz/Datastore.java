@@ -1,7 +1,9 @@
-package net.vvakame.sample;
+package net.vvakame.blaz;
 
-import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.meta.DatastoreUtil;
+import net.vvakame.blaz.meta.ModelMeta;
+import net.vvakame.blaz.meta.ModelQuery;
 
 /**
  * DB.<br>
@@ -20,6 +22,15 @@ public class Datastore {
 	 */
 	public static void setupDatastore(BareDatastore kvs) {
 		Datastore.kvs = kvs;
+	}
+
+	/**
+	 * 現在利用している {@link BareDatastore} を返す
+	 * @return {@link BareDatastore}
+	 * @author vvakame
+	 */
+	public static BareDatastore getBareDatastore() {
+		return kvs;
 	}
 
 	/**

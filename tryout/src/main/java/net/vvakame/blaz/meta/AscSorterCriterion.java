@@ -1,8 +1,8 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Sorter.Order;
-import net.vvakame.sample.CoreAttributeMeta.Type;
+import net.vvakame.blaz.meta.CoreAttributeMeta.Type;
 
 class AscSorterCriterion extends SorterCriterionBase {
 

@@ -1,8 +1,9 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Entity;
 
 /**

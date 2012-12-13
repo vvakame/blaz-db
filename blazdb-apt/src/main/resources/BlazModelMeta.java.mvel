@@ -1,13 +1,16 @@
 package @{packageName};
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class @{target}@{postfix} {
+import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.Key;
+import net.vvakame.sample.Datastore;
+import net.vvakame.sample.DatastoreUtil;
+import net.vvakame.sample.KeyAttributeMeta;
+import net.vvakame.sample.ModelMeta;
+import net.vvakame.sample.PropertyAttributeMeta;
+
+public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	
 }

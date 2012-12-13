@@ -1,14 +1,14 @@
-package net.vvakame.sample.obj;
+package net.vvakame.blaz.meta.sample;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.sqlite.SQLiteKVS;
 import net.vvakame.blaz.util.KeyUtil;
-import net.vvakame.sample.Datastore;
 
 import org.junit.Before;
 import org.junit.Test;

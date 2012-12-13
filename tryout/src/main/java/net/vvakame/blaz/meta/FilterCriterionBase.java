@@ -1,4 +1,4 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 import java.util.Date;
 
@@ -44,7 +44,7 @@ import net.vvakame.blaz.filter.PropertyStringGtFilter;
 import net.vvakame.blaz.filter.PropertyStringInFilter;
 import net.vvakame.blaz.filter.PropertyStringLtEqFilter;
 import net.vvakame.blaz.filter.PropertyStringLtFilter;
-import net.vvakame.sample.CoreAttributeMeta.Type;
+import net.vvakame.blaz.meta.CoreAttributeMeta.Type;
 
 abstract class FilterCriterionBase implements FilterCriterion {
 

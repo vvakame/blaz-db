@@ -1,4 +1,4 @@
-package net.vvakame.sample.obj;
+package net.vvakame.blaz.meta.sample;
 
 import java.util.ArrayList;
 import java.util.List;

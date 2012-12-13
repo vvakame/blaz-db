@@ -1,4 +1,4 @@
-package net.vvakame.sample;
+package net.vvakame.blaz.meta;
 
 /**
  * {@link ModelMeta} が保持するプロパティを表すクラス.
