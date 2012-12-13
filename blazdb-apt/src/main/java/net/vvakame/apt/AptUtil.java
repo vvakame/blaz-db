@@ -20,20 +20,28 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVisitor;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleElementVisitor6;
+import javax.lang.model.util.SimpleTypeVisitor6;
 import javax.lang.model.util.Types;
 
 /**
- * APT周りであったら便利なユーティリティを定義.
+ * Defines misc utils.
  * 
  * @author vvakame
  */
@@ -43,10 +51,10 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementがClassを表す {@link Element} である場合、super classの {@link Element} を返します.<br>
-	 * {@link Object} の {@link Element} が渡されたか、 {@link ElementKind#CLASS} 以外の {@link Element} が渡された場合 {@code null} を返します.
-	 * @param element super classを取得したい {@link Element}
-	 * @return elementの super classの {@link Element}
+	 * Retrieves the super class of the given {@link Element}.
+	 * Returns null if {@link Element} represents {@link Object}, or something other than {@link ElementKind#CLASS}.
+	 * @param element target {@link Element}.
+	 * @return {@link Element} of its super class.
 	 * @author vvakame
 	 */
 	public static TypeElement getSuperClassElement(Element element) {
@@ -62,9 +70,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementが {@link Enum} の型であるかを調べます.
+	 * Tests if the given element is a kind of {@link Enum}.
 	 * @param element
-	 * @return {@link Enum} の子クラスか否か
+	 * @return true if the element passed is kind of {@link Enum}, false otherwise.
 	 * @author vvakame
 	 */
 	public static boolean isEnum(Element element) {
@@ -78,9 +86,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementが プリミティブ型のラッパクラスであるかを調べます.
+	 * Tests if the given element is a primitive wrapper.
 	 * @param element
-	 * @return プリミティブ型のラッパクラスか否か
+	 * @return true if the element is a primitive wrapper, false otherwise.
 	 * @author vvakame
 	 */
 	public static boolean isPrimitiveWrapper(Element element) {
@@ -108,10 +116,20 @@ public class AptUtil {
 	}
 
 	/**
-	 * 指定された type が Internalな要素かどうかをチェック.
+	 * Test if the given element is primitive boolean.
+	 * @param element
+	 * @return True if the type is a primitive boolean. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveBoolean(Element element) {
+		return "boolean".equals(element.asType().toString());
+	}
+
+	/**
+	 * Test if the given type is an internal type.
 	 * @param typeUtils
 	 * @param type
-	 * @return Internalな要素か否か
+	 * @return True if the type is an internal type, false otherwise.
 	 * @author vvakame
 	 */
 	public static boolean isInternalType(Types typeUtils, TypeMirror type) {
@@ -120,10 +138,10 @@ public class AptUtil {
 	}
 
 	/**
-	 * 指定された element の {@link TypeElement} を取得する.
+	 * Retrieves the corresponding {@link TypeElement} of the given element.
 	 * @param typeUtils
 	 * @param element
-	 * @return element の {@link TypeElement}
+	 * @return The corresponding {@link TypeElement}.
 	 * @author vvakame
 	 */
 	public static TypeElement getTypeElement(Types typeUtils, Element element) {
@@ -131,13 +149,12 @@ public class AptUtil {
 		return (TypeElement) typeUtils.asElement(type);
 	}
 
-	/**
-	 * parentが含む {@link Element} の中で、 annotationで修飾され、kindに一致する種類の {@link Element} を集めて返す.<br>
-	 * kind が渡されなかった場合は種類での絞り込みを行わない.
-	 * @param parent この要素に含まれる {@link Element} を集める
-	 * @param annotation このアノテーションがついている {@link Element} を集める
-	 * @param kind 指定したい {@link ElementKind} があったら指定 
-	 * @return 集められた {@link Element}
+	/**	 
+	 * Retrieves {@link Element}s matching the given annoation and kind (only if given,) from children of the given root.
+	 * @param parent The element search from.
+	 * @param annotation Annotation looking for
+	 * @param kind {@link ElementKind} looking for
+	 * @return {@link Element}s matched
 	 * @author vvakame
 	 */
 	public static List<Element> getEnclosedElementsByAnnotation(Element parent,
@@ -160,26 +177,62 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementのpackage名を返す.<br>
-	 * elementの {@link ElementKind} は {@link ElementKind#CLASS} である必要がある.
+	 * Returns the package name of the given element.
+	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
+	 * @param elementUtils 
 	 * @param element
-	 * @return package名
+	 * @return the package name
 	 * @author vvakame
 	 */
-	public static String getPackageName(Element element) {
-		if (element.getKind() != ElementKind.CLASS) {
-			throw new IllegalStateException();
-		}
-		String str = element.asType().toString();
-		int i = str.lastIndexOf(".");
-		return str.substring(0, i);
+	public static String getPackageName(Elements elementUtils, Element element) {
+		return elementUtils.getPackageOf(element).getQualifiedName().toString();
 	}
 
 	/**
-	 * SimpleNameを取得する java.lang.String だったら String ←この部分.<br>
-	 * elementの {@link ElementKind} は {@link ElementKind#CLASS} である必要がある.
+	 * Returns the package name of the given {@link TypeMirror}.
+	 * @param elementUtils 
+	 * @param typeUtils 
+	 * @param type 
+	 * @return the package name
+	 * @author backpaper0
+	 * @author vvakame
+	 */
+	public static String getPackageName(Elements elementUtils, Types typeUtils, TypeMirror type) {
+		TypeVisitor<DeclaredType, Object> tv = new SimpleTypeVisitor6<DeclaredType, Object>() {
+
+			@Override
+			public DeclaredType visitDeclared(DeclaredType t, Object p) {
+				return t;
+			}
+		};
+		DeclaredType dt = type.accept(tv, null);
+		if (dt != null) {
+			ElementVisitor<TypeElement, Object> ev =
+					new SimpleElementVisitor6<TypeElement, Object>() {
+
+						@Override
+						public TypeElement visitType(TypeElement e, Object p) {
+							return e;
+						}
+					};
+			TypeElement el = typeUtils.asElement(dt).accept(ev, null);
+			if (el != null && el.getNestingKind() != NestingKind.TOP_LEVEL) {
+				return AptUtil.getPackageName(elementUtils, el);
+			}
+		}
+		return AptUtil.getPackageNameSub(type);
+	}
+
+	private static String getPackageNameSub(TypeMirror type) {
+		String s = type.toString();
+		return s.substring(0, s.lastIndexOf('.'));
+	}
+
+	/**
+	 * Returns unqualified class name (e.g. String, if java.lang.String)
+	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
 	 * @param element
-	 * @return SimpleName
+	 * @return unqualified class name
 	 * @author vvakame
 	 */
 	public static String getSimpleName(Element element) {
@@ -192,9 +245,39 @@ public class AptUtil {
 	}
 
 	/**
-	 * SimpleNameを取得する java.lang.String だったら String ←この部分.
+	 * Returns unqualified class name (e.g. String, if java.lang.String)
+	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
+	 * @param element
+	 * @return unqualified class name
+	 * @author vvakame
+	 */
+	public static String getNameForNew(Element element) {
+		if (element.getKind() != ElementKind.CLASS) {
+			throw new IllegalStateException();
+		}
+		return getNameForNew("", element);
+	}
+
+	static String getNameForNew(String current, Element element) {
+		if (element.getKind() == ElementKind.PACKAGE) {
+			return current;
+		} else {
+			String str = element.asType().toString();
+			int i = str.lastIndexOf(".");
+			String now = str.substring(i + 1);
+			if ("".equals(current)) {
+				return getNameForNew(now, element.getEnclosingElement());
+			} else {
+				return getNameForNew(now + "." + current, element.getEnclosingElement());
+			}
+		}
+	}
+
+	/**
+	 * Returns unqualified class name (e.g. String, if java.lang.String)
+	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
 	 * @param tm
-	 * @return SimpleName
+	 * @return unqualified class name
 	 * @author vvakame
 	 */
 	public static String getSimpleName(TypeMirror tm) {
@@ -204,9 +287,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * FQNを取得する.
+	 * Returns the fully qualified name.
 	 * @param tm
-	 * @return FQN
+	 * @return The fully qualified name
 	 * @author vvakame
 	 */
 	public static String getFullQualifiedName(TypeMirror tm) {
@@ -220,9 +303,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * FQNを取得する.
+	 * Returns the fully qualified name.
 	 * @param element
-	 * @return FQN
+	 * @return The fully qualified name
 	 * @author vvakame
 	 */
 	public static String getFullQualifiedName(Element element) {
@@ -239,9 +322,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementの可視性が public かを判定する
+	 * Tests if the given element has the public visibility.
 	 * @param element
-	 * @return publicかどうか
+	 * @return true if public, false otherwise
 	 * @author vvakame
 	 */
 	public static boolean isPublic(Element element) {
@@ -249,9 +332,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementの可視性が protected かを判定する
+	 * Tests if the given element has the protected visibility.
 	 * @param element
-	 * @return protectedかどうか
+	 * @return true if protected, false otherwise
 	 * @author vvakame
 	 */
 	public static boolean isProtected(Element element) {
@@ -259,9 +342,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementの可視性が private かを判定する
+	 * Tests if the given element has the private visibility.
 	 * @param element
-	 * @return privateかどうか
+	 * @return true if private, false otherwise
 	 * @author vvakame
 	 */
 	public static boolean isPrivate(Element element) {
@@ -269,9 +352,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementの可視性が package private かを判定する
+	 * Tests if the given element has the package-private visibility.
 	 * @param element
-	 * @return package privateかどうか
+	 * @return true if package-private, false otherwise
 	 * @author vvakame
 	 */
 	public static boolean isPackagePrivate(Element element) {
@@ -286,9 +369,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementが static かを判定する
+	 * Tests if the given element has static scope.
 	 * @param element
-	 * @return staticかどうか
+	 * @return true if static, false otherwise
 	 * @author vvakame
 	 */
 	public static boolean isStatic(Element element) {
@@ -296,13 +379,13 @@ public class AptUtil {
 	}
 
 	/**
-	 * element に methodName という名前のメソッドが存在するか調べる.<br>
-	 * elementの {@link ElementKind} は {@link ElementKind#CLASS} である必要がある.<br>
-	 * {@link Modifier} を渡した場合、そのメソッドが modifiersの特徴を全て備えているかをチェック
+	 * Tests if the given element has the method with the given name.<br>
+	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.<br>
+	 * Also tests the method qualifies all of modifiers if any {@link Modifier} are also given.
 	 * @param element
 	 * @param methodName
 	 * @param modifiers
-	 * @return メソッドが存在するか
+	 * @return true if a match is found, false otherwise
 	 * @author vvakame
 	 */
 	public static boolean isMethodExists(Element element, String methodName, Modifier... modifiers) {
@@ -334,18 +417,23 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementに対応するsetterの名前を探し返す.
-	 * @param element フィールド
-	 * @return setter名
+	 * Returns the name of corresponding setter.
+	 * @param element the field
+	 * @return setter name
 	 * @author vvakame
 	 */
 	public static String getElementSetter(Element element) {
 		// 後続処理注意 hogeに対して sethoge が取得される. setHoge ではない.
-		String setterName;
-		if (element.getSimpleName().toString().startsWith("is")) {
-			// boolean isHoge; に対して setIsHoge ではなく setHoge が生成される
-			setterName = "set" + element.getSimpleName().toString().substring(2);
-		} else {
+		String setterName = null;
+		if (isPrimitiveBoolean(element)) {
+			Pattern pattern = Pattern.compile("^is[^a-z].*$");
+			Matcher matcher = pattern.matcher(element.getSimpleName().toString());
+			if (matcher.matches()) {
+				// boolean isHoge; に対して setIsHoge ではなく setHoge が生成される
+				setterName = "set" + element.getSimpleName().toString().substring(2);
+			}
+		}
+		if (setterName == null) {
 			setterName = "set" + element.getSimpleName().toString();
 		}
 
@@ -369,9 +457,9 @@ public class AptUtil {
 	}
 
 	/**
-	 * elementに対応するgetterの名前を探し返す.
-	 * @param element フィールド
-	 * @return getter名
+	 * Returns the name of corresponding getter.
+	 * @param element the field
+	 * @return getter name
 	 * @author vvakame
 	 */
 	public static String getElementGetter(Element element) {
