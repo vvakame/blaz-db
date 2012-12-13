@@ -1,6 +1,7 @@
 package net.vvakame.blazdb.factory;
 
-import net.vvakame.sample.PrimitiveTypeData;
+import net.vvakame.sample.blazmodel.PrimitiveTypeDataWithBlazModel;
+import net.vvakame.sample.model.PrimitiveTypeDataWithModel;
 
 import org.junit.Test;
 import org.seasar.aptina.unit.AptinaTestCase;
@@ -25,12 +26,20 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		BlazDbAnnotationProcessor processor = new BlazDbAnnotationProcessor();
 		addProcessor(processor);
 
-		addCompilationUnit(PrimitiveTypeData.class);
+		addCompilationUnit(PrimitiveTypeDataWithModel.class);
+		addCompilationUnit(PrimitiveTypeDataWithBlazModel.class);
 
 		compile();
-		String source = getGeneratedSource(PrimitiveTypeData.class.getName() + "Meta");
+		{
+			@SuppressWarnings("unused")
+			String source = getGeneratedSource(PrimitiveTypeDataWithModel.class.getName() + "Meta");
+		}
+		{
+			@SuppressWarnings("unused")
+			String source =
+					getGeneratedSource(PrimitiveTypeDataWithBlazModel.class.getName() + "Meta");
+		}
 		assertThat(getCompiledResult(), is(true));
-		System.out.println(source);
 	}
 
 	@Override
