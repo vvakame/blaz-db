@@ -3,14 +3,55 @@ package @{packageName};
 import java.util.Date;
 import java.util.List;
 
+import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
-import net.vvakame.sample.Datastore;
-import net.vvakame.sample.DatastoreUtil;
-import net.vvakame.sample.KeyAttributeMeta;
-import net.vvakame.sample.ModelMeta;
-import net.vvakame.sample.PropertyAttributeMeta;
+import net.vvakame.blaz.meta.DatastoreUtil;
+import net.vvakame.blaz.meta.KeyAttributeMeta;
+import net.vvakame.blaz.meta.ModelMeta;
+import net.vvakame.blaz.meta.PropertyAttributeMeta;
 
 public class @{target}@{postfix} extends ModelMeta<@{target}> {
+
+	static final String KIND = "@{kind}";
 	
+	static final @{target}@{postfix} singleton = new @{target}@{postfix}();
+	
+	
+	protected @{target}@{postfix}() {
+		super(null);
+	}
+	
+	public static @{target}@{postfix} get() {
+		return singleton;
+	}
+
+	@Override
+	public void setKey(@{target} model, Key key) {
+	}
+
+	@Override
+	public Key getKey(@{target} model) {
+		return null;
+	}
+
+	@Override
+	public String getKind() {
+		return KIND;
+	}
+
+	@Override
+	public Class<@{target}> getModelClass() {
+		return @{target}.class;
+	}
+
+	@Override
+	public Entity modelToEntity(@{target} model) {
+		return null;
+	}
+	
+	@Override
+	public @{target} entityToModel(Entity entity) {
+		return null;
+	}
 }

@@ -12,11 +12,6 @@ import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.xtremelabs.robolectric.Robolectric;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
-import com.xtremelabs.robolectric.shadows.ShadowApplication;
 
 import static org.hamcrest.Matchers.*;
 
@@ -26,7 +21,6 @@ import static org.junit.Assert.*;
  * {@link Datastore} の全体的なテスト.
  * @author vvakame
  */
-@RunWith(RobolectricTestRunner.class)
 public class TotalTest {
 
 	private static final RootDataMeta META = RootDataMeta.get();
@@ -335,8 +329,7 @@ public class TotalTest {
 	 */
 	@Before
 	public void setUp() {
-		ShadowApplication application = Robolectric.getShadowApplication();
-		kvs = new SQLiteKVS(application.getApplicationContext());
+		kvs = new SQLiteKVS();
 		Datastore.setupDatastore(kvs);
 	}
 }
