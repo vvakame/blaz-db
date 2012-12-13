@@ -12,19 +12,8 @@
 		<blazdb.debug>true</blazdb.debug>
 		<eclipse.lib>eclipse.lib</eclipse.lib>
 		<generated.src>.apt_generated</generated.src>
-		<genclass.postfix>Generated</genclass.postfix>
+		<genclass.postfix>Meta</genclass.postfix>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>vvakame-blazdb-release</id>
-			<url>http://vvakame.github.com/JsonPullParser/release</url>
-		</repository>
-		<repository>
-			<id>vvakame-blazdb-snapshot</id>
-			<url>http://vvakame.github.com/JsonPullParser/snapshots</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -35,6 +24,12 @@
 		<dependency>
 			<groupId>net.vvakame</groupId>
 			<artifactId>blazdb-apt</artifactId>
+			<version>${blazdb.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.vvakame</groupId>
+			<artifactId>blazdb-sqlite</artifactId>
 			<version>${blazdb.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -106,7 +101,7 @@
 						<configuration>
 							<generatedSourcesDirectory>${generated.src}</generatedSourcesDirectory>
 							<proc>only</proc>
-							<compilerArgument>-AJsonPullParserClassPostfix=${genclass.postfix}</compilerArgument>
+							<compilerArgument>-ABlazDbClassPostfix=${genclass.postfix}</compilerArgument>
 							<includes>
 								<include>**</include>
 							</includes>
@@ -195,8 +190,8 @@
 eclipse.preferences.version=1
 org.eclipse.jdt.apt.aptEnabled=true
 org.eclipse.jdt.apt.genSrcDir=${generated.src}
-org.eclipse.jdt.apt.processorOptions/JsonPullParserClassPostfix=${genclass.postfix}
-org.eclipse.jdt.apt.processorOptions/JsonPullParserDebug=${blazdb.debug}
+org.eclipse.jdt.apt.processorOptions/BlazDbClassPostfix=${genclass.postfix}
+org.eclipse.jdt.apt.processorOptions/BlazDbDebug=${blazdb.debug}
 org.eclipse.jdt.apt.reconcileEnabled=false
 				                ]]>
 							</content>
