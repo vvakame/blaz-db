@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.HashMap;
 
 import javax.tools.JavaFileObject;
 
 import net.vvakame.blazdb.factory.Log;
+import net.vvakame.blazdb.factory.ModelModel;
 
 import org.mvel2.templates.TemplateRuntime;
 
@@ -30,13 +30,11 @@ public class MvelTemplate {
 	 * @throws IOException
 	 * @author vvakame
 	 */
-	public static void writeGen(JavaFileObject fileObject, Object model) throws IOException {
+	public static void writeGen(JavaFileObject fileObject, ModelModel model) throws IOException {
 		Writer writer = fileObject.openWriter();
 		PrintWriter printWriter = new PrintWriter(writer);
-		@SuppressWarnings("rawtypes")
 		String generated =
-				(String) TemplateRuntime.eval(getTemplateString("BlazModelMeta.java.mvel"),
-						new HashMap());
+				(String) TemplateRuntime.eval(getTemplateString("BlazModelMeta.java.mvel"), model);
 		printWriter.write(generated);
 		printWriter.flush();
 		printWriter.close();

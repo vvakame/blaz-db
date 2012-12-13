@@ -16,7 +16,6 @@
 
 package net.vvakame.sample;
 
-import net.vvakame.blaz.annotation.BlazModel;
 import net.vvakame.blaz.annotation.Model;
 
 /**
@@ -24,7 +23,6 @@ import net.vvakame.blaz.annotation.Model;
  * @author vvakame
  */
 @Model
-@BlazModel
 public class PrimitiveTypeData {
 
 	boolean bool;

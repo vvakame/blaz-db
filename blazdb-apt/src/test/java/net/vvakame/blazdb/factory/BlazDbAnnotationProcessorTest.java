@@ -28,9 +28,9 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		addCompilationUnit(PrimitiveTypeData.class);
 
 		compile();
-		@SuppressWarnings("unused")
 		String source = getGeneratedSource(PrimitiveTypeData.class.getName() + "Meta");
 		assertThat(getCompiledResult(), is(true));
+		System.out.println(source);
 	}
 
 	@Override

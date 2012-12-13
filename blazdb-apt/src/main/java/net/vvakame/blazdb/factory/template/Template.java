@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.tools.JavaFileObject;
 
+import net.vvakame.blazdb.factory.ModelModel;
+
 /**
  * Templating facility in general.
  * @author vvakame
@@ -20,7 +22,7 @@ public class Template {
 	 * @throws IOException
 	 * @author vvakame
 	 */
-	public static void writeGen(JavaFileObject fileObject, Object model) throws IOException {
+	public static void writeGen(JavaFileObject fileObject, ModelModel model) throws IOException {
 		MvelTemplate.writeGen(fileObject, model);
 	}
 }

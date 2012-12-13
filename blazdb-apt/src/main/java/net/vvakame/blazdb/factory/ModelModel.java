@@ -11,6 +11,20 @@ import net.vvakame.blaz.annotation.Model;
  */
 public class ModelModel {
 
+	String packageName = "invalid";
+
+	String postfix = "Invalid";
+
+	boolean existsBase = false;
+
+	String targetBase = "Invalid";
+
+	String target = "Invalid";
+
+	String targetNew = "Invalid";
+
+	// info from annotation
+
 	String kind;
 
 	int schemaVersion;
@@ -19,6 +33,102 @@ public class ModelModel {
 
 	List<AttributeModel> attributes = new ArrayList<AttributeModel>();
 
+
+	/**
+	 * @return the packageName
+	 * @category accessor
+	 */
+	public String getPackageName() {
+		return packageName;
+	}
+
+	/**
+	 * @param packageName the packageName to set
+	 * @category accessor
+	 */
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	/**
+	 * @return the postfix
+	 * @category accessor
+	 */
+	public String getPostfix() {
+		return postfix;
+	}
+
+	/**
+	 * @param postfix the postfix to set
+	 * @category accessor
+	 */
+	public void setPostfix(String postfix) {
+		this.postfix = postfix;
+	}
+
+	/**
+	 * @return the existsBase
+	 * @category accessor
+	 */
+	public boolean isExistsBase() {
+		return existsBase;
+	}
+
+	/**
+	 * @param existsBase the existsBase to set
+	 * @category accessor
+	 */
+	public void setExistsBase(boolean existsBase) {
+		this.existsBase = existsBase;
+	}
+
+	/**
+	 * @return the targetBase
+	 * @category accessor
+	 */
+	public String getTargetBase() {
+		return targetBase;
+	}
+
+	/**
+	 * @param targetBase the targetBase to set
+	 * @category accessor
+	 */
+	public void setTargetBase(String targetBase) {
+		this.targetBase = targetBase;
+	}
+
+	/**
+	 * @return the target
+	 * @category accessor
+	 */
+	public String getTarget() {
+		return target;
+	}
+
+	/**
+	 * @param target the target to set
+	 * @category accessor
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	/**
+	 * @return the targetNew
+	 * @category accessor
+	 */
+	public String getTargetNew() {
+		return targetNew;
+	}
+
+	/**
+	 * @param targetNew the targetNew to set
+	 * @category accessor
+	 */
+	public void setTargetNew(String targetNew) {
+		this.targetNew = targetNew;
+	}
 
 	/**
 	 * @return the kind
