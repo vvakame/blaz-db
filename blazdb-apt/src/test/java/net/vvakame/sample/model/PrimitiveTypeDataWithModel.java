@@ -1,5 +1,6 @@
 package net.vvakame.sample.model;
 
+import net.vvakame.blaz.Key;
 import net.vvakame.blaz.annotation.Model;
 
 /**
@@ -8,6 +9,8 @@ import net.vvakame.blaz.annotation.Model;
  */
 @Model
 public class PrimitiveTypeDataWithModel {
+
+	Key key;
 
 	boolean bool;
 
@@ -27,15 +30,32 @@ public class PrimitiveTypeDataWithModel {
 
 
 	/**
+	 * @return the key
+	 * @category accessor
+	 */
+	public Key getKey() {
+		return key;
+	}
+
+	/**
+	 * @param key the key to set
+	 * @category accessor
+	 */
+	public void setKey(Key key) {
+		this.key = key;
+	}
+
+	/**
 	 * @return the bool
+	 * @category accessor
 	 */
 	public boolean isBool() {
 		return bool;
 	}
 
 	/**
-	 * @param bool
-	 *            the bool to set
+	 * @param bool the bool to set
+	 * @category accessor
 	 */
 	public void setBool(boolean bool) {
 		this.bool = bool;
@@ -43,14 +63,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the c
+	 * @category accessor
 	 */
 	public char getC() {
 		return c;
 	}
 
 	/**
-	 * @param c
-	 *            the c to set
+	 * @param c the c to set
+	 * @category accessor
 	 */
 	public void setC(char c) {
 		this.c = c;
@@ -58,14 +79,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the b
+	 * @category accessor
 	 */
 	public byte getB() {
 		return b;
 	}
 
 	/**
-	 * @param b
-	 *            the b to set
+	 * @param b the b to set
+	 * @category accessor
 	 */
 	public void setB(byte b) {
 		this.b = b;
@@ -73,14 +95,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the s
+	 * @category accessor
 	 */
 	public short getS() {
 		return s;
 	}
 
 	/**
-	 * @param s
-	 *            the s to set
+	 * @param s the s to set
+	 * @category accessor
 	 */
 	public void setS(short s) {
 		this.s = s;
@@ -88,14 +111,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the i
+	 * @category accessor
 	 */
 	public int getI() {
 		return i;
 	}
 
 	/**
-	 * @param i
-	 *            the i to set
+	 * @param i the i to set
+	 * @category accessor
 	 */
 	public void setI(int i) {
 		this.i = i;
@@ -103,14 +127,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the l
+	 * @category accessor
 	 */
 	public long getL() {
 		return l;
 	}
 
 	/**
-	 * @param l
-	 *            the l to set
+	 * @param l the l to set
+	 * @category accessor
 	 */
 	public void setL(long l) {
 		this.l = l;
@@ -118,14 +143,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the f
+	 * @category accessor
 	 */
 	public float getF() {
 		return f;
 	}
 
 	/**
-	 * @param f
-	 *            the f to set
+	 * @param f the f to set
+	 * @category accessor
 	 */
 	public void setF(float f) {
 		this.f = f;
@@ -133,14 +159,15 @@ public class PrimitiveTypeDataWithModel {
 
 	/**
 	 * @return the d
+	 * @category accessor
 	 */
 	public double getD() {
 		return d;
 	}
 
 	/**
-	 * @param d
-	 *            the d to set
+	 * @param d the d to set
+	 * @category accessor
 	 */
 	public void setD(double d) {
 		this.d = d;

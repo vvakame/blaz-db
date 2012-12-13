@@ -31,6 +31,8 @@ public class ModelModel {
 
 	String schemaVersionName;
 
+	AttributeModel primaryKey;
+
 	List<AttributeModel> attributes = new ArrayList<AttributeModel>();
 
 
@@ -176,6 +178,22 @@ public class ModelModel {
 	 */
 	public void setSchemaVersionName(String schemaVersionName) {
 		this.schemaVersionName = schemaVersionName;
+	}
+
+	/**
+	 * @return the primaryKey
+	 * @category accessor
+	 */
+	public AttributeModel getPrimaryKey() {
+		return primaryKey;
+	}
+
+	/**
+	 * @param primaryKey the primaryKey to set
+	 * @category accessor
+	 */
+	public void setPrimaryKey(AttributeModel primaryKey) {
+		this.primaryKey = primaryKey;
 	}
 
 	/**

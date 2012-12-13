@@ -1,15 +1,21 @@
 package net.vvakame.blazdb.factory;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 
+import net.vvakame.blaz.Key;
+import net.vvakame.blaz.annotation.Attribute;
+import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.BlazModel;
 import net.vvakame.blaz.annotation.Model;
 import net.vvakame.blazdb.factory.template.Template;
@@ -89,8 +95,9 @@ public class ModelGenerator {
 				processBlazModel(m2);
 			}
 		}
-
-		// TODO attribute
+		{
+			processAttributes();
+		}
 	}
 
 	void processModel(Model model) {
@@ -163,6 +170,98 @@ public class ModelGenerator {
 			this.model.setSchemaVersion(schemaVersion);
 			this.model.setSchemaVersionName(schemaVersionName);
 		}
+	}
+
+	void processAttributes() {
+		List<Element> enclosedElements = getEnclosedElementsByKind(classElement, ElementKind.FIELD);
+
+		// TODO static field
+
+		// detect primary key
+		Element key = findPrimaryKeyByAnnotation(enclosedElements);
+
+		if (key == null) {
+			key = findPrimaryKeyByType(enclosedElements);
+		}
+		if (key == null) {
+			Log.e("primary key not exists. create Key property or use @Attribug(primaryKey=true)",
+					classElement);
+			encountError = true;
+		}
+
+		enclosedElements.remove(key);
+
+		{
+			AttributeModel keyModel = processAttribute(key);
+			model.setPrimaryKey(keyModel);
+		}
+
+		// process attributes exclude pk
+		for (Element element : enclosedElements) {
+			AttributeModel attrModel = processAttribute(element);
+			model.getAttributes().add(attrModel);
+		}
+	}
+
+	AttributeModel processAttribute(Element element) {
+		// TODO
+
+		return null;
+	}
+
+	Element findPrimaryKeyByAnnotation(List<Element> enclosedElements) {
+		Element key = null;
+		for (Element element : enclosedElements) {
+			{
+				Attribute attribute = element.getAnnotation(Attribute.class);
+				if (attribute != null && attribute.primaryKey()) {
+					if (key != null) {
+						Log.e("primary key was duplicated.", key);
+						Log.e("primary key was duplicated.", element);
+						encountError = true;
+						break;
+					}
+					key = element;
+				}
+			}
+			{
+				BlazAttribute attribute = element.getAnnotation(BlazAttribute.class);
+				if (attribute != null && attribute.primaryKey()) {
+					if (key != null) {
+						Log.e("primary key was duplicated.", key);
+						Log.e("primary key was duplicated.", element);
+						encountError = true;
+						break;
+					}
+					key = element;
+				}
+			}
+		}
+		return key;
+	}
+
+	Element findPrimaryKeyByType(List<Element> enclosedElements) {
+		Element key = null;
+		for (Element element : enclosedElements) {
+			if (isKeyElement(element)) {
+				if (key != null) {
+					Log.e("primary key was duplicated.", key);
+					Log.e("primary key was duplicated.", element);
+					encountError = true;
+					break;
+				}
+				key = element;
+			}
+		}
+		return key;
+	}
+
+	boolean isKeyElement(Element element) {
+		TypeElement keyTypeElement = elementUtils.getTypeElement(Key.class.getCanonicalName());
+		TypeMirror keyType = keyTypeElement.asType();
+
+		TypeMirror type = element.asType();
+		return typeUtils.isSameType(keyType, type);
 	}
 
 	/**

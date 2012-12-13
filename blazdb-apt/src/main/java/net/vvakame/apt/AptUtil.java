@@ -176,6 +176,29 @@ public class AptUtil {
 		return results;
 	}
 
+	/**	 
+	 * Retrieves {@link Element}s matching the given kind (only if given,) from children of the given root.
+	 * @param parent The element search from.
+	 * @param kind {@link ElementKind} looking for
+	 * @return {@link Element}s matched
+	 * @author vvakame
+	 */
+	public static List<Element> getEnclosedElementsByKind(Element parent, ElementKind kind) {
+		if (parent.getKind() != ElementKind.CLASS) {
+			throw new IllegalStateException();
+		}
+		List<Element> results = new ArrayList<Element>();
+		List<? extends Element> elements = parent.getEnclosedElements();
+		for (Element element : elements) {
+			if (element.getKind() != kind) {
+				continue;
+			}
+			results.add(element);
+		}
+
+		return results;
+	}
+
 	/**
 	 * Returns the package name of the given element.
 	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
