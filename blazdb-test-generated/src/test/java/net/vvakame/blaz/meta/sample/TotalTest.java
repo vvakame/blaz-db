@@ -54,7 +54,7 @@ public class TotalTest {
 	 */
 	@Before
 	public void setUp() {
-		kvs = new SQLiteKVS();
+		kvs = new SQLiteKVS(":memory:");
 		Datastore.setupDatastore(kvs);
 	}
 }

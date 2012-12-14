@@ -14,6 +14,6 @@ public class Benchmark extends net.vvakame.blaz.compat.Benchmark {
 	 */
 	@Before
 	public void before() {
-		kvs = new SQLiteKVS();
+		kvs = new SQLiteKVS(":memory:");
 	}
 }

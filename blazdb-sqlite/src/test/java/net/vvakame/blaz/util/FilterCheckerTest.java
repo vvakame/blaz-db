@@ -117,6 +117,6 @@ public class FilterCheckerTest {
 	 */
 	@Before
 	public void setUp() {
-		kvs = new SQLiteKVS();
+		kvs = new SQLiteKVS(":memory:");
 	}
 }

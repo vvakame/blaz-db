@@ -25,8 +25,9 @@ import net.vvakame.blaz.util.KeyUtil;
  */
 public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback {
 
-	// static final String DB_NAME = "blaz.db";
-	static final String DB_NAME = ":memory:";
+	static final String DB_NAME = "blaz.db";
+
+	// static final String DB_NAME = ":memory:";
 
 	Connection conn;
 
@@ -36,10 +37,19 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 	 * @category constructor
 	 */
 	public SQLiteKVS() {
+		this(DB_NAME);
+	}
+
+	/**
+	 * the constructor.
+	 * @param dbName Database file name
+	 * @category constructor
+	 */
+	public SQLiteKVS(String dbName) {
 		try {
 			Class.forName("org.sqlite.JDBC");
 
-			conn = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
+			conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
 
 			conn.setAutoCommit(false);
 

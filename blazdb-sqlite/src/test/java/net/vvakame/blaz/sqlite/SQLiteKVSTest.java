@@ -25,6 +25,6 @@ public class SQLiteKVSTest extends net.vvakame.blaz.compat.RawDatastoreTestBase 
 	@Override
 	@Before
 	public void before() {
-		kvs = new SQLiteKVS();
+		kvs = new SQLiteKVS(":memory:");
 	}
 }
