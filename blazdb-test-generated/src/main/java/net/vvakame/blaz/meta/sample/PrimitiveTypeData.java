@@ -10,6 +10,38 @@ import net.vvakame.blaz.annotation.Model;
 @Model
 public class PrimitiveTypeData {
 
+	// Memo: KVS to RDB style view.
+	//	select
+	//    f.val as f,
+	//    d.val as d,
+	//    b.val as b,
+	//    s.val as s,
+	//    i.val as i,
+	//    l.val as l,
+	//    bool.val as bool
+	//from
+	//    (select VAL_REAL as val, kind, key_str from VALUE_TABLE where name = 'f') f,
+	//    (select VAL_REAL as val, kind, key_str from VALUE_TABLE where name = 'd') d,
+	//    (select VAL_INT as val, kind, key_str from VALUE_TABLE where name = 'b') b,
+	//    (select VAL_INT as val, kind, key_str from VALUE_TABLE where name = 's') s,
+	//    (select VAL_INT as val, kind, key_str from VALUE_TABLE where name = 'i') i,
+	//    (select VAL_INT as val, kind, key_str from VALUE_TABLE where name = 'l') l,
+	//    (select VAL_STR as val, kind, key_str from VALUE_TABLE where name = 'bool') bool
+	//where
+	//        f.kind = 'PrimitiveTypeData'
+	//    and d.kind = 'PrimitiveTypeData'
+	//    and b.kind = 'PrimitiveTypeData'
+	//    and s.kind = 'PrimitiveTypeData'
+	//    and i.kind = 'PrimitiveTypeData'
+	//    and l.kind = 'PrimitiveTypeData'
+	//    and bool.kind = 'PrimitiveTypeData'
+	//    and f.key_str = d.key_str
+	//    and f.key_str = b.key_str
+	//    and f.key_str = s.key_str
+	//    and f.key_str = i.key_str
+	//    and f.key_str = l.key_str
+	//    and f.key_str = bool.key_str
+
 	Key key;
 
 	boolean bool;

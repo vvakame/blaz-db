@@ -6,5 +6,7 @@
 .settings/
 eclipse.lib/
 
+*.sqlite
+*.db
 blazdb-apt/dependency-reduced-pom.xml
 

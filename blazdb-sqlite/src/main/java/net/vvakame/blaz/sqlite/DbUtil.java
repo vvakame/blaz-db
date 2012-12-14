@@ -35,4 +35,28 @@ class DbUtil {
 
 		return rs.getInt("count") == 1;
 	}
+
+	/**
+	 * インデックスが存在するかを確認する。
+	 * @param statement
+	 * @param indexName
+	 * @return テーブルが存在するか否か
+	 * @throws SQLException
+	 * @author vvakame
+	 */
+	public static boolean checkIndexExsists(Statement statement, String indexName)
+			throws SQLException {
+		Connection connection = statement.getConnection();
+		PreparedStatement ps =
+				connection
+					.prepareStatement("SELECT count(*) as count FROM sqlite_master WHERE type='index' AND name=?;");
+
+		ps.setString(1, indexName);
+		ResultSet rs = ps.executeQuery();
+		if (!rs.next()) {
+			throw new IllegalStateException();
+		}
+
+		return rs.getInt("count") == 1;
+	}
 }

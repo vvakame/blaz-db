@@ -1,5 +1,6 @@
 package net.vvakame.blaz.sqlite;
 
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,9 +24,9 @@ import net.vvakame.blaz.util.KeyUtil;
  * SQLiteによるKVSの実装
  * @author vvakame
  */
-public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback {
+public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback, Closeable {
 
-	static final String DB_NAME = "blaz.db";
+	static final String DB_NAME = "blaz.sqlite";
 
 	// static final String DB_NAME = ":memory:";
 
@@ -51,7 +52,7 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 
 			conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
 
-			conn.setAutoCommit(false);
+			conn.setAutoCommit(true);
 
 			onCreate();
 
@@ -66,6 +67,16 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		// TODO connection.close();
 	}
 
+	@Override
+	public void close() {
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO
+			throw new RuntimeException(e);
+		}
+	}
+
 	void onCreate() throws SQLException {
 		Statement stmt = null;
 		try {
@@ -78,11 +89,12 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 			if (!DbUtil.checkTableExsists(stmt, Constants.TABLE_VALUES)) {
 				stmt.executeUpdate("CREATE TABLE VALUE_TABLE (KEY_STR TEXT, KIND TEXT, NAME TEXT, TYPE TEXT, SEQ INTEGER, VAL_STR TEXT, VAL_INT INTEGER, VAL_REAL REAL, VAL_BYTES BLOB)");
 			}
-			stmt.executeUpdate("DROP INDEX IF EXISTS VALUE_KEY_STR");
-			stmt.executeUpdate("CREATE INDEX VALUE_KEY_STR ON VALUE_TABLE(KEY_STR)");
-
-			stmt.executeUpdate("DROP INDEX IF EXISTS VALUE_KIND_NAME");
-			stmt.executeUpdate("CREATE INDEX VALUE_KIND_NAME ON VALUE_TABLE(KIND, NAME)");
+			if (!DbUtil.checkIndexExsists(stmt, "VALUE_KEY_STR")) {
+				stmt.executeUpdate("CREATE INDEX VALUE_KEY_STR ON VALUE_TABLE(KEY_STR)");
+			}
+			if (!DbUtil.checkIndexExsists(stmt, "VALUE_KIND_NAME")) {
+				stmt.executeUpdate("CREATE INDEX VALUE_KIND_NAME ON VALUE_TABLE(KIND, NAME)");
+			}
 		} finally {
 			if (stmt != null) {
 				stmt.close();

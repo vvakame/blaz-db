@@ -2,10 +2,9 @@ package net.vvakame.blaz.meta.sample;
 
 import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.sqlite.SQLiteKVS;
-import net.vvakame.blaz.util.KeyUtil;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ import static org.hamcrest.MatcherAssert.*;
  */
 public class TotalTest {
 
-	BareDatastore kvs;
+	SQLiteKVS kvs;
 
 
 	/**
@@ -29,12 +28,16 @@ public class TotalTest {
 	public void put() {
 		final PrimitiveTypeDataMeta meta = PrimitiveTypeDataMeta.get();
 
-		Key key = KeyUtil.createKey(meta.getKind(), 1);
+		Key key;
 		{
 			PrimitiveTypeData data = new PrimitiveTypeData();
-			data.setKey(key);
 			data.setBool(true);
 			data.setF(1.125f);
+			data.setD(2.5);
+			data.setB((byte) 1);
+			data.setS((short) 2);
+			data.setI(3);
+			data.setL(4);
 
 			Datastore.put(data);
 			key = data.getKey();
@@ -48,12 +51,21 @@ public class TotalTest {
 	}
 
 	/**
-	 * 動作確認
+	 * 下準備.
 	 * @author vvakame
 	 */
 	@Before
 	public void setUp() {
 		kvs = new SQLiteKVS(":memory:");
 		Datastore.setupDatastore(kvs);
+	}
+
+	/**
+	 * 後始末.
+	 * @author vvakame
+	 */
+	@After
+	public void tearDown() {
+		kvs.close();
 	}
 }

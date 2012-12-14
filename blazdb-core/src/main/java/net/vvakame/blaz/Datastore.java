@@ -39,9 +39,13 @@ public class Datastore {
 	 * @param model
 	 * @author vvakame
 	 */
+	@SuppressWarnings("unchecked")
 	public static void put(Object model) {
 		Entity entity = DatastoreUtil.modelToEntity(model);
 		kvs.put(entity);
+		@SuppressWarnings("rawtypes")
+		ModelMeta meta = DatastoreUtil.getModelMeta(model.getClass());
+		meta.setKey(model, entity.getKey());
 	}
 
 	/**
