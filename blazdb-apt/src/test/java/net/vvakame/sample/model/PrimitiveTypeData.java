@@ -14,8 +14,6 @@ public class PrimitiveTypeData {
 
 	boolean bool;
 
-	char c;
-
 	byte b;
 
 	short s;
@@ -59,22 +57,6 @@ public class PrimitiveTypeData {
 	 */
 	public void setBool(boolean bool) {
 		this.bool = bool;
-	}
-
-	/**
-	 * @return the c
-	 * @category accessor
-	 */
-	public char getC() {
-		return c;
-	}
-
-	/**
-	 * @param c the c to set
-	 * @category accessor
-	 */
-	public void setC(char c) {
-		this.c = c;
 	}
 
 	/**

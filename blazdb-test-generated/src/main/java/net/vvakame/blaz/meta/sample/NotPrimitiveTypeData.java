@@ -1,24 +1,20 @@
 package net.vvakame.blaz.meta.sample;
 
-import java.util.Date;
-
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.annotation.Model;
+import net.vvakame.blaz.annotation.BlazModel;
 
 /**
- * テスト用クラス
+ * A class with fields for all the not primitive and not primitive wrapper types.
  * @author vvakame
  */
-@Model
-public class RootData {
+@BlazModel
+public class NotPrimitiveTypeData {
 
 	Key key;
 
 	String str;
 
-	int integer;
-
-	Date date;
+	byte[] bytes;
 
 
 	/**
@@ -54,34 +50,18 @@ public class RootData {
 	}
 
 	/**
-	 * @return the integer
+	 * @return the bytes
 	 * @category accessor
 	 */
-	public int getInteger() {
-		return integer;
+	public byte[] getBytes() {
+		return bytes;
 	}
 
 	/**
-	 * @param integer the integer to set
+	 * @param bytes the bytes to set
 	 * @category accessor
 	 */
-	public void setInteger(int integer) {
-		this.integer = integer;
-	}
-
-	/**
-	 * @return the date
-	 * @category accessor
-	 */
-	public Date getDate() {
-		return date;
-	}
-
-	/**
-	 * @param date the date to set
-	 * @category accessor
-	 */
-	public void setDate(Date date) {
-		this.date = date;
+	public void setBytes(byte[] bytes) {
+		this.bytes = bytes;
 	}
 }

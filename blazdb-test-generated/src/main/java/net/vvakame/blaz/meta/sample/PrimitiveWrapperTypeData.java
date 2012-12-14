@@ -1,4 +1,4 @@
-package net.vvakame.sample.model;
+package net.vvakame.blaz.meta.sample;
 
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.annotation.Model;

@@ -302,6 +302,16 @@ public class AptUtil {
 	}
 
 	/**
+	 * Test if the given element is primitive wrapper boolean.
+	 * @param element
+	 * @return True if the type is a primitive wrapper boolean. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperBoolean(Element element) {
+		return Boolean.class.getCanonicalName().equals(element.asType().toString());
+	}
+
+	/**
 	 * Test if the given type is an internal type.
 	 * @param typeUtils
 	 * @param type

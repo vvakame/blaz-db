@@ -1,4 +1,4 @@
-package net.vvakame.sample.model;
+package net.vvakame.blaz.meta.sample;
 
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.annotation.Model;
@@ -8,23 +8,23 @@ import net.vvakame.blaz.annotation.Model;
  * @author vvakame
  */
 @Model
-public class PrimitiveWrapperTypeData {
+public class PrimitiveTypeData {
 
 	Key key;
 
-	Boolean bool;
+	boolean bool;
 
-	Byte b;
+	byte b;
 
-	Short s;
+	short s;
 
-	Integer i;
+	int i;
 
-	Long l;
+	long l;
 
-	Float f;
+	float f;
 
-	Double d;
+	double d;
 
 
 	/**
@@ -47,7 +47,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the bool
 	 * @category accessor
 	 */
-	public Boolean getBool() {
+	public boolean isBool() {
 		return bool;
 	}
 
@@ -55,7 +55,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param bool the bool to set
 	 * @category accessor
 	 */
-	public void setBool(Boolean bool) {
+	public void setBool(boolean bool) {
 		this.bool = bool;
 	}
 
@@ -63,7 +63,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the b
 	 * @category accessor
 	 */
-	public Byte getB() {
+	public byte getB() {
 		return b;
 	}
 
@@ -71,7 +71,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param b the b to set
 	 * @category accessor
 	 */
-	public void setB(Byte b) {
+	public void setB(byte b) {
 		this.b = b;
 	}
 
@@ -79,7 +79,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the s
 	 * @category accessor
 	 */
-	public Short getS() {
+	public short getS() {
 		return s;
 	}
 
@@ -87,7 +87,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param s the s to set
 	 * @category accessor
 	 */
-	public void setS(Short s) {
+	public void setS(short s) {
 		this.s = s;
 	}
 
@@ -95,7 +95,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the i
 	 * @category accessor
 	 */
-	public Integer getI() {
+	public int getI() {
 		return i;
 	}
 
@@ -103,7 +103,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param i the i to set
 	 * @category accessor
 	 */
-	public void setI(Integer i) {
+	public void setI(int i) {
 		this.i = i;
 	}
 
@@ -111,7 +111,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the l
 	 * @category accessor
 	 */
-	public Long getL() {
+	public long getL() {
 		return l;
 	}
 
@@ -119,7 +119,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param l the l to set
 	 * @category accessor
 	 */
-	public void setL(Long l) {
+	public void setL(long l) {
 		this.l = l;
 	}
 
@@ -127,7 +127,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the f
 	 * @category accessor
 	 */
-	public Float getF() {
+	public float getF() {
 		return f;
 	}
 
@@ -135,7 +135,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param f the f to set
 	 * @category accessor
 	 */
-	public void setF(Float f) {
+	public void setF(float f) {
 		this.f = f;
 	}
 
@@ -143,7 +143,7 @@ public class PrimitiveWrapperTypeData {
 	 * @return the d
 	 * @category accessor
 	 */
-	public Double getD() {
+	public double getD() {
 		return d;
 	}
 
@@ -151,7 +151,7 @@ public class PrimitiveWrapperTypeData {
 	 * @param d the d to set
 	 * @category accessor
 	 */
-	public void setD(Double d) {
+	public void setD(double d) {
 		this.d = d;
 	}
 }

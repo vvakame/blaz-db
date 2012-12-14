@@ -204,11 +204,13 @@ public class ModelGenerator {
 			attrModel.setCastTo(primitive.toString());
 			attrModel.setNumberPrimitiveWrapper(true);
 
-		} else if (isPrimitive(element)) {
+		} else if (isPrimitiveBoolean(element)) {
 			TypeElement wrapper = toPrimitiveWrapper(elementUtils, element);
 			attrModel.setCastTo(wrapper.asType().toString());
 
 		} else if (isKeyElement(element)) {
+
+		} else if (isPrimitiveWrapperBoolean(element)) {
 
 		} else if (isStringElement(element)) {
 

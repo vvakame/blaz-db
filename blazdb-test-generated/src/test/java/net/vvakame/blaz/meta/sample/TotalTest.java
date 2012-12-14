@@ -20,8 +20,6 @@ import static org.hamcrest.MatcherAssert.*;
  */
 public class TotalTest {
 
-	private static final RootDataMeta META = RootDataMeta.get();
-
 	BareDatastore kvs;
 
 
@@ -31,18 +29,21 @@ public class TotalTest {
 	 */
 	@Test
 	public void put() {
-		Key key = KeyUtil.createKey(META.getKind(), 1);
+		final PrimitiveTypeDataMeta meta = PrimitiveTypeDataMeta.get();
+
+		Key key = KeyUtil.createKey(meta.getKind(), 1);
 		{
-			RootData data = new RootData();
+			PrimitiveTypeData data = new PrimitiveTypeData();
 			data.setKey(key);
-			data.setInteger(1);
-			data.setStr("2");
+			data.setBool(true);
+			data.setF(1.125f);
 
 			Datastore.put(data);
 			key = data.getKey();
 		}
 		{
-			List<RootData> list = Datastore.query(META).filter(META.key.equal(key)).asList();
+			List<PrimitiveTypeData> list =
+					Datastore.query(meta).filter(meta.key.equal(key)).asList();
 			assertThat(list.size(), is(1));
 		}
 	}
