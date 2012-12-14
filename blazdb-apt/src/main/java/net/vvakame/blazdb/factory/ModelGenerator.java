@@ -187,6 +187,7 @@ public class ModelGenerator {
 			Log.e("primary key not exists. create Key property or use @Attribug(primaryKey=true)",
 					classElement);
 			encountError = true;
+			return;
 		}
 
 		enclosedElements.remove(key);
