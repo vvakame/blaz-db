@@ -31,6 +31,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
@@ -94,25 +95,65 @@ public class AptUtil {
 	public static boolean isPrimitiveWrapper(Element element) {
 		if (element == null) {
 			return false;
-		} else if (element.toString().equals(Boolean.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Boolean.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Integer.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Integer.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Long.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Long.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Byte.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Byte.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Short.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Short.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Character.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Character.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Double.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Double.class.getCanonicalName())) {
 			return true;
-		} else if (element.toString().equals(Float.class.getCanonicalName())) {
+		} else if (element.asType().toString().equals(Float.class.getCanonicalName())) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Tests if the given element is a integral number primitive.<br>
+	 * byte or short ot int or long.
+	 * @param element
+	 * @return true if the element is a primitive, false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperIntegral(Element element) {
+		String type = element.asType().toString();
+		if (Byte.class.getCanonicalName().equals(type)) {
+			return true;
+		} else if (Short.class.getCanonicalName().equals(type)) {
+			return true;
+		} else if (Integer.class.getCanonicalName().equals(type)) {
+			return true;
+		} else if (Long.class.getCanonicalName().equals(type)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Tests if the given element is a real number primitive.<br>
+	 * byte or short ot int or long.
+	 * @param element
+	 * @return true if the element is a primitive, false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperReal(Element element) {
+		String type = element.asType().toString();
+		if (Float.class.getCanonicalName().equals(type)) {
+			return true;
+		} else if (Double.class.getCanonicalName().equals(type)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -136,6 +177,46 @@ public class AptUtil {
 		} else if ("long".equals(type)) {
 			return true;
 		} else if ("float".equals(type)) {
+			return true;
+		} else if ("double".equals(type)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Tests if the given element is a integral number primitive.<br>
+	 * byte or short ot int or long.
+	 * @param element
+	 * @return true if the element is a primitive, false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveIntegral(Element element) {
+		String type = element.asType().toString();
+		if ("byte".equals(type)) {
+			return true;
+		} else if ("short".equals(type)) {
+			return true;
+		} else if ("int".equals(type)) {
+			return true;
+		} else if ("long".equals(type)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Tests if the given element is a real number primitive.<br>
+	 * byte or short ot int or long.
+	 * @param element
+	 * @return true if the element is a primitive, false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveReal(Element element) {
+		String type = element.asType().toString();
+		if ("float".equals(type)) {
 			return true;
 		} else if ("double".equals(type)) {
 			return true;
@@ -172,6 +253,39 @@ public class AptUtil {
 			return elementUtil.getTypeElement(Float.class.getCanonicalName());
 		} else if ("double".equals(type)) {
 			return elementUtil.getTypeElement(Double.class.getCanonicalName());
+		}
+
+		return null;
+	}
+
+	/**
+	 * convert primitive wapper to primitive.
+	 * @param typeUtils 
+	 * @param element
+	 * @return primitive
+	 * @author vvakame
+	 */
+	public static PrimitiveType toPrimitive(Types typeUtils, Element element) {
+		if (!isPrimitiveWrapper(element)) {
+			throw new IllegalArgumentException(element.toString() + " is not primitive wrapper");
+		}
+		String type = element.asType().toString();
+		if (Boolean.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.BOOLEAN);
+		} else if (Character.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.CHAR);
+		} else if (Byte.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.BYTE);
+		} else if (Short.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.SHORT);
+		} else if (Integer.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.INT);
+		} else if (Long.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.LONG);
+		} else if (Float.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.FLOAT);
+		} else if (Double.class.getCanonicalName().equals(type)) {
+			return typeUtils.getPrimitiveType(TypeKind.DOUBLE);
 		}
 
 		return null;

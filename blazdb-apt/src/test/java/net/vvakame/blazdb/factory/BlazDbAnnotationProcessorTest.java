@@ -1,7 +1,7 @@
 package net.vvakame.blazdb.factory;
 
-import net.vvakame.sample.blazmodel.PrimitiveTypeDataWithBlazModel;
-import net.vvakame.sample.model.PrimitiveTypeDataWithModel;
+import net.vvakame.sample.model.PrimitiveTypeData;
+import net.vvakame.sample.model.PrimitiveWrapperTypeData;
 
 import org.junit.Test;
 import org.seasar.aptina.unit.AptinaTestCase;
@@ -26,18 +26,32 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		BlazDbAnnotationProcessor processor = new BlazDbAnnotationProcessor();
 		addProcessor(processor);
 
-		addCompilationUnit(PrimitiveTypeDataWithModel.class);
-		addCompilationUnit(PrimitiveTypeDataWithBlazModel.class);
+		addCompilationUnit(PrimitiveTypeData.class);
 
 		compile();
 		{
 			@SuppressWarnings("unused")
-			String source = getGeneratedSource(PrimitiveTypeDataWithModel.class.getName() + "Meta");
+			String source = getGeneratedSource(PrimitiveTypeData.class.getName() + "Meta");
 		}
+		assertThat(getCompiledResult(), is(true));
+	}
+
+	/**
+	 * Test case.
+	 * @throws Exception
+	 * @author vvakame
+	 */
+	@Test
+	public void testForPrimitiveWrapper() throws Exception {
+		BlazDbAnnotationProcessor processor = new BlazDbAnnotationProcessor();
+		addProcessor(processor);
+
+		addCompilationUnit(PrimitiveWrapperTypeData.class);
+
+		compile();
 		{
 			@SuppressWarnings("unused")
-			String source =
-					getGeneratedSource(PrimitiveTypeDataWithBlazModel.class.getName() + "Meta");
+			String source = getGeneratedSource(PrimitiveWrapperTypeData.class.getName() + "Meta");
 		}
 		assertThat(getCompiledResult(), is(true));
 	}

@@ -1,14 +1,14 @@
-package net.vvakame.sample.blazmodel;
+package net.vvakame.sample.model;
 
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.annotation.BlazModel;
+import net.vvakame.blaz.annotation.Model;
 
 /**
  * A class with fields for all the primitive types.
  * @author vvakame
  */
-@BlazModel
-public class PrimitiveTypeDataWithBlazModel {
+@Model
+public class PrimitiveTypeData {
 
 	Key key;
 

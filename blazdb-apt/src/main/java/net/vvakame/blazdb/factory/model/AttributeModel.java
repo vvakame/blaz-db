@@ -10,8 +10,12 @@ public class AttributeModel {
 
 	String typeNameFQN;
 
-	/** if typeNameFQN was premitive, this field handle wrapper class name for type cast */
-	String primitiveWrapper;
+	boolean numberPrimitive;
+
+	boolean numberPrimitiveWrapper;
+
+	/** if typeNameFQN was primitive or primitive wrapper class, this field are class name use for type cast */
+	String castTo;
 
 	String getter;
 
@@ -43,19 +47,51 @@ public class AttributeModel {
 	}
 
 	/**
-	 * @return the primitiveWrapper
+	 * @return the numberPrimitive
 	 * @category accessor
 	 */
-	public String getPrimitiveWrapper() {
-		return primitiveWrapper;
+	public boolean isNumberPrimitive() {
+		return numberPrimitive;
 	}
 
 	/**
-	 * @param primitiveWrapper the primitiveWrapper to set
+	 * @param numberPrimitive the numberPrimitive to set
 	 * @category accessor
 	 */
-	public void setPrimitiveWrapper(String primitiveWrapper) {
-		this.primitiveWrapper = primitiveWrapper;
+	public void setNumberPrimitive(boolean numberPrimitive) {
+		this.numberPrimitive = numberPrimitive;
+	}
+
+	/**
+	 * @return the numberPrimitiveWrapper
+	 * @category accessor
+	 */
+	public boolean isNumberPrimitiveWrapper() {
+		return numberPrimitiveWrapper;
+	}
+
+	/**
+	 * @param numberPrimitiveWrapper the numberPrimitiveWrapper to set
+	 * @category accessor
+	 */
+	public void setNumberPrimitiveWrapper(boolean numberPrimitiveWrapper) {
+		this.numberPrimitiveWrapper = numberPrimitiveWrapper;
+	}
+
+	/**
+	 * @return the castTo
+	 * @category accessor
+	 */
+	public String getCastTo() {
+		return castTo;
+	}
+
+	/**
+	 * @param castTo the castTo to set
+	 * @category accessor
+	 */
+	public void setCastTo(String castTo) {
+		this.castTo = castTo;
 	}
 
 	/**

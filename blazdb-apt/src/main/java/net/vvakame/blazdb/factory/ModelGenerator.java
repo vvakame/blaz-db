@@ -9,6 +9,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -184,9 +185,28 @@ public class ModelGenerator {
 
 		String typeName = getFullQualifiedName(element.asType());
 		attrModel.setTypeNameFQN(typeName);
-		if (isPrimitive(element)) {
+
+		if (isPrimitiveIntegral(element)) {
+			TypeElement wrapper = elementUtils.getTypeElement(Long.class.getCanonicalName());
+			attrModel.setCastTo(wrapper.asType().toString());
+			attrModel.setNumberPrimitive(true);
+		} else if (isPrimitiveWrapperIntegral(element)) {
+			PrimitiveType primitive = toPrimitive(typeUtils, element);
+			attrModel.setCastTo(primitive.toString());
+			attrModel.setNumberPrimitiveWrapper(true);
+
+		} else if (isPrimitiveReal(element)) {
+			TypeElement wrapper = elementUtils.getTypeElement(Double.class.getCanonicalName());
+			attrModel.setCastTo(wrapper.asType().toString());
+			attrModel.setNumberPrimitive(true);
+		} else if (isPrimitiveWrapperReal(element)) {
+			PrimitiveType primitive = toPrimitive(typeUtils, element);
+			attrModel.setCastTo(primitive.toString());
+			attrModel.setNumberPrimitiveWrapper(true);
+
+		} else if (isPrimitive(element)) {
 			TypeElement wrapper = toPrimitiveWrapper(elementUtils, element);
-			attrModel.setPrimitiveWrapper(wrapper.asType().toString());
+			attrModel.setCastTo(wrapper.asType().toString());
 		}
 
 		return attrModel;

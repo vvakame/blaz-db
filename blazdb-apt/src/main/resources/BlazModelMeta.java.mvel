@@ -20,8 +20,13 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 	final KeyAttributeMeta @{primaryKey.name} = new KeyAttributeMeta(KIND);
 
-@foreach{attr : attributes}@if{attr.primitiveWrapper != null}
-	final PropertyAttributeMeta<@{attr.primitiveWrapper}> @{attr.name} = new PropertyAttributeMeta<@{attr.primitiveWrapper}>("@{attr.name}", @{attr.primitiveWrapper}.class);
+@foreach{attr : attributes}
+@if{attr.numberPrimitive}
+	final PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
+@elseif{attr.numberPrimitiveWrapper}
+	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
+@elseif{attr.castTo != null}
+	final PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
 @else{}
 	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @end{}@end{}
@@ -30,9 +35,9 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 		super(null);
 	}
 	
-    /**
-     * @return the singleton
-     */
+	/**
+	 * @return the singleton
+	 */
 	public static @{target}@{postfix} get() {
 		return singleton;
 	}
@@ -109,13 +114,24 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 		@{target} model = new @{target}();
 		setKey(model, key);
 		
-@foreach{attr : attributes}@if{attr.typeNameFQN == "boolean" || attr.typeNameFQN == "char"}
-		model.@{attr.setter}((@{attr.primitiveWrapper}) entity.getProperty("@{attr.name}"));
-@else{attr.primitiveWrapper != null}
-		model.@{attr.setter}(((Number) entity.getProperty("@{attr.name}")).@{attr.typeNameFQN}Value());
-@else{}
-		model.@{attr.setter}((@{attr.typeNameFQN}) entity.getProperty("@{attr.name}"));
-@end{}@end{}
+@foreach{attr : attributes}
+		if(entity.hasProperty("@{attr.name}")) {
+	@if{attr.numberPrimitive}
+			model.@{attr.setter}(((Number) entity.getProperty("@{attr.name}")).@{attr.typeNameFQN}Value());
+	@else{attr.numberPrimitiveWrapper}
+			Number value = entity.getProperty("@{attr.name}");
+			if(value == null) {
+				model.@{attr.setter}(null);
+			} else {
+				model.@{attr.setter}(value.@{attr.castTo}Value());
+			}
+	@else{attr.castTo != null}
+			model.@{attr.setter}((@{attr.castTo}) entity.getProperty("@{attr.name}"));
+	@else{}
+			model.@{attr.setter}((@{attr.typeNameFQN}) entity.getProperty("@{attr.name}"));
+	@end{}
+		}
+@end{}
 
 		return model;
 	}
