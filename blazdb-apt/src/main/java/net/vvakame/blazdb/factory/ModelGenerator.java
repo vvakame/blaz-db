@@ -207,6 +207,16 @@ public class ModelGenerator {
 		} else if (isPrimitive(element)) {
 			TypeElement wrapper = toPrimitiveWrapper(elementUtils, element);
 			attrModel.setCastTo(wrapper.asType().toString());
+
+		} else if (isKeyElement(element)) {
+
+		} else if (isStringElement(element)) {
+
+		} else if (isByteArrayElement(element)) {
+
+		} else {
+			Log.e("Unsuppoted element type = " + element.asType(), element);
+			encountError = true;
 		}
 
 		return attrModel;
@@ -251,6 +261,15 @@ public class ModelGenerator {
 
 		TypeMirror type = element.asType();
 		return typeUtils.isSameType(keyType, type);
+	}
+
+	boolean isStringElement(Element element) {
+		TypeElement string = elementUtils.getTypeElement(String.class.getCanonicalName());
+		return typeUtils.isSameType(string.asType(), element.asType());
+	}
+
+	boolean isByteArrayElement(Element element) {
+		return "byte[]".equals(element.asType().toString());
 	}
 
 	AttributeDelegate getAttributeAnnotation(Element element) {

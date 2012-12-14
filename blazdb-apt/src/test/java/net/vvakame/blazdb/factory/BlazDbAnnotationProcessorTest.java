@@ -1,5 +1,6 @@
 package net.vvakame.blazdb.factory;
 
+import net.vvakame.sample.model.NotPrimitiveTypeData;
 import net.vvakame.sample.model.PrimitiveTypeData;
 import net.vvakame.sample.model.PrimitiveWrapperTypeData;
 
@@ -52,6 +53,26 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		{
 			@SuppressWarnings("unused")
 			String source = getGeneratedSource(PrimitiveWrapperTypeData.class.getName() + "Meta");
+		}
+		assertThat(getCompiledResult(), is(true));
+	}
+
+	/**
+	 * Test case.
+	 * @throws Exception
+	 * @author vvakame
+	 */
+	@Test
+	public void testForOtherTypes() throws Exception {
+		BlazDbAnnotationProcessor processor = new BlazDbAnnotationProcessor();
+		addProcessor(processor);
+
+		addCompilationUnit(NotPrimitiveTypeData.class);
+
+		compile();
+		{
+			@SuppressWarnings("unused")
+			String source = getGeneratedSource(NotPrimitiveTypeData.class.getName() + "Meta");
 		}
 		assertThat(getCompiledResult(), is(true));
 	}

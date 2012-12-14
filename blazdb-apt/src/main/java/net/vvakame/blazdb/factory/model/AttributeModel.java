@@ -17,6 +17,8 @@ public class AttributeModel {
 	/** if typeNameFQN was primitive or primitive wrapper class, this field are class name use for type cast */
 	String castTo;
 
+	boolean notForSearch;
+
 	String getter;
 
 	String setter;
@@ -92,6 +94,22 @@ public class AttributeModel {
 	 */
 	public void setCastTo(String castTo) {
 		this.castTo = castTo;
+	}
+
+	/**
+	 * @return the notForSearch
+	 * @category accessor
+	 */
+	public boolean isNotForSearch() {
+		return notForSearch;
+	}
+
+	/**
+	 * @param notForSearch the notForSearch to set
+	 * @category accessor
+	 */
+	public void setNotForSearch(boolean notForSearch) {
+		this.notForSearch = notForSearch;
 	}
 
 	/**
