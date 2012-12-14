@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.tools.JavaFileObject;
 
-import net.vvakame.blazdb.factory.ModelModel;
+import net.vvakame.blazdb.factory.model.ModelModel;
 
 /**
  * Templating facility in general.

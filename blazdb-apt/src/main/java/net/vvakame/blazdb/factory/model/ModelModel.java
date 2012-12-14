@@ -1,4 +1,4 @@
-package net.vvakame.blazdb.factory;
+package net.vvakame.blazdb.factory.model;
 
 import java.util.ArrayList;
 import java.util.List;

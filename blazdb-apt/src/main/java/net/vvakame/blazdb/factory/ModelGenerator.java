@@ -1,6 +1,7 @@
 package net.vvakame.blazdb.factory;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.annotation.processing.Filer;
@@ -18,6 +19,10 @@ import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.BlazModel;
 import net.vvakame.blaz.annotation.Model;
+import net.vvakame.blazdb.factory.model.AttributeDelegate;
+import net.vvakame.blazdb.factory.model.AttributeModel;
+import net.vvakame.blazdb.factory.model.ModelDelegate;
+import net.vvakame.blazdb.factory.model.ModelModel;
 import net.vvakame.blazdb.factory.template.Template;
 import static net.vvakame.apt.AptUtil.*;
 
@@ -63,7 +68,8 @@ public class ModelGenerator {
 	public static ModelGenerator from(Element element, String classNamePostfix) {
 		ModelGenerator generator = new ModelGenerator(element, classNamePostfix);
 
-		generator.process();
+		generator.processModel();
+		generator.processAttributes();
 
 		return generator;
 	}
@@ -79,64 +85,8 @@ public class ModelGenerator {
 		postfix = classNamePostfix;
 	}
 
-	void process() {
-		{
-			Model m1 = classElement.getAnnotation(Model.class);
-			BlazModel m2 = classElement.getAnnotation(BlazModel.class);
-			if (m1 == null && m2 == null) {
-				Log.e("Not exists any @Model or @BlazModel decorated.", classElement);
-				encountError = true;
-			} else if (m1 != null && m2 != null) {
-				Log.e("Do not use annotation @Model and @BlazModel at once", classElement);
-				encountError = true;
-			} else if (m1 != null) {
-				processModel(m1);
-			} else {
-				processBlazModel(m2);
-			}
-		}
-		{
-			processAttributes();
-		}
-	}
-
-	void processModel(Model model) {
-		{
-			this.model.setPackageName(getPackageName(elementUtils, classElement));
-			this.model.setTarget(getSimpleName(classElement));
-			this.model.setTargetNew(getNameForNew(classElement));
-
-			TypeElement superClass = getSuperClassElement(classElement);
-			if (superClass.getAnnotation(model.annotationType()) != null) {
-				this.model.setTargetBase(getFullQualifiedName(superClass));
-				this.model.setExistsBase(true);
-			}
-
-			this.model.setPostfix(postfix);
-		}
-		{
-			String kind = model.kind();
-			if ("".equals(kind)) {
-				kind = getSimpleName(classElement);
-			}
-			if ("".equals(kind)) {
-				Log.e("kind parameter is empty string", classElement);
-				encountError = true;
-			}
-			int schemaVersion = model.schemaVersion();
-			String schemaVersionName = model.schemaVersionName();
-			if ("".equals(schemaVersionName)) {
-				Log.e("schemaVersionName parameter is empty string", classElement);
-				encountError = true;
-			}
-
-			this.model.setKind(kind);
-			this.model.setSchemaVersion(schemaVersion);
-			this.model.setSchemaVersionName(schemaVersionName);
-		}
-	}
-
-	void processBlazModel(BlazModel model) {
+	void processModel() {
+		ModelDelegate model = getModelAnnotation(classElement);
 		{
 			this.model.setPackageName(getPackageName(elementUtils, classElement));
 			this.model.setTarget(getSimpleName(classElement));
@@ -175,7 +125,7 @@ public class ModelGenerator {
 	void processAttributes() {
 		List<Element> enclosedElements = getEnclosedElementsByKind(classElement, ElementKind.FIELD);
 
-		// TODO static field
+		// TODO exclude static field
 
 		// detect primary key
 		Element key = findPrimaryKeyByAnnotation(enclosedElements);
@@ -211,20 +161,15 @@ public class ModelGenerator {
 	AttributeModel processAttribute(Element element) {
 		AttributeModel attrModel = new AttributeModel();
 		{
-			Attribute a1 = element.getAnnotation(Attribute.class);
-			BlazAttribute a2 = element.getAnnotation(BlazAttribute.class);
-
-			if (a1 != null && a2 != null) {
-				Log.e("Do not use annotation @Model and @BlazModel at once", classElement);
-				encountError = true;
-			} else if (a1 != null) {
-				processAttribute(a1, attrModel);
-			} else if (a2 != null) {
-				processAttribute(a2, attrModel);
+			AttributeDelegate attr = getAttributeAnnotation(element);
+			if (attr != null && attr.persistent()) {
+				return null;
 			}
-		}
-		if (attrModel.isPersistent()) {
-			return null;
+
+			if (attr != null) {
+				attrModel.setName(attr.name());
+				attrModel.setPersistent(attr.persistent());
+			}
 		}
 
 		String simpleName = element.getSimpleName().toString();
@@ -247,42 +192,18 @@ public class ModelGenerator {
 		return attrModel;
 	}
 
-	void processAttribute(Attribute attr, AttributeModel attrModel) {
-		attrModel.setName(attr.name());
-		attrModel.setPersistent(attr.persistent());
-	}
-
-	void processAttribute(BlazAttribute attr, AttributeModel attrModel) {
-		attrModel.setName(attr.name());
-		attrModel.setPersistent(attr.persistent());
-	}
-
 	Element findPrimaryKeyByAnnotation(List<Element> enclosedElements) {
 		Element key = null;
 		for (Element element : enclosedElements) {
-			{
-				Attribute attribute = element.getAnnotation(Attribute.class);
-				if (attribute != null && attribute.primaryKey()) {
-					if (key != null) {
-						Log.e("primary key was duplicated.", key);
-						Log.e("primary key was duplicated.", element);
-						encountError = true;
-						break;
-					}
-					key = element;
+			AttributeDelegate attribute = getAttributeAnnotation(element);
+			if (attribute != null && attribute.primaryKey()) {
+				if (key != null) {
+					Log.e("primary key was duplicated.", key);
+					Log.e("primary key was duplicated.", element);
+					encountError = true;
+					break;
 				}
-			}
-			{
-				BlazAttribute attribute = element.getAnnotation(BlazAttribute.class);
-				if (attribute != null && attribute.primaryKey()) {
-					if (key != null) {
-						Log.e("primary key was duplicated.", key);
-						Log.e("primary key was duplicated.", element);
-						encountError = true;
-						break;
-					}
-					key = element;
-				}
+				key = element;
 			}
 		}
 		return key;
@@ -310,6 +231,145 @@ public class ModelGenerator {
 
 		TypeMirror type = element.asType();
 		return typeUtils.isSameType(keyType, type);
+	}
+
+	AttributeDelegate getAttributeAnnotation(Element element) {
+		{
+			Attribute a1 = element.getAnnotation(Attribute.class);
+			BlazAttribute a2 = element.getAnnotation(BlazAttribute.class);
+
+			if (a1 != null && a2 != null) {
+				Log.e("Do not use annotation @Model and @BlazModel at once", classElement);
+				encountError = true;
+				return null;
+			}
+		}
+		{
+			final Attribute annotation = element.getAnnotation(Attribute.class);
+			if (annotation != null) {
+				return new AttributeDelegate() {
+
+					@Override
+					public boolean primaryKey() {
+						return annotation.primaryKey();
+					}
+
+					@Override
+					public boolean persistent() {
+						return annotation.persistent();
+					}
+
+					@Override
+					public String name() {
+						return annotation.name();
+					}
+
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return annotation.annotationType();
+					}
+				};
+			}
+		}
+		{
+			final BlazAttribute annotation = element.getAnnotation(BlazAttribute.class);
+			if (annotation != null) {
+				return new AttributeDelegate() {
+
+					@Override
+					public boolean primaryKey() {
+						return annotation.primaryKey();
+					}
+
+					@Override
+					public boolean persistent() {
+						return annotation.persistent();
+					}
+
+					@Override
+					public String name() {
+						return annotation.name();
+					}
+
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return annotation.annotationType();
+					}
+				};
+			}
+		}
+		return null;
+	}
+
+	ModelDelegate getModelAnnotation(Element element) {
+		{
+			Model m1 = element.getAnnotation(Model.class);
+			BlazModel m2 = element.getAnnotation(BlazModel.class);
+			if (m1 == null && m2 == null) {
+				Log.e("Not exists any @Model or @BlazModel decorated.", element);
+				encountError = true;
+				return null;
+			} else if (m1 != null && m2 != null) {
+				Log.e("Do not use annotation @Model and @BlazModel at once", element);
+				encountError = true;
+				return null;
+			}
+		}
+		{
+			final Model annotation = element.getAnnotation(Model.class);
+			if (annotation != null) {
+				return new ModelDelegate() {
+
+					@Override
+					public String schemaVersionName() {
+						return annotation.schemaVersionName();
+					}
+
+					@Override
+					public int schemaVersion() {
+						return annotation.schemaVersion();
+					}
+
+					@Override
+					public String kind() {
+						return annotation.kind();
+					}
+
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return annotation.annotationType();
+					}
+				};
+			}
+		}
+		{
+			final BlazModel annotation = element.getAnnotation(BlazModel.class);
+			if (annotation != null) {
+				return new ModelDelegate() {
+
+					@Override
+					public String schemaVersionName() {
+						return annotation.schemaVersionName();
+					}
+
+					@Override
+					public int schemaVersion() {
+						return annotation.schemaVersion();
+					}
+
+					@Override
+					public String kind() {
+						return annotation.kind();
+					}
+
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return annotation.annotationType();
+					}
+				};
+			}
+		}
+		return null;
 	}
 
 	/**

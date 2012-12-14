@@ -10,7 +10,7 @@ import java.io.Writer;
 import javax.tools.JavaFileObject;
 
 import net.vvakame.blazdb.factory.Log;
-import net.vvakame.blazdb.factory.ModelModel;
+import net.vvakame.blazdb.factory.model.ModelModel;
 
 import org.mvel2.templates.TemplateRuntime;
 

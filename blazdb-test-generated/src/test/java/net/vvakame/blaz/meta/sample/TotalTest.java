@@ -25,6 +25,10 @@ public class TotalTest {
 	BareDatastore kvs;
 
 
+	/**
+	 * Test case.
+	 * @author vvakame
+	 */
 	@Test
 	public void put() {
 		Key key = KeyUtil.createKey(META.getKind(), 1);

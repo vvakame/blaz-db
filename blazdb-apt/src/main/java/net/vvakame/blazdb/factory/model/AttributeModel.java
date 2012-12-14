@@ -1,4 +1,4 @@
-package net.vvakame.blazdb.factory;
+package net.vvakame.blazdb.factory.model;
 
 import net.vvakame.blaz.annotation.Attribute;
 
