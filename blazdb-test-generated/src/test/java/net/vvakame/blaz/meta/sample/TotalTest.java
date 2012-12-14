@@ -1,7 +1,5 @@
 package net.vvakame.blaz.meta.sample;
 
-import java.util.List;
-
 import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.bare.BareDatastore;
@@ -42,9 +40,10 @@ public class TotalTest {
 			key = data.getKey();
 		}
 		{
-			List<PrimitiveTypeData> list =
-					Datastore.query(meta).filter(meta.key.equal(key)).asList();
-			assertThat(list.size(), is(1));
+			PrimitiveTypeData data = Datastore.get(meta, key);
+			assertThat(data.getKey(), is(key));
+			assertThat(data.isBool(), is(true));
+			assertThat(data.getF(), is(1.125f));
 		}
 	}
 

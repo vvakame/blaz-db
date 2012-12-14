@@ -1,6 +1,7 @@
 package net.vvakame.blaz;
 
 import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.meta.DatastoreUtil;
 import net.vvakame.blaz.meta.ModelMeta;
 import net.vvakame.blaz.meta.ModelQuery;
@@ -41,6 +42,31 @@ public class Datastore {
 	public static void put(Object model) {
 		Entity entity = DatastoreUtil.modelToEntity(model);
 		kvs.put(entity);
+	}
+
+	/**
+	 * モデルの取得.
+	 * @param meta
+	 * @param key
+	 * @return モデル
+	 * @throws EntityNotFoundException モデルが取得できなかった時 
+	 * @author vvakame
+	 */
+	public static <M>M get(ModelMeta<M> meta, Key key) throws EntityNotFoundException {
+		Entity entity = kvs.get(key);
+		return meta.entityToModel(entity);
+	}
+
+	/**
+	 * モデルの取得.
+	 * @param meta
+	 * @param key
+	 * @return モデル or null
+	 * @author vvakame
+	 */
+	public static <M>M getOrNull(ModelMeta<M> meta, Key key) {
+		Entity entity = kvs.getOrNull(key);
+		return meta.entityToModel(entity);
 	}
 
 	/**
