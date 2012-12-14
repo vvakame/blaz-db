@@ -163,7 +163,7 @@ public class ModelGenerator {
 		AttributeModel attrModel = new AttributeModel();
 		{
 			AttributeDelegate attr = getAttributeAnnotation(element);
-			if (attr != null && attr.persistent()) {
+			if (attr != null && !attr.persistent()) {
 				return null;
 			}
 
