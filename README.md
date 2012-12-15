@@ -2,7 +2,7 @@
 
 ## プロジェクト概要
 
-GAEのDatastoreクローン(Slim3 APIレベルで一致)を作成する。
+GAEのDatastoreクローン(Slim3 APIレベルでなるべく一致)を作成する。
 最終的な目標としては、MavenCentralが利用できればいつでもどこでもSlim3と同等の楽さのDBを手に入れる事である。目指す動作環境としては、GAE/J, Android, 通常のJVM上とする。
 
 共通のAPIを用意するだけであり、裏側の実装は個別に差し替え可能なように配慮する。
@@ -21,10 +21,6 @@ blazdbのコアAPI 裏側が何であれ、実装時に利用するAPIはこの�
 ### blazdb-apt
 
 Slim3相当のMetaクラスを生成するプロジェクト。別途、Runtimeとなるプロジェクトが必要？
-
-### blazdb-generated
-
-もしかしたらblazdb-apt用ランタイムかもしれない。今のところ何もなし。
 
 ### blazdb-sqlite
 
@@ -60,11 +56,23 @@ Value用のテーブルの構成は以下のとおり。1レコードが1つのE
 
 blazdb-sqlite のAndroid用。JDBCからAndroidのAPIに置き換えたもの。
 
-### tryout
-
-Slim3相当のMetaクラスを手書きで試作する、だった気がする。
-
 ### blazdb-compat-test
 
 BlazDBはBareDatastoreを実装すればどんなDBが裏側でも利用できる。その互換性を検査するためのテスト。
 net.vvakame.blaz.compat.RawDatastoreTestBase と net.vvakame.blaz.compat.Benchmark を継承したTestCaseを作る。
+
+### blazdb-test-generated
+
+blazdb-apt が生成するコードをテストするプロジェクト。同時に、利用例の参考にもなります。
+
+## 開発
+
+開発に参加して、pull request を送ったりすると喜びます！
+開発環境のセットアップはだいたいまぁ以下みたいな感じでいいんじゃないでしょうか。
+
+	git clone https://github.com/mosabua/maven-android-sdk-deployer.git
+	cd maven-android-sdk-deployer
+	mvn install
+	git clone (このプロジェクト)
+	cd blaz-db
+	./mvn.sh
