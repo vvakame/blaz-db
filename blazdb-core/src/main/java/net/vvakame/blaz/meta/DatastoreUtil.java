@@ -1,10 +1,13 @@
 package net.vvakame.blaz.meta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Entity;
+import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.bare.DatastoreHook;
 
 /**
  * {@link Datastore} のためのユーティリティクラス.
@@ -63,5 +66,17 @@ public class DatastoreUtil {
 	@SuppressWarnings("unchecked")
 	public static <M>ModelMeta<M> getModelMeta(String modelClassName) {
 		return (ModelMeta<M>) modelMetaCache.get(modelClassName);
+	}
+
+	/**
+	 * Setup BareDatatore.
+	 * @param kvs
+	 * @author vvakame
+	 */
+	public static void setUp(BareDatastore kvs) {
+		if (kvs instanceof DatastoreHook) {
+			ArrayList<ModelMeta<?>> list = new ArrayList<ModelMeta<?>>(modelMetaCache.values());
+			((DatastoreHook) kvs).onSetup(list);
+		}
 	}
 }

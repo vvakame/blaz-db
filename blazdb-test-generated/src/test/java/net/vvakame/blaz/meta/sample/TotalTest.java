@@ -122,7 +122,10 @@ public class TotalTest {
 	 */
 	@Before
 	public void setUp() {
-		kvs = new SQLiteKVS(":memory:");
+		PrimitiveTypeDataMeta.get();
+		AllSuppotedTypeDataMeta.get();
+
+		kvs = new SQLiteKVS(/* ":memory:" */);
 		Datastore.setupDatastore(kvs);
 	}
 

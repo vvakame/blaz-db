@@ -82,6 +82,13 @@ public abstract class ModelMeta<M> {
 	public abstract Key getKey(M model);
 
 	/**
+	 * この {@link ModelMeta} が持つ全てのプロパティの一覧を返す。
+	 * @return プロパティの一覧
+	 * @author vvakame
+	 */
+	public abstract List<PropertyAttributeMeta<?>> getProperties();
+
+	/**
 	 * モデルから {@link Entity} への変換を行う.<br>
 	 * もし、子孫クラスのモデルの場合、適切な {@link ModelMeta} に処理を委譲する.
 	 * @param model 変換元モデル

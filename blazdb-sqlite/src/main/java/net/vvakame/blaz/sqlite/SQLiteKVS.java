@@ -17,6 +17,9 @@ import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.bare.DatastoreHook;
+import net.vvakame.blaz.meta.ModelMeta;
+import net.vvakame.blaz.meta.PropertyAttributeMeta;
 import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 
@@ -24,7 +27,8 @@ import net.vvakame.blaz.util.KeyUtil;
  * SQLiteによるKVSの実装
  * @author vvakame
  */
-public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback, Closeable {
+public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback, Closeable,
+		DatastoreHook {
 
 	static final String DB_NAME = "blaz.sqlite";
 
@@ -297,5 +301,98 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 	@Override
 	public boolean checkFilter(Filter... filters) {
 		return true;
+	}
+
+	@Override
+	public void onSetup(List<ModelMeta<?>> metas) {
+		for (ModelMeta<?> meta : metas) {
+			StringBuilder select = new StringBuilder();
+			StringBuilder from = new StringBuilder();
+			StringBuilder where1 = new StringBuilder();
+			StringBuilder where2 = new StringBuilder();
+
+			final String kind = meta.getKind();
+			String firstName = null;
+			List<PropertyAttributeMeta<?>> properties = meta.getProperties();
+			for (PropertyAttributeMeta<?> p : properties) {
+				final String name = p.getName();
+				final Class<?> clazz = p.getPropertyClass();
+
+				// *name*.key_str as key_str
+				if (firstName == null) {
+					select.append(name).append(".key_str as key_str,");
+				}
+
+				// *name*.val as *name*,
+				select.append(name).append(".val as ").append(name).append(",");
+
+				// (select VAL_??? as val, kind, key_str from VALUE_TABLE where name = '*name*') *name*,
+				from.append("(select VAL_");
+				if (Long.class.equals(clazz) || Integer.class.equals(clazz)
+						|| Short.class.equals(clazz) || Byte.class.equals(clazz)) {
+					from.append("INT");
+				} else if (Double.class.equals(clazz) || Float.class.equals(clazz)) {
+					from.append("REAL");
+				} else if (String.class.equals(clazz) || Boolean.class.equals(clazz)) {
+					from.append("STR");
+				} else if (byte[].class.equals(clazz)) {
+					from.append("BYTES");
+				} else if (Key.class.equals(clazz)) {
+					from.append("STR");
+				} else {
+					throw new IllegalStateException("unknown class = " + clazz.getCanonicalName());
+				}
+
+				from.append(" as val,  kind, key_str from VALUE_TABLE where name = '").append(name)
+					.append("') ").append(name).append(",");
+
+				// and *name*.kind = '*kind*'
+				if (firstName != null) {
+					where1.append("and ");
+				}
+				where1.append(name).append(".kind = '").append(kind).append("' ");
+
+				// and firstName.key_str = name.key_str
+				if (firstName != null) {
+					where2.append("and ").append(firstName).append(".key_str = ").append(name)
+						.append(".key_str ");
+				}
+
+				if (firstName == null) {
+					firstName = name;
+				}
+			}
+			// cut last ','
+			select.setLength(select.length() - 1);
+			from.setLength(from.length() - 1);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("CREATE VIEW ").append(kind).append(" as ");
+			sql.append("select ").append(select).append(" ");
+			sql.append("from ").append(from).append(" ");
+			sql.append("where ").append(where1).append(where2);
+
+			Statement stmt = null;
+			try {
+				stmt = conn.createStatement();
+				if (!DbUtil.checkViewExsists(stmt, kind)) {
+					stmt.close();
+					stmt = conn.createStatement();
+					stmt.executeUpdate(sql.toString());
+				}
+			} catch (SQLException e) {
+				// TODO
+				throw new RuntimeException(e);
+			} finally {
+				if (stmt != null) {
+					try {
+						stmt.close();
+					} catch (SQLException e) {
+						// TODO
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		}
 	}
 }

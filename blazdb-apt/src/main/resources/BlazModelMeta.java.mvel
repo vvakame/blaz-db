@@ -1,5 +1,8 @@
 package @{packageName};
 
+import java.util.List;
+import java.util.ArrayList;
+
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.meta.ModelMeta;
@@ -16,7 +19,7 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 	static final String KIND = "@{kind}";
 	
-	static final @{target}@{postfix} singleton = new @{target}@{postfix}();
+	private static final @{target}@{postfix} __singleton = new @{target}@{postfix}();
 
 	final KeyAttributeMeta @{primaryKey.name} = new KeyAttributeMeta(KIND);
 
@@ -31,15 +34,22 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @end{}@end{}
 
+	final List<PropertyAttributeMeta<?>> __properties;
+	
 	protected @{target}@{postfix}() {
 		super(null);
+
+		__properties = new ArrayList<PropertyAttributeMeta<?>>();
+@foreach{attr : attributes}
+		__properties.add(@{attr.name});
+@end{}
 	}
 	
 	/**
 	 * @return the singleton
 	 */
 	public static @{target}@{postfix} get() {
-		return singleton;
+		return __singleton;
 	}
 
 	@Override
@@ -61,6 +71,11 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	public Class<@{target}> getModelClass() {
 		return @{target}.class;
 	}
+	
+	@Override
+	public List<PropertyAttributeMeta<?>> getProperties() {
+		return __properties;
+	}
 
 	@Override
 	public Entity modelToEntity(@{target} model) {
@@ -79,6 +94,8 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 @foreach{attr : attributes}
 		entity.setProperty("@{attr.name}", model.@{attr.getter}());
 @end{}
+
+		entity.setProperty("@{schemaVersionName}", @{schemaVersion});
 
 		return entity;
 	}

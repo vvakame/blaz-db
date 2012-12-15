@@ -22,6 +22,7 @@ public class Datastore {
 	 * @author vvakame
 	 */
 	public static void setupDatastore(BareDatastore kvs) {
+		DatastoreUtil.setUp(kvs);
 		Datastore.kvs = kvs;
 	}
 

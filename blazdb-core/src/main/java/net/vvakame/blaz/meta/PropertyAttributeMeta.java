@@ -9,6 +9,8 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 
 	final String name;
 
+	final Class<T> propertyClass;
+
 
 	/**
 	 * the constructor.
@@ -22,6 +24,7 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 		super(new AscSorterCriterion(Type.PROPERTY, name), new DescSorterCriterion(Type.PROPERTY,
 				name));
 		this.name = name;
+		this.propertyClass = clazz;
 	}
 
 	@Override
@@ -32,6 +35,15 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Get property type class.
+	 * @return propety type
+	 * @author vvakame
+	 */
+	public Class<T> getPropertyClass() {
+		return propertyClass;
 	}
 
 	@Override
