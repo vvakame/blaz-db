@@ -5,7 +5,7 @@
 
 	<groupId>net.vvakame</groupId>
 	<artifactId>blazdb-parent</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -14,6 +14,13 @@
 		<eclipse.lib>eclipse.lib</eclipse.lib>
 	</properties>
 
+	<name>BlazDB</name>
+	<description>
+		Bootstrap of Database integration.
+		BlazDB provided easy to use API. like Slim3 library. Slim3 is very cool framework!
+	</description>
+	<url>https://github.com/vvakame/blaz-db</url>
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -21,15 +28,66 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+
+	<scm>
+		<connection>scm:git:git@github.com:vvakame/blaz-db.git</connection>
+		<developerConnection>scm:git:git@github.com:vvakame/blaz-db.git</developerConnection>
+		<url>git@github.com:vvakame/blaz-db.git</url>
+		<tag>blaz-db-0.1</tag>
+	</scm>
+
 	<developers>
 		<developer>
 			<id>vvakame</id>
 			<name>wakame masahiro</name>
-			<email></email>
+			<email>vvakame@gmail.com</email>
 			<url>http://d.hatena.ne.jp/vvakame/</url>
+			<roles>
+				<role>lead</role>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
 			<timezone>+9</timezone>
 		</developer>
 	</developers>
+
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/vvakame/blaz-db/issues</url>
+	</issueManagement>
+
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
 
 	<repositories>
 		<repository>
@@ -60,9 +118,27 @@
 		</dependency>
 	</dependencies>
 
+
+	<distributionManagement>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
