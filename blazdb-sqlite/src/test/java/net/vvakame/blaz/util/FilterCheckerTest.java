@@ -6,7 +6,7 @@ import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.KeyEqFilter;
 import net.vvakame.blaz.filter.KindEqFilter;
 import net.vvakame.blaz.filter.PropertyBooleanEqFilter;
-import net.vvakame.blaz.sqlite.SQLiteKVS;
+import net.vvakame.blaz.sqlite.JdbcKVS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class FilterCheckerTest {
 
-	SQLiteKVS kvs;
+	JdbcKVS kvs;
 
 
 	/**
@@ -117,6 +117,6 @@ public class FilterCheckerTest {
 	 */
 	@Before
 	public void setUp() {
-		kvs = new SQLiteKVS(":memory:");
+		kvs = JdbcKVS.createSQLiteInstance(":memory:");
 	}
 }

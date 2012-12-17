@@ -23,41 +23,35 @@ import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 
 /**
- * SQLiteによるKVSの実装
+ * JDBCによるKVSの実装
  * @author vvakame
  */
-public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback, Closeable {
-
-	static final String DB_NAME = "blaz.sqlite";
-
-	// static final String DB_NAME = ":memory:";
+public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallback, Closeable {
 
 	Connection conn;
 
 
 	/**
-	 * the constructor.
-	 * @category constructor
+	 * SQLiteを使ったKVSを作成し返す。
+	 * @return KVS
+	 * @author vvakame
 	 */
-	public SQLiteKVS() {
-		this(DB_NAME);
+	public static JdbcKVS createSQLiteInstance() {
+		return createSQLiteInstance("blaz.sqlite");
 	}
 
 	/**
-	 * the constructor.
-	 * @param dbName Database file name
-	 * @category constructor
+	 * SQLiteを使ったKVSを作成し返す。
+	 * @param dbName 作成するDBファイル名
+	 * @return KVS
+	 * @author vvakame
 	 */
-	public SQLiteKVS(String dbName) {
+	public static JdbcKVS createSQLiteInstance(String dbName) {
 		try {
 			Class.forName("org.sqlite.JDBC");
 
-			conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
-
-			conn.setAutoCommit(true);
-
-			onCreate();
-
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
+			return new JdbcKVS(conn);
 		} catch (ClassNotFoundException e) {
 			// TODO
 			throw new RuntimeException(e);
@@ -65,8 +59,47 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 			// TODO
 			throw new RuntimeException(e);
 		}
+	}
 
-		// TODO connection.close();
+	/**
+	 * H2Databaseを使ったKVSを作成し返す。
+	 * @param dbName 
+	 * @return KVS
+	 * @author vvakame
+	 * @deprecated まだ全然実装終わってなくて動かないので
+	 */
+	@Deprecated
+	// not implemented completely yet.
+	public static JdbcKVS createH2DbInstance(String dbName) {
+		try {
+			Class.forName("org.h2.Driver");
+
+			Connection conn = DriverManager.getConnection("jdbc:h2:" + dbName, "sa", "");
+			return new JdbcKVS(conn);
+		} catch (ClassNotFoundException e) {
+			// TODO
+			throw new RuntimeException(e);
+		} catch (SQLException e) {
+			// TODO
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * the constructor.
+	 * @param conn
+	 * @category constructor
+	 */
+	public JdbcKVS(Connection conn) {
+		try {
+			this.conn = conn;
+			conn.setAutoCommit(true);
+
+			onCreate();
+		} catch (SQLException e) {
+			// TODO
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -85,16 +118,16 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 			stmt = conn.createStatement();
 
 			// FIXME KEYにUniq制約が必要
-			if (!DbUtil.checkTableExsists(stmt, Constants.TABLE_KEYS)) {
+			if (!DbUtil.checkTableExsists(conn, Constants.TABLE_KEYS)) {
 				stmt.executeUpdate("CREATE TABLE KEY_TABLE (ID INTEGER, NAME TEXT, KIND TEXT,KEY_STR TEXT)");
 			}
-			if (!DbUtil.checkTableExsists(stmt, Constants.TABLE_VALUES)) {
+			if (!DbUtil.checkTableExsists(conn, Constants.TABLE_VALUES)) {
 				stmt.executeUpdate("CREATE TABLE VALUE_TABLE (KEY_STR TEXT, KIND TEXT, NAME TEXT, TYPE TEXT, SEQ INTEGER, VAL_STR TEXT, VAL_INT INTEGER, VAL_REAL REAL, VAL_BYTES BLOB)");
 			}
-			if (!DbUtil.checkIndexExsists(stmt, "VALUE_KEY_STR")) {
+			if (!DbUtil.checkIndexExsists(conn, "VALUE_KEY_STR")) {
 				stmt.executeUpdate("CREATE INDEX VALUE_KEY_STR ON VALUE_TABLE(KEY_STR)");
 			}
-			if (!DbUtil.checkIndexExsists(stmt, "VALUE_KIND_NAME")) {
+			if (!DbUtil.checkIndexExsists(conn, "VALUE_KIND_NAME")) {
 				stmt.executeUpdate("CREATE INDEX VALUE_KIND_NAME ON VALUE_TABLE(KIND, NAME)");
 			}
 		} finally {

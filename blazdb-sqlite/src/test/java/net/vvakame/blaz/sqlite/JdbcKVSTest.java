@@ -5,10 +5,10 @@ import net.vvakame.blaz.exception.EntityNotFoundException;
 import org.junit.Before;
 
 /**
- * {@link SQLiteKVS} のテストケース.
+ * {@link JdbcKVS} のテストケース.
  * @author vvakame
  */
-public class SQLiteKVSTest extends net.vvakame.blaz.compat.RawDatastoreTestBase {
+public class JdbcKVSTest extends net.vvakame.blaz.compat.RawDatastoreTestBase {
 
 	/**
 	 * SQLite JDBCだとTransactionがうまく動かないので暫定で回避
@@ -25,6 +25,6 @@ public class SQLiteKVSTest extends net.vvakame.blaz.compat.RawDatastoreTestBase 
 	@Override
 	@Before
 	public void before() {
-		kvs = new SQLiteKVS(":memory:");
+		kvs = JdbcKVS.createSQLiteInstance(":memory:");
 	}
 }

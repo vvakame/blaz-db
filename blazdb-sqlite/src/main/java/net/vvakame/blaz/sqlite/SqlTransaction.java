@@ -3,7 +3,7 @@ package net.vvakame.blaz.sqlite;
 import net.vvakame.blaz.Transaction;
 
 /**
- * {@link SQLiteKVS} に対する {@link Transaction} の実装.
+ * {@link JdbcKVS} に対する {@link Transaction} の実装.
  * @author vvakame
  */
 class SqlTransaction implements Transaction {

@@ -2,7 +2,7 @@ package net.vvakame.blaz.meta.sample;
 
 import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Key;
-import net.vvakame.blaz.sqlite.SQLiteKVS;
+import net.vvakame.blaz.sqlite.JdbcKVS;
 import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.After;
@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.*;
  */
 public class TotalTest {
 
-	SQLiteKVS kvs;
+	JdbcKVS kvs;
 
 
 	/**
@@ -122,7 +122,7 @@ public class TotalTest {
 	 */
 	@Before
 	public void setUp() {
-		kvs = new SQLiteKVS(":memory:");
+		kvs = JdbcKVS.createSQLiteInstance(":memory:");
 		kvs.createView(PrimitiveTypeDataMeta.get());
 		kvs.createView(AllSuppotedTypeDataMeta.get());
 		Datastore.setupDatastore(kvs);
