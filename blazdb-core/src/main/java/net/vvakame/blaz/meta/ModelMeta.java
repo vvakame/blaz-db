@@ -1,6 +1,7 @@
 package net.vvakame.blaz.meta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -105,4 +106,82 @@ public abstract class ModelMeta<M> {
 	 * @author vvakame
 	 */
 	public abstract M entityToModel(Entity entity);
+
+	public <T>List<T> toList(Class<T> clazz, Entity entity, String propertyName) {
+		Object property = entity.getProperty(propertyName);
+		if (property == null) {
+			return null;
+		}
+
+		if (property instanceof Collection == false) {
+			throw new IllegalArgumentException(propertyName + " is not Collection");
+		}
+
+		@SuppressWarnings("unchecked")
+		Collection<T> originals = (Collection<T>) property;
+		return new ArrayList<T>(originals);
+	}
+
+	public List<Byte> toByteList(Entity entity, String propertyName) {
+		Object property = entity.getProperty(propertyName);
+		if (property == null) {
+			return null;
+		}
+
+		if (property instanceof Collection == false) {
+			throw new IllegalArgumentException(propertyName + " is not Collection");
+		}
+
+		@SuppressWarnings("unchecked")
+		Collection<Long> originals = (Collection<Long>) property;
+		List<Byte> resultList = new ArrayList<Byte>(originals.size());
+
+		for (Long value : originals) {
+			resultList.add(value != null ? value.byteValue() : null);
+		}
+
+		return resultList;
+	}
+
+	public List<Short> toShortList(Entity entity, String propertyName) {
+		Object property = entity.getProperty(propertyName);
+		if (property == null) {
+			return null;
+		}
+
+		if (property instanceof Collection == false) {
+			throw new IllegalArgumentException(propertyName + " is not Collection");
+		}
+
+		@SuppressWarnings("unchecked")
+		Collection<Long> originals = (Collection<Long>) property;
+		List<Short> resultList = new ArrayList<Short>(originals.size());
+
+		for (Long value : originals) {
+			resultList.add(value != null ? value.shortValue() : null);
+		}
+
+		return resultList;
+	}
+
+	public List<Float> toFloatList(Entity entity, String propertyName) {
+		Object property = entity.getProperty(propertyName);
+		if (property == null) {
+			return null;
+		}
+
+		if (property instanceof Collection == false) {
+			throw new IllegalArgumentException(propertyName + " is not Collection");
+		}
+
+		@SuppressWarnings("unchecked")
+		Collection<Double> originals = (Collection<Double>) property;
+		List<Float> resultList = new ArrayList<Float>(originals.size());
+
+		for (Double value : originals) {
+			resultList.add(value != null ? value.floatValue() : null);
+		}
+
+		return resultList;
+	}
 }

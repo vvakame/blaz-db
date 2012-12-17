@@ -1,5 +1,7 @@
 package net.vvakame.sample.model;
 
+import java.util.List;
+
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.Model;
@@ -47,6 +49,26 @@ public class AllSuppotedTypeData {
 	String str;
 
 	byte[] bytes;
+
+	List<Key> keyList;
+
+	List<Boolean> boolWList;
+
+	List<Byte> bWList;
+
+	List<Short> sWList;
+
+	List<Integer> iWList;
+
+	List<Long> lWList;
+
+	List<Float> fWList;
+
+	List<Double> dWList;
+
+	List<String> strList;
+
+	List<byte[]> bytesList;
 
 
 	/**
@@ -335,5 +357,165 @@ public class AllSuppotedTypeData {
 	 */
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
+	}
+
+	/**
+	 * @return the keyList
+	 * @category accessor
+	 */
+	public List<Key> getKeyList() {
+		return keyList;
+	}
+
+	/**
+	 * @param keyList the keyList to set
+	 * @category accessor
+	 */
+	public void setKeyList(List<Key> keyList) {
+		this.keyList = keyList;
+	}
+
+	/**
+	 * @return the boolWList
+	 * @category accessor
+	 */
+	public List<Boolean> getBoolWList() {
+		return boolWList;
+	}
+
+	/**
+	 * @param boolWList the boolWList to set
+	 * @category accessor
+	 */
+	public void setBoolWList(List<Boolean> boolWList) {
+		this.boolWList = boolWList;
+	}
+
+	/**
+	 * @return the bWList
+	 * @category accessor
+	 */
+	public List<Byte> getbWList() {
+		return bWList;
+	}
+
+	/**
+	 * @param bWList the bWList to set
+	 * @category accessor
+	 */
+	public void setbWList(List<Byte> bWList) {
+		this.bWList = bWList;
+	}
+
+	/**
+	 * @return the sWList
+	 * @category accessor
+	 */
+	public List<Short> getsWList() {
+		return sWList;
+	}
+
+	/**
+	 * @param sWList the sWList to set
+	 * @category accessor
+	 */
+	public void setsWList(List<Short> sWList) {
+		this.sWList = sWList;
+	}
+
+	/**
+	 * @return the iWList
+	 * @category accessor
+	 */
+	public List<Integer> getiWList() {
+		return iWList;
+	}
+
+	/**
+	 * @param iWList the iWList to set
+	 * @category accessor
+	 */
+	public void setiWList(List<Integer> iWList) {
+		this.iWList = iWList;
+	}
+
+	/**
+	 * @return the lWList
+	 * @category accessor
+	 */
+	public List<Long> getlWList() {
+		return lWList;
+	}
+
+	/**
+	 * @param lWList the lWList to set
+	 * @category accessor
+	 */
+	public void setlWList(List<Long> lWList) {
+		this.lWList = lWList;
+	}
+
+	/**
+	 * @return the fWList
+	 * @category accessor
+	 */
+	public List<Float> getfWList() {
+		return fWList;
+	}
+
+	/**
+	 * @param fWList the fWList to set
+	 * @category accessor
+	 */
+	public void setfWList(List<Float> fWList) {
+		this.fWList = fWList;
+	}
+
+	/**
+	 * @return the dWList
+	 * @category accessor
+	 */
+	public List<Double> getdWList() {
+		return dWList;
+	}
+
+	/**
+	 * @param dWList the dWList to set
+	 * @category accessor
+	 */
+	public void setdWList(List<Double> dWList) {
+		this.dWList = dWList;
+	}
+
+	/**
+	 * @return the strList
+	 * @category accessor
+	 */
+	public List<String> getStrList() {
+		return strList;
+	}
+
+	/**
+	 * @param strList the strList to set
+	 * @category accessor
+	 */
+	public void setStrList(List<String> strList) {
+		this.strList = strList;
+	}
+
+	/**
+	 * @return the bytesList
+	 * @category accessor
+	 */
+	public List<byte[]> getBytesList() {
+		return bytesList;
+	}
+
+	/**
+	 * @param bytesList the bytesList to set
+	 * @category accessor
+	 */
+	public void setBytesList(List<byte[]> bytesList) {
+		this.bytesList = bytesList;
 	}
 }

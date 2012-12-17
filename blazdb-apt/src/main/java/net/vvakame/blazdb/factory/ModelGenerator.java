@@ -9,8 +9,11 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
@@ -144,14 +147,14 @@ public class ModelGenerator {
 		enclosedElements.remove(key);
 
 		{
-			AttributeModel keyModel = processAttribute(key);
+			AttributeModel keyModel = getAttributeModel(key.asType(), key, Kind.KEY);
 			keyModel.setPrimaryKey(true);
 			model.setPrimaryKey(keyModel);
 		}
 
 		// process attributes exclude pk
 		for (Element element : enclosedElements) {
-			AttributeModel attrModel = processAttribute(element);
+			AttributeModel attrModel = element.asType().accept(new ValueExtractVisitor(), element);
 			if (attrModel == null) {
 				continue;
 			}
@@ -159,6 +162,8 @@ public class ModelGenerator {
 		}
 	}
 
+	// TODO あとで消す
+	@Deprecated
 	AttributeModel processAttribute(Element element) {
 		AttributeModel attrModel = new AttributeModel();
 		{
@@ -217,7 +222,7 @@ public class ModelGenerator {
 		} else if (isByteArrayElement(element)) {
 
 		} else {
-			Log.e("Unsuppoted element type = " + element.asType(), element);
+			Log.e("Unsupported element type = " + element.asType(), element);
 			encountError = true;
 		}
 
@@ -412,6 +417,263 @@ public class ModelGenerator {
 		}
 		return null;
 	}
+
+	AttributeModel getAttributeModel(TypeMirror t, Element el, Kind kind) {
+		if (kind == null) {
+			Log.e("invalid state. this is APT bugs.");
+			encountError = true;
+			return null;
+		}
+
+		AttributeModel attrModel = new AttributeModel();
+		{
+			AttributeDelegate attr = getAttributeAnnotation(el);
+			if (attr != null && !attr.persistent()) {
+				return null;
+			}
+
+			if (attr != null) {
+				attrModel.setName(attr.name());
+				attrModel.setPersistent(attr.persistent());
+			}
+		}
+
+		String simpleName = el.getSimpleName().toString();
+		if (attrModel.getName() == null || "".equals(attrModel.getName())) {
+			attrModel.setName(simpleName);
+		}
+
+		String getter = getElementGetter(el);
+		String setter = getElementSetter(el);
+		attrModel.setGetter(getter);
+		attrModel.setSetter(setter);
+
+		String typeName = getFullQualifiedName(el.asType());
+		attrModel.setTypeNameFQN(typeName);
+
+		switch (kind) {
+			case BYTE:
+			case SHORT:
+			case INT:
+			case LONG: {
+				TypeElement wrapper = elementUtils.getTypeElement(Long.class.getCanonicalName());
+				attrModel.setCastTo(wrapper.asType().toString());
+				attrModel.setNumberPrimitive(true);
+			}
+				break;
+			case BYTE_WRAPPER:
+			case SHORT_WRAPPER:
+			case INT_WRAPPER:
+			case LONG_WRAPPER: {
+				PrimitiveType primitive = toPrimitive(typeUtils, el);
+				attrModel.setCastTo(primitive.toString());
+				attrModel.setNumberPrimitiveWrapper(true);
+			}
+				break;
+			case FLOAT:
+			case DOUBLE: {
+				TypeElement wrapper = elementUtils.getTypeElement(Double.class.getCanonicalName());
+				attrModel.setCastTo(wrapper.asType().toString());
+				attrModel.setNumberPrimitive(true);
+			}
+				break;
+			case FLOAT_WRAPPER:
+			case DOUBLE_WRAPPER: {
+				PrimitiveType primitive = toPrimitive(typeUtils, el);
+				attrModel.setCastTo(primitive.toString());
+				attrModel.setNumberPrimitiveWrapper(true);
+			}
+				break;
+			case BOOLEAN: {
+				TypeElement wrapper = toPrimitiveWrapper(elementUtils, el);
+				attrModel.setCastTo(wrapper.asType().toString());
+			}
+				break;
+
+			case KEY:
+			case BOOLEAN_WRAPPER:
+			case STRING:
+			case BYTE_ARRAY:
+				// to do nothing.
+				break;
+
+			case CHAR:
+			case CHAR_WRAPPER:
+			case DATE:
+			case ENUM:
+			case LIST:
+			case UNKNOWN:
+				Log.e("Unsuppoted element type = " + el.asType(), el);
+				encountError = true;
+				break;
+		}
+
+		return attrModel;
+	}
+
+
+	class ValueExtractVisitor extends StandardTypeKindVisitor<AttributeModel, Element> {
+
+		@Override
+		public AttributeModel visitPrimitiveAsBoolean(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.BOOLEAN);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsByte(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.BYTE);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsChar(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.CHAR);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsDouble(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.DOUBLE);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsFloat(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.FLOAT);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsInt(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.INT);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsLong(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.LONG);
+		}
+
+		@Override
+		public AttributeModel visitPrimitiveAsShort(PrimitiveType t, Element el) {
+			return getAttributeModel(t, el, Kind.SHORT);
+		}
+
+		@Override
+		public AttributeModel visitString(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.STRING);
+		}
+
+		@Override
+		public AttributeModel visitList(DeclaredType t, Element el) {
+
+			List<? extends TypeMirror> generics = t.getTypeArguments();
+			if (generics.size() != 1) {
+				Log.e("expected single type generics.", el);
+				encountError = true;
+				return defaultAction(t, el);
+			}
+			TypeMirror tm = generics.get(0);
+			if (tm instanceof WildcardType) {
+				WildcardType wt = (WildcardType) tm;
+				TypeMirror extendsBound = wt.getExtendsBound();
+				if (extendsBound != null) {
+					tm = extendsBound;
+				}
+				TypeMirror superBound = wt.getSuperBound();
+				if (superBound != null) {
+					Log.e("super is not supported.", el);
+					encountError = true;
+					return defaultAction(t, el);
+				}
+			}
+
+			return null;
+		}
+
+		@Override
+		public AttributeModel visitDate(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.DATE);
+		}
+
+		@Override
+		public AttributeModel visitEnum(DeclaredType t, Element el) {
+			Types typeUtils = processingEnv.getTypeUtils();
+			if (isInternalType(typeUtils, el.asType())) {
+				// InternalなEnum
+				TypeElement typeElement = getTypeElement(typeUtils, el);
+				if (isPublic(typeElement)) {
+					return getAttributeModel(t, el, Kind.ENUM);
+				} else {
+					Log.e("Internal EnumType must use public & static.", el);
+					encountError = true;
+					return defaultAction(t, el);
+				}
+			} else {
+				// InternalじゃないEnum
+				return getAttributeModel(t, el, Kind.ENUM);
+			}
+		}
+
+		@Override
+		public AttributeModel visitBooleanWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.BOOLEAN_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitDoubleWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.DOUBLE_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitLongWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.LONG_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitByteWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.BYTE_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitCharacterWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.CHAR_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitFloatWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.FLOAT_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitIntegerWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.INT_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitShortWrapper(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.SHORT_WRAPPER);
+		}
+
+		@Override
+		public AttributeModel visitKey(DeclaredType t, Element el) {
+			return getAttributeModel(t, el, Kind.KEY);
+		}
+
+		@Override
+		public AttributeModel visitUndefinedClass(DeclaredType t, Element el) {
+			Log.e("Unsuppoted element type = " + el.asType(), el);
+			encountError = true;
+			return defaultAction(t, el);
+		}
+
+		@Override
+		public AttributeModel visitArray(ArrayType t, Element el) {
+			TypeMirror component = t.getComponentType();
+			if ("byte".equals(component.toString())) {
+				return getAttributeModel(t, el, Kind.BYTE_ARRAY);
+			}
+			Log.e("Unsuppoted element type = " + el.asType(), el);
+			encountError = true;
+			return defaultAction(t, el);
+		}
+	}
+
 
 	/**
 	 * Generates the source code.
