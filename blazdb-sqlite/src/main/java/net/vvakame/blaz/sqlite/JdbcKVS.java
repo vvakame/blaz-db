@@ -353,6 +353,23 @@ public class JdbcKVS extends BareDatastore implements
 	 * @author vvakame
 	 */
 	public void createView(ModelMeta<?> meta) {
+
+		List<PropertyAttributeMeta<?>> listProperties = new ArrayList<PropertyAttributeMeta<?>>();
+		createViewMains(meta, listProperties);
+		createViewSubLists(meta, listProperties);
+	}
+
+	/**
+	 * 1つのKindにつき、1つのViewを作成する.
+	 * 
+	 * @param meta
+	 * @param listProperties
+	 *            Kindに含まれるプロパティのうち、Listのもの
+	 * @author vvakame
+	 */
+	void createViewMains(ModelMeta<?> meta,
+			List<PropertyAttributeMeta<?>> listProperties) {
+
 		StringBuilder select = new StringBuilder();
 		StringBuilder from = new StringBuilder();
 		StringBuilder where1 = new StringBuilder();
@@ -360,14 +377,16 @@ public class JdbcKVS extends BareDatastore implements
 
 		final String kind = meta.getKind();
 		String firstName = null;
+
 		List<PropertyAttributeMeta<?>> properties = meta.getProperties();
+
 		for (PropertyAttributeMeta<?> p : properties) {
-			final String name = p.getName();
 			final Class<?> clazz = p.getPropertyClass();
 			if (List.class.equals(clazz)) {
-				// to do nothing.
+				listProperties.add(p);
 				continue;
 			}
+			final String name = p.getName();
 
 			// *name*.key_str as key_str
 			if (firstName == null) {
@@ -444,6 +463,57 @@ public class JdbcKVS extends BareDatastore implements
 				} catch (SQLException e) {
 					// TODO
 					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * {@link #createViewMains(ModelMeta, List)}
+	 * で1Kind=1Viewを作った後の、Kindに含まれる1つのListプロパティ=1Viewを作成する.
+	 * 
+	 * @param meta
+	 * @param listProperties
+	 * @author vvakame
+	 */
+	void createViewSubLists(ModelMeta<?> meta,
+			List<PropertyAttributeMeta<?>> listProperties) {
+		for (PropertyAttributeMeta<?> p : listProperties) {
+			final String viewName = meta.getKind() + "_List_" + p.getName();
+			StringBuilder select = new StringBuilder();
+			StringBuilder where = new StringBuilder();
+
+			select.append("KIND, KEY_STR, SEQ, TYPE, ");
+			select.append("VAL_STR, VAL_INT, VAL_REAL, VAL_BYTES").append(" ");
+
+			where.append("kind = '").append(meta.getKind());
+			where.append("' and name = '").append(p.getName()).append("' ");
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("CREATE VIEW ").append(viewName).append(" as ");
+			sql.append("select ").append(select);
+			sql.append("from VALUE_TABLE where ");
+			sql.append(where);
+			sql.append(" order by key_str, seq");
+
+			Statement stmt = null;
+			try {
+				stmt = conn.createStatement();
+				stmt.executeUpdate("DROP VIEW IF EXISTS " + viewName);
+				stmt.close();
+				stmt = conn.createStatement();
+				stmt.executeUpdate(sql.toString());
+			} catch (SQLException e) {
+				// TODO
+				throw new RuntimeException(e);
+			} finally {
+				if (stmt != null) {
+					try {
+						stmt.close();
+					} catch (SQLException e) {
+						// TODO
+						throw new RuntimeException(e);
+					}
 				}
 			}
 		}

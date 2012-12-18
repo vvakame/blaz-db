@@ -203,7 +203,7 @@ public class TotalTest {
 	 */
 	@Before
 	public void setUp() {
-		kvs = JdbcKVS.createSQLiteInstance(":memory:");
+		kvs = JdbcKVS.createSQLiteInstance(/* ":memory:" */);
 		kvs.createView(PrimitiveTypeDataMeta.get());
 		kvs.createView(AllSuppotedTypeDataMeta.get());
 		Datastore.setupDatastore(kvs);
