@@ -10,6 +10,7 @@ import net.vvakame.blaz.Key;
 
 /**
  * モデルと {@link Entity} のヒモ付や、検索条件、ソート条件の指定を行うためのクラス.
+ * 
  * @author vvakame
  * @param <M>
  */
@@ -26,7 +27,6 @@ public abstract class ModelMeta<M> {
 
 	protected List<String> classHierarchyList;
 
-
 	protected ModelMeta() {
 		init(null);
 	}
@@ -36,10 +36,12 @@ public abstract class ModelMeta<M> {
 	}
 
 	private void init(ModelMeta<?> meta) {
-		DatastoreUtil.modelMetaCache.put(getModelClass().getCanonicalName(), this);
+		DatastoreUtil.modelMetaCache.put(getModelClass().getCanonicalName(),
+				this);
 
 		if (meta == null || meta.classHierarchyList == null) {
-			classHierarchyList = Collections.unmodifiableList(new ArrayList<String>());
+			classHierarchyList = Collections
+					.unmodifiableList(new ArrayList<String>());
 		} else {
 			List<String> list = new ArrayList<String>();
 			list.addAll(meta.classHierarchyList);
@@ -54,6 +56,7 @@ public abstract class ModelMeta<M> {
 
 	/**
 	 * モデルの {@link Class} を取得する.
+	 * 
 	 * @return モデルの {@link Class}
 	 * @author vvakame
 	 */
@@ -61,6 +64,7 @@ public abstract class ModelMeta<M> {
 
 	/**
 	 * モデルを {@link Entity} として保存した時のKindを取得する.
+	 * 
 	 * @return Kind名
 	 * @author vvakame
 	 */
@@ -68,15 +72,20 @@ public abstract class ModelMeta<M> {
 
 	/**
 	 * モデルに対して指定された {@link Key} をセットする.
-	 * @param model {@link Key} をセットされるモデル
-	 * @param key セットする {@link Key}
+	 * 
+	 * @param model
+	 *            {@link Key} をセットされるモデル
+	 * @param key
+	 *            セットする {@link Key}
 	 * @author vvakame
 	 */
 	public abstract void setKey(M model, Key key);
 
 	/**
 	 * モデルに対して指定された {@link Key} を取得する.
-	 * @param model {@link Key} を取得するモデル
+	 * 
+	 * @param model
+	 *            {@link Key} を取得するモデル
 	 * @return 取得した {@link Key}
 	 * @author vvakame
 	 */
@@ -84,6 +93,7 @@ public abstract class ModelMeta<M> {
 
 	/**
 	 * この {@link ModelMeta} が持つ全てのプロパティの一覧を返す。
+	 * 
 	 * @return プロパティの一覧
 	 * @author vvakame
 	 */
@@ -92,7 +102,9 @@ public abstract class ModelMeta<M> {
 	/**
 	 * モデルから {@link Entity} への変換を行う.<br>
 	 * もし、子孫クラスのモデルの場合、適切な {@link ModelMeta} に処理を委譲する.
-	 * @param model 変換元モデル
+	 * 
+	 * @param model
+	 *            変換元モデル
 	 * @return 変換後 {@link Entity}
 	 * @author vvakame
 	 */
@@ -101,20 +113,32 @@ public abstract class ModelMeta<M> {
 	/**
 	 * {@link Entity} からモデルへの変換を行う.<br>
 	 * もし、子孫クラスのモデルの場合、適切な {@link ModelMeta} に処理を委譲する.
-	 * @param entity 変換元 {@link Entity}
+	 * 
+	 * @param entity
+	 *            変換元 {@link Entity}
 	 * @return 変換後モデル
 	 * @author vvakame
 	 */
 	public abstract M entityToModel(Entity entity);
 
-	public <T>List<T> toList(Class<T> clazz, Entity entity, String propertyName) {
+	/**
+	 * Entityの指定されたPropertyをListとして取り出す。
+	 * 
+	 * @param clazz
+	 * @param entity
+	 * @param propertyName
+	 * @return {@link List}
+	 * @author vvakame
+	 */
+	public <T> List<T> toList(Class<T> clazz, Entity entity, String propertyName) {
 		Object property = entity.getProperty(propertyName);
 		if (property == null) {
 			return null;
 		}
 
 		if (property instanceof Collection == false) {
-			throw new IllegalArgumentException(propertyName + " is not Collection");
+			throw new IllegalArgumentException(propertyName
+					+ " is not Collection");
 		}
 
 		@SuppressWarnings("unchecked")
@@ -122,6 +146,14 @@ public abstract class ModelMeta<M> {
 		return new ArrayList<T>(originals);
 	}
 
+	/**
+	 * Entityの指定されたPropertyをListとして取り出す。
+	 * 
+	 * @param entity
+	 * @param propertyName
+	 * @return {@link List}
+	 * @author vvakame
+	 */
 	public List<Byte> toByteList(Entity entity, String propertyName) {
 		Object property = entity.getProperty(propertyName);
 		if (property == null) {
@@ -129,7 +161,8 @@ public abstract class ModelMeta<M> {
 		}
 
 		if (property instanceof Collection == false) {
-			throw new IllegalArgumentException(propertyName + " is not Collection");
+			throw new IllegalArgumentException(propertyName
+					+ " is not Collection");
 		}
 
 		@SuppressWarnings("unchecked")
@@ -143,6 +176,14 @@ public abstract class ModelMeta<M> {
 		return resultList;
 	}
 
+	/**
+	 * Entityの指定されたPropertyをListとして取り出す。
+	 * 
+	 * @param entity
+	 * @param propertyName
+	 * @return {@link List}
+	 * @author vvakame
+	 */
 	public List<Short> toShortList(Entity entity, String propertyName) {
 		Object property = entity.getProperty(propertyName);
 		if (property == null) {
@@ -150,7 +191,8 @@ public abstract class ModelMeta<M> {
 		}
 
 		if (property instanceof Collection == false) {
-			throw new IllegalArgumentException(propertyName + " is not Collection");
+			throw new IllegalArgumentException(propertyName
+					+ " is not Collection");
 		}
 
 		@SuppressWarnings("unchecked")
@@ -164,6 +206,44 @@ public abstract class ModelMeta<M> {
 		return resultList;
 	}
 
+	/**
+	 * Entityの指定されたPropertyをListとして取り出す。
+	 * 
+	 * @param entity
+	 * @param propertyName
+	 * @return {@link List}
+	 * @author vvakame
+	 */
+	public List<Integer> toIntegerList(Entity entity, String propertyName) {
+		Object property = entity.getProperty(propertyName);
+		if (property == null) {
+			return null;
+		}
+
+		if (property instanceof Collection == false) {
+			throw new IllegalArgumentException(propertyName
+					+ " is not Collection");
+		}
+
+		@SuppressWarnings("unchecked")
+		Collection<Long> originals = (Collection<Long>) property;
+		List<Integer> resultList = new ArrayList<Integer>(originals.size());
+
+		for (Long value : originals) {
+			resultList.add(value != null ? value.intValue() : null);
+		}
+
+		return resultList;
+	}
+
+	/**
+	 * Entityの指定されたPropertyをListとして取り出す。
+	 * 
+	 * @param entity
+	 * @param propertyName
+	 * @return {@link List}
+	 * @author vvakame
+	 */
 	public List<Float> toFloatList(Entity entity, String propertyName) {
 		Object property = entity.getProperty(propertyName);
 		if (property == null) {
@@ -171,7 +251,8 @@ public abstract class ModelMeta<M> {
 		}
 
 		if (property instanceof Collection == false) {
-			throw new IllegalArgumentException(propertyName + " is not Collection");
+			throw new IllegalArgumentException(propertyName
+					+ " is not Collection");
 		}
 
 		@SuppressWarnings("unchecked")

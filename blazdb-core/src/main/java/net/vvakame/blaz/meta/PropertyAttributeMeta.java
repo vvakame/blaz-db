@@ -9,7 +9,7 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 
 	final String name;
 
-	final Class<T> propertyClass;
+	final Class<? super T> propertyClass;
 
 
 	/**
@@ -18,7 +18,7 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 	 * @param clazz
 	 * @category constructor
 	 */
-	public PropertyAttributeMeta(String name, Class<T> clazz) {
+	public PropertyAttributeMeta(String name, Class<? super T> clazz) {
 		// TODO clazz are for type generic
 
 		super(new AscSorterCriterion(Type.PROPERTY, name), new DescSorterCriterion(Type.PROPERTY,
@@ -42,7 +42,7 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 	 * @return propety type
 	 * @author vvakame
 	 */
-	public Class<T> getPropertyClass() {
+	public Class<? super T> getPropertyClass() {
 		return propertyClass;
 	}
 

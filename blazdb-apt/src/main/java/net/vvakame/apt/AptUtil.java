@@ -52,9 +52,12 @@ public class AptUtil {
 	}
 
 	/**
-	 * Retrieves the super class of the given {@link Element}.
-	 * Returns null if {@link Element} represents {@link Object}, or something other than {@link ElementKind#CLASS}.
-	 * @param element target {@link Element}.
+	 * Retrieves the super class of the given {@link Element}. Returns null if
+	 * {@link Element} represents {@link Object}, or something other than
+	 * {@link ElementKind#CLASS}.
+	 * 
+	 * @param element
+	 *            target {@link Element}.
 	 * @return {@link Element} of its super class.
 	 * @author vvakame
 	 */
@@ -72,8 +75,10 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element is a kind of {@link Enum}.
+	 * 
 	 * @param element
-	 * @return true if the element passed is kind of {@link Enum}, false otherwise.
+	 * @return true if the element passed is kind of {@link Enum}, false
+	 *         otherwise.
 	 * @author vvakame
 	 */
 	public static boolean isEnum(Element element) {
@@ -88,6 +93,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element is a primitive wrapper.
+	 * 
 	 * @param element
 	 * @return true if the element is a primitive wrapper, false otherwise.
 	 * @author vvakame
@@ -95,21 +101,29 @@ public class AptUtil {
 	public static boolean isPrimitiveWrapper(Element element) {
 		if (element == null) {
 			return false;
-		} else if (element.asType().toString().equals(Boolean.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Boolean.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Integer.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Integer.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Long.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Long.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Byte.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Byte.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Short.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Short.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Character.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Character.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Double.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Double.class.getCanonicalName())) {
 			return true;
-		} else if (element.asType().toString().equals(Float.class.getCanonicalName())) {
+		} else if (element.asType().toString()
+				.equals(Float.class.getCanonicalName())) {
 			return true;
 		} else {
 			return false;
@@ -117,8 +131,93 @@ public class AptUtil {
 	}
 
 	/**
+	 * Test if the given element is primitive wrapper boolean.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper boolean. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperBoolean(Element element) {
+		return Boolean.class.getCanonicalName().equals(
+				element.asType().toString());
+	}
+
+	/**
+	 * Test if the given element is primitive wrapper byte.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper byte. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperByte(Element element) {
+		return Byte.class.getCanonicalName()
+				.equals(element.asType().toString());
+	}
+
+	/**
+	 * Test if the given element is primitive wrapper short.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper short. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperShort(Element element) {
+		return Short.class.getCanonicalName().equals(
+				element.asType().toString());
+	}
+
+	/**
+	 * Test if the given element is primitive wrapper integer.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper integer. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperInteger(Element element) {
+		return Integer.class.getCanonicalName().equals(
+				element.asType().toString());
+	}
+
+	/**
+	 * Test if the given element is primitive wrapper long.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper integer. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperLong(Element element) {
+		return Long.class.getCanonicalName()
+				.equals(element.asType().toString());
+	}
+
+	/**
+	 * Test if the given element is primitive wrapper float.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper float. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperFloat(Element element) {
+		return Float.class.getCanonicalName().equals(
+				element.asType().toString());
+	}
+
+	/**
+	 * Test if the given element is primitive wrapper double.
+	 * 
+	 * @param element
+	 * @return True if the type is a primitive wrapper double. false otherwise.
+	 * @author vvakame
+	 */
+	public static boolean isPrimitiveWrapperDouble(Element element) {
+		return Double.class.getCanonicalName().equals(
+				element.asType().toString());
+	}
+
+	/**
 	 * Tests if the given element is a integral number primitive.<br>
 	 * byte or short ot int or long.
+	 * 
 	 * @param element
 	 * @return true if the element is a primitive, false otherwise.
 	 * @author vvakame
@@ -141,6 +240,7 @@ public class AptUtil {
 	/**
 	 * Tests if the given element is a real number primitive.<br>
 	 * byte or short ot int or long.
+	 * 
 	 * @param element
 	 * @return true if the element is a primitive, false otherwise.
 	 * @author vvakame
@@ -158,6 +258,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element is a primitive.
+	 * 
 	 * @param element
 	 * @return true if the element is a primitive, false otherwise.
 	 * @author vvakame
@@ -188,6 +289,7 @@ public class AptUtil {
 	/**
 	 * Tests if the given element is a integral number primitive.<br>
 	 * byte or short ot int or long.
+	 * 
 	 * @param element
 	 * @return true if the element is a primitive, false otherwise.
 	 * @author vvakame
@@ -210,6 +312,7 @@ public class AptUtil {
 	/**
 	 * Tests if the given element is a real number primitive.<br>
 	 * byte or short ot int or long.
+	 * 
 	 * @param element
 	 * @return true if the element is a primitive, false otherwise.
 	 * @author vvakame
@@ -227,20 +330,24 @@ public class AptUtil {
 
 	/**
 	 * convert primitive to primitive wrapper.
-	 * @param elementUtil 
+	 * 
+	 * @param elementUtil
 	 * @param element
 	 * @return primitive wrapper
 	 * @author vvakame
 	 */
-	public static TypeElement toPrimitiveWrapper(Elements elementUtil, Element element) {
+	public static TypeElement toPrimitiveWrapper(Elements elementUtil,
+			Element element) {
 		if (!isPrimitive(element)) {
-			throw new IllegalArgumentException(element.toString() + " is not primitive");
+			throw new IllegalArgumentException(element.toString()
+					+ " is not primitive");
 		}
 		String type = element.asType().toString();
 		if ("boolean".equals(type)) {
 			return elementUtil.getTypeElement(Boolean.class.getCanonicalName());
 		} else if ("char".equals(type)) {
-			return elementUtil.getTypeElement(Character.class.getCanonicalName());
+			return elementUtil.getTypeElement(Character.class
+					.getCanonicalName());
 		} else if ("byte".equals(type)) {
 			return elementUtil.getTypeElement(Byte.class.getCanonicalName());
 		} else if ("short".equals(type)) {
@@ -260,14 +367,16 @@ public class AptUtil {
 
 	/**
 	 * convert primitive wapper to primitive.
-	 * @param typeUtils 
+	 * 
+	 * @param typeUtils
 	 * @param element
 	 * @return primitive
 	 * @author vvakame
 	 */
 	public static PrimitiveType toPrimitive(Types typeUtils, Element element) {
 		if (!isPrimitiveWrapper(element)) {
-			throw new IllegalArgumentException(element.toString() + " is not primitive wrapper");
+			throw new IllegalArgumentException(element.toString()
+					+ " is not primitive wrapper");
 		}
 		String type = element.asType().toString();
 		if (Boolean.class.getCanonicalName().equals(type)) {
@@ -293,6 +402,7 @@ public class AptUtil {
 
 	/**
 	 * Test if the given element is primitive boolean.
+	 * 
 	 * @param element
 	 * @return True if the type is a primitive boolean. false otherwise.
 	 * @author vvakame
@@ -302,29 +412,22 @@ public class AptUtil {
 	}
 
 	/**
-	 * Test if the given element is primitive wrapper boolean.
-	 * @param element
-	 * @return True if the type is a primitive wrapper boolean. false otherwise.
-	 * @author vvakame
-	 */
-	public static boolean isPrimitiveWrapperBoolean(Element element) {
-		return Boolean.class.getCanonicalName().equals(element.asType().toString());
-	}
-
-	/**
 	 * Test if the given type is an internal type.
+	 * 
 	 * @param typeUtils
 	 * @param type
 	 * @return True if the type is an internal type, false otherwise.
 	 * @author vvakame
 	 */
 	public static boolean isInternalType(Types typeUtils, TypeMirror type) {
-		Element element = ((TypeElement) typeUtils.asElement(type)).getEnclosingElement();
+		Element element = ((TypeElement) typeUtils.asElement(type))
+				.getEnclosingElement();
 		return element.getKind() != ElementKind.PACKAGE;
 	}
 
 	/**
 	 * Retrieves the corresponding {@link TypeElement} of the given element.
+	 * 
 	 * @param typeUtils
 	 * @param element
 	 * @return The corresponding {@link TypeElement}.
@@ -335,11 +438,16 @@ public class AptUtil {
 		return (TypeElement) typeUtils.asElement(type);
 	}
 
-	/**	 
-	 * Retrieves {@link Element}s matching the given annoation and kind (only if given,) from children of the given root.
-	 * @param parent The element search from.
-	 * @param annotation Annotation looking for
-	 * @param kind {@link ElementKind} looking for
+	/**
+	 * Retrieves {@link Element}s matching the given annoation and kind (only if
+	 * given,) from children of the given root.
+	 * 
+	 * @param parent
+	 *            The element search from.
+	 * @param annotation
+	 *            Annotation looking for
+	 * @param kind
+	 *            {@link ElementKind} looking for
 	 * @return {@link Element}s matched
 	 * @author vvakame
 	 */
@@ -362,14 +470,19 @@ public class AptUtil {
 		return results;
 	}
 
-	/**	 
-	 * Retrieves {@link Element}s matching the given kind (only if given,) from children of the given root.
-	 * @param parent The element search from.
-	 * @param kind {@link ElementKind} looking for
+	/**
+	 * Retrieves {@link Element}s matching the given kind (only if given,) from
+	 * children of the given root.
+	 * 
+	 * @param parent
+	 *            The element search from.
+	 * @param kind
+	 *            {@link ElementKind} looking for
 	 * @return {@link Element}s matched
 	 * @author vvakame
 	 */
-	public static List<Element> getEnclosedElementsByKind(Element parent, ElementKind kind) {
+	public static List<Element> getEnclosedElementsByKind(Element parent,
+			ElementKind kind) {
 		if (parent.getKind() != ElementKind.CLASS) {
 			throw new IllegalStateException();
 		}
@@ -386,9 +499,10 @@ public class AptUtil {
 	}
 
 	/**
-	 * Returns the package name of the given element.
-	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
-	 * @param elementUtils 
+	 * Returns the package name of the given element. NB: This method requires
+	 * the given element has the kind of {@link ElementKind#CLASS}.
+	 * 
+	 * @param elementUtils
 	 * @param element
 	 * @return the package name
 	 * @author vvakame
@@ -399,14 +513,16 @@ public class AptUtil {
 
 	/**
 	 * Returns the package name of the given {@link TypeMirror}.
-	 * @param elementUtils 
-	 * @param typeUtils 
-	 * @param type 
+	 * 
+	 * @param elementUtils
+	 * @param typeUtils
+	 * @param type
 	 * @return the package name
 	 * @author backpaper0
 	 * @author vvakame
 	 */
-	public static String getPackageName(Elements elementUtils, Types typeUtils, TypeMirror type) {
+	public static String getPackageName(Elements elementUtils, Types typeUtils,
+			TypeMirror type) {
 		TypeVisitor<DeclaredType, Object> tv = new SimpleTypeVisitor6<DeclaredType, Object>() {
 
 			@Override
@@ -416,14 +532,13 @@ public class AptUtil {
 		};
 		DeclaredType dt = type.accept(tv, null);
 		if (dt != null) {
-			ElementVisitor<TypeElement, Object> ev =
-					new SimpleElementVisitor6<TypeElement, Object>() {
+			ElementVisitor<TypeElement, Object> ev = new SimpleElementVisitor6<TypeElement, Object>() {
 
-						@Override
-						public TypeElement visitType(TypeElement e, Object p) {
-							return e;
-						}
-					};
+				@Override
+				public TypeElement visitType(TypeElement e, Object p) {
+					return e;
+				}
+			};
 			TypeElement el = typeUtils.asElement(dt).accept(ev, null);
 			if (el != null && el.getNestingKind() != NestingKind.TOP_LEVEL) {
 				return AptUtil.getPackageName(elementUtils, el);
@@ -438,8 +553,10 @@ public class AptUtil {
 	}
 
 	/**
-	 * Returns unqualified class name (e.g. String, if java.lang.String)
-	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
+	 * Returns unqualified class name (e.g. String, if java.lang.String) NB:
+	 * This method requires the given element has the kind of
+	 * {@link ElementKind#CLASS}.
+	 * 
 	 * @param element
 	 * @return unqualified class name
 	 * @author vvakame
@@ -454,8 +571,10 @@ public class AptUtil {
 	}
 
 	/**
-	 * Returns unqualified class name (e.g. String, if java.lang.String)
-	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
+	 * Returns unqualified class name (e.g. String, if java.lang.String) NB:
+	 * This method requires the given element has the kind of
+	 * {@link ElementKind#CLASS}.
+	 * 
 	 * @param element
 	 * @return unqualified class name
 	 * @author vvakame
@@ -477,14 +596,17 @@ public class AptUtil {
 			if ("".equals(current)) {
 				return getNameForNew(now, element.getEnclosingElement());
 			} else {
-				return getNameForNew(now + "." + current, element.getEnclosingElement());
+				return getNameForNew(now + "." + current,
+						element.getEnclosingElement());
 			}
 		}
 	}
 
 	/**
-	 * Returns unqualified class name (e.g. String, if java.lang.String)
-	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.
+	 * Returns unqualified class name (e.g. String, if java.lang.String) NB:
+	 * This method requires the given element has the kind of
+	 * {@link ElementKind#CLASS}.
+	 * 
 	 * @param tm
 	 * @return unqualified class name
 	 * @author vvakame
@@ -497,6 +619,7 @@ public class AptUtil {
 
 	/**
 	 * Returns the fully qualified name.
+	 * 
 	 * @param tm
 	 * @return The fully qualified name
 	 * @author vvakame
@@ -505,7 +628,7 @@ public class AptUtil {
 		String str = tm.toString();
 		int i = str.lastIndexOf("<");
 		if (0 < i) {
-			return str.substring(i + 1);
+			return str.substring(0, i);
 		} else {
 			return str;
 		}
@@ -513,6 +636,7 @@ public class AptUtil {
 
 	/**
 	 * Returns the fully qualified name.
+	 * 
 	 * @param element
 	 * @return The fully qualified name
 	 * @author vvakame
@@ -532,6 +656,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element has the public visibility.
+	 * 
 	 * @param element
 	 * @return true if public, false otherwise
 	 * @author vvakame
@@ -542,6 +667,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element has the protected visibility.
+	 * 
 	 * @param element
 	 * @return true if protected, false otherwise
 	 * @author vvakame
@@ -552,6 +678,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element has the private visibility.
+	 * 
 	 * @param element
 	 * @return true if private, false otherwise
 	 * @author vvakame
@@ -562,6 +689,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element has the package-private visibility.
+	 * 
 	 * @param element
 	 * @return true if package-private, false otherwise
 	 * @author vvakame
@@ -579,6 +707,7 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element has static scope.
+	 * 
 	 * @param element
 	 * @return true if static, false otherwise
 	 * @author vvakame
@@ -589,21 +718,26 @@ public class AptUtil {
 
 	/**
 	 * Tests if the given element has the method with the given name.<br>
-	 * NB: This method requires the given element has the kind of {@link ElementKind#CLASS}.<br>
-	 * Also tests the method qualifies all of modifiers if any {@link Modifier} are also given.
+	 * NB: This method requires the given element has the kind of
+	 * {@link ElementKind#CLASS}.<br>
+	 * Also tests the method qualifies all of modifiers if any {@link Modifier}
+	 * are also given.
+	 * 
 	 * @param element
 	 * @param methodName
 	 * @param modifiers
 	 * @return true if a match is found, false otherwise
 	 * @author vvakame
 	 */
-	public static boolean isMethodExists(Element element, String methodName, Modifier... modifiers) {
+	public static boolean isMethodExists(Element element, String methodName,
+			Modifier... modifiers) {
 		if (element.getKind() != ElementKind.CLASS) {
 			throw new IllegalStateException();
 		}
 		List<Modifier> modifiersList = Arrays.asList(modifiers);
 
-		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
+		List<ExecutableElement> methods = ElementFilter.methodsIn(element
+				.getEnclosedElements());
 		for (ExecutableElement method : methods) {
 			if (method.getSimpleName().toString().equals(methodName)
 					&& method.getModifiers().containsAll(modifiersList)) {
@@ -627,7 +761,9 @@ public class AptUtil {
 
 	/**
 	 * Returns the name of corresponding setter.
-	 * @param element the field
+	 * 
+	 * @param element
+	 *            the field
 	 * @return setter name
 	 * @author vvakame
 	 */
@@ -636,10 +772,12 @@ public class AptUtil {
 		String setterName = null;
 		if (isPrimitiveBoolean(element)) {
 			Pattern pattern = Pattern.compile("^is[^a-z].*$");
-			Matcher matcher = pattern.matcher(element.getSimpleName().toString());
+			Matcher matcher = pattern.matcher(element.getSimpleName()
+					.toString());
 			if (matcher.matches()) {
 				// boolean isHoge; に対して setIsHoge ではなく setHoge が生成される
-				setterName = "set" + element.getSimpleName().toString().substring(2);
+				setterName = "set"
+						+ element.getSimpleName().toString().substring(2);
 			}
 		}
 		if (setterName == null) {
@@ -647,12 +785,13 @@ public class AptUtil {
 		}
 
 		Element setter = null;
-		for (Element method : ElementFilter.methodsIn(element.getEnclosingElement()
-			.getEnclosedElements())) {
+		for (Element method : ElementFilter.methodsIn(element
+				.getEnclosingElement().getEnclosedElements())) {
 			String methodName = method.getSimpleName().toString();
 
 			if (setterName.equalsIgnoreCase(methodName)) {
-				if (isStatic(method) == false && isPublic(method) || isPackagePrivate(method)) {
+				if (isStatic(method) == false && isPublic(method)
+						|| isPackagePrivate(method)) {
 					setter = method;
 					break;
 				}
@@ -667,7 +806,9 @@ public class AptUtil {
 
 	/**
 	 * Returns the name of corresponding getter.
-	 * @param element the field
+	 * 
+	 * @param element
+	 *            the field
 	 * @return getter name
 	 * @author vvakame
 	 */
@@ -678,22 +819,25 @@ public class AptUtil {
 		String getterName3 = element.getSimpleName().toString();
 
 		Element getter = null;
-		for (Element method : ElementFilter.methodsIn(element.getEnclosingElement()
-			.getEnclosedElements())) {
+		for (Element method : ElementFilter.methodsIn(element
+				.getEnclosingElement().getEnclosedElements())) {
 			String methodName = method.getSimpleName().toString();
 
 			if (getterName1.equalsIgnoreCase(methodName)) {
-				if (isStatic(method) == false && isPublic(method) || isPackagePrivate(method)) {
+				if (isStatic(method) == false && isPublic(method)
+						|| isPackagePrivate(method)) {
 					getter = method;
 					break;
 				}
 			} else if (getterName2.equalsIgnoreCase(methodName)) {
-				if (isStatic(method) == false && isPublic(method) || isPackagePrivate(method)) {
+				if (isStatic(method) == false && isPublic(method)
+						|| isPackagePrivate(method)) {
 					getter = method;
 					break;
 				}
 			} else if (getterName3.equalsIgnoreCase(methodName)) {
-				if (isStatic(method) == false && isPublic(method) || isPackagePrivate(method)) {
+				if (isStatic(method) == false && isPublic(method)
+						|| isPackagePrivate(method)) {
 					getter = method;
 					break;
 				}

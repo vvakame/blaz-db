@@ -24,14 +24,14 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	final KeyAttributeMeta @{primaryKey.name} = new KeyAttributeMeta(KIND);
 
 @foreach{attr : attributes}
-@if{attr.numberPrimitive}
+@if{attr.isNumberPrimitive()}
 	final PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
-@elseif{attr.numberPrimitiveWrapper}
+@elseif{attr.isNumberPrimitiveWrapper()}
 	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @elseif{attr.castTo != null}
 	final PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
 @else{}
-	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
+	final PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @end{}@end{}
 
 	final List<PropertyAttributeMeta<?>> __properties;
@@ -133,9 +133,9 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 		
 @foreach{attr : attributes}
 		if(entity.hasProperty("@{attr.name}")) {
-	@if{attr.numberPrimitive}
+	@if{attr.isNumberPrimitive()}
 			model.@{attr.setter}(((Number) entity.getProperty("@{attr.name}")).@{attr.typeNameFQN}Value());
-	@else{attr.numberPrimitiveWrapper}
+	@else{attr.isNumberPrimitiveWrapper()}
 			Number value = entity.getProperty("@{attr.name}");
 			if(value == null) {
 				model.@{attr.setter}(null);
@@ -144,8 +144,18 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 			}
 	@else{attr.castTo != null}
 			model.@{attr.setter}((@{attr.castTo}) entity.getProperty("@{attr.name}"));
+	@else{attr.kind() == "LIST" && attr.subKind() == "BYTE_WRAPPER"}
+			model.@{attr.setter}(toByteList(entity, "@{attr.name}"));
+	@else{attr.kind() == "LIST" && attr.subKind() == "SHORT_WRAPPER"}
+			model.@{attr.setter}(toShortList(entity, "@{attr.name}"));
+	@else{attr.kind() == "LIST" && attr.subKind() == "INT_WRAPPER"}
+			model.@{attr.setter}(toIntegerList(entity, "@{attr.name}"));
+	@else{attr.kind() == "LIST" && attr.subKind() == "FLOAT_WRAPPER"}
+			model.@{attr.setter}(toFloatList(entity, "@{attr.name}"));
+	@else{attr.kind() == "LIST"}
+			model.@{attr.setter}(toList(@{attr.subTypeNameFQN}.class, entity, "@{attr.name}"));
 	@else{}
-			model.@{attr.setter}((@{attr.typeNameFQN}) entity.getProperty("@{attr.name}"));
+			model.@{attr.setter}((@{attr.typeNameFQNWithGenerics}) entity.getProperty("@{attr.name}"));
 	@end{}
 		}
 @end{}

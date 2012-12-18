@@ -24,15 +24,17 @@ import net.vvakame.blaz.util.KeyUtil;
 
 /**
  * JDBCによるKVSの実装
+ * 
  * @author vvakame
  */
-public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallback, Closeable {
+public class JdbcKVS extends BareDatastore implements
+		SqlTransaction.ActionCallback, Closeable {
 
 	Connection conn;
 
-
 	/**
 	 * SQLiteを使ったKVSを作成し返す。
+	 * 
 	 * @return KVS
 	 * @author vvakame
 	 */
@@ -42,7 +44,9 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 	/**
 	 * SQLiteを使ったKVSを作成し返す。
-	 * @param dbName 作成するDBファイル名
+	 * 
+	 * @param dbName
+	 *            作成するDBファイル名
 	 * @return KVS
 	 * @author vvakame
 	 */
@@ -50,7 +54,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 		try {
 			Class.forName("org.sqlite.JDBC");
 
-			Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:"
+					+ dbName);
 			return new JdbcKVS(conn);
 		} catch (ClassNotFoundException e) {
 			// TODO
@@ -63,7 +68,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 	/**
 	 * H2Databaseを使ったKVSを作成し返す。
-	 * @param dbName 
+	 * 
+	 * @param dbName
 	 * @return KVS
 	 * @author vvakame
 	 * @deprecated まだ全然実装終わってなくて動かないので
@@ -74,7 +80,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 		try {
 			Class.forName("org.h2.Driver");
 
-			Connection conn = DriverManager.getConnection("jdbc:h2:" + dbName, "sa", "");
+			Connection conn = DriverManager.getConnection("jdbc:h2:" + dbName,
+					"sa", "");
 			return new JdbcKVS(conn);
 		} catch (ClassNotFoundException e) {
 			// TODO
@@ -87,6 +94,7 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 	/**
 	 * the constructor.
+	 * 
 	 * @param conn
 	 * @category constructor
 	 */
@@ -215,7 +223,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 		Map<Key, Entity> resultMap = new HashMap<Key, Entity>();
 		try {
 			{ // for propertyless entity...
-				List<Key> tmpKeyList = KeysDao.query(conn, keyList.toArray(new Key[] {}));
+				List<Key> tmpKeyList = KeysDao.query(conn,
+						keyList.toArray(new Key[] {}));
 				if (tmpKeyList.size() == 0) {
 					return resultMap;
 				}
@@ -225,7 +234,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 				}
 			}
 
-			resultMap.putAll(ValuesDao.query(conn, keyList.toArray(new Key[] {})));
+			resultMap.putAll(ValuesDao.query(conn,
+					keyList.toArray(new Key[] {})));
 		} catch (SQLException e) {
 			// TODO
 			throw new RuntimeException(e);
@@ -242,7 +252,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 		for (Filter filter : filters) {
 			if (filter == null) {
-				throw new IllegalArgumentException("null argment is not allowed.");
+				throw new IllegalArgumentException(
+						"null argment is not allowed.");
 			}
 		}
 		StringBuilder builder = new StringBuilder();
@@ -291,6 +302,7 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 	/**
 	 * データ操作に対するトランザクションを開始する.
+	 * 
 	 * @return トランザクション
 	 * @author vvakame
 	 */
@@ -336,6 +348,7 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 	/**
 	 * Create view about {@link ModelMeta} mapping.
+	 * 
 	 * @param meta
 	 * @author vvakame
 	 */
@@ -351,6 +364,10 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 		for (PropertyAttributeMeta<?> p : properties) {
 			final String name = p.getName();
 			final Class<?> clazz = p.getPropertyClass();
+			if (List.class.equals(clazz)) {
+				// to do nothing.
+				continue;
+			}
 
 			// *name*.key_str as key_str
 			if (firstName == null) {
@@ -360,25 +377,29 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 			// *name*.val as *name*,
 			select.append(name).append(".val as ").append(name).append(",");
 
-			// (select VAL_??? as val, kind, key_str from VALUE_TABLE where name = '*name*') *name*,
+			// (select VAL_??? as val, kind, key_str from VALUE_TABLE where name
+			// = '*name*') *name*,
 			from.append("(select VAL_");
 			if (Long.class.equals(clazz) || Integer.class.equals(clazz)
 					|| Short.class.equals(clazz) || Byte.class.equals(clazz)) {
 				from.append("INT");
 			} else if (Double.class.equals(clazz) || Float.class.equals(clazz)) {
 				from.append("REAL");
-			} else if (String.class.equals(clazz) || Boolean.class.equals(clazz)) {
+			} else if (String.class.equals(clazz)
+					|| Boolean.class.equals(clazz)) {
 				from.append("STR");
 			} else if (byte[].class.equals(clazz)) {
 				from.append("BYTES");
 			} else if (Key.class.equals(clazz)) {
 				from.append("STR");
 			} else {
-				throw new IllegalStateException("unknown class = " + clazz.getCanonicalName());
+				throw new IllegalStateException("unknown class = "
+						+ clazz.getCanonicalName());
 			}
 
-			from.append(" as val,  kind, key_str from VALUE_TABLE where name = '").append(name)
-				.append("') ").append(name).append(",");
+			from.append(
+					" as val,  kind, key_str from VALUE_TABLE where name = '")
+					.append(name).append("') ").append(name).append(",");
 
 			// and *name*.kind = '*kind*'
 			if (firstName != null) {
@@ -388,8 +409,8 @@ public class JdbcKVS extends BareDatastore implements SqlTransaction.ActionCallb
 
 			// and firstName.key_str = name.key_str
 			if (firstName != null) {
-				where2.append("and ").append(firstName).append(".key_str = ").append(name)
-					.append(".key_str ");
+				where2.append("and ").append(firstName).append(".key_str = ")
+						.append(name).append(".key_str ");
 			}
 
 			if (firstName == null) {

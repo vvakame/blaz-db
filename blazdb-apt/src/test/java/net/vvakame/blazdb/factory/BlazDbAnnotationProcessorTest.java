@@ -14,12 +14,14 @@ import static org.junit.Assert.*;
 
 /**
  * Test case for {@link BlazDbAnnotationProcessor}.
+ * 
  * @author vvakame
  */
 public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 
 	/**
 	 * Test case.
+	 * 
 	 * @throws Exception
 	 * @author vvakame
 	 */
@@ -33,13 +35,15 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		compile();
 		{
 			@SuppressWarnings("unused")
-			String source = getGeneratedSource(PrimitiveTypeData.class.getName() + "Meta");
+			String source = getGeneratedSource(PrimitiveTypeData.class
+					.getName() + "Meta");
 		}
 		assertThat(getCompiledResult(), is(true));
 	}
 
 	/**
 	 * Test case.
+	 * 
 	 * @throws Exception
 	 * @author vvakame
 	 */
@@ -53,13 +57,15 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		compile();
 		{
 			@SuppressWarnings("unused")
-			String source = getGeneratedSource(PrimitiveWrapperTypeData.class.getName() + "Meta");
+			String source = getGeneratedSource(PrimitiveWrapperTypeData.class
+					.getName() + "Meta");
 		}
 		assertThat(getCompiledResult(), is(true));
 	}
 
 	/**
 	 * Test case.
+	 * 
 	 * @throws Exception
 	 * @author vvakame
 	 */
@@ -74,11 +80,14 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 		compile();
 		{
 			@SuppressWarnings("unused")
-			String source = getGeneratedSource(NotPrimitiveTypeData.class.getName() + "Meta");
+			String source = getGeneratedSource(NotPrimitiveTypeData.class
+					.getName() + "Meta");
 		}
 		{
 			@SuppressWarnings("unused")
-			String source = getGeneratedSource(AllSuppotedTypeData.class.getName() + "Meta");
+			String source = getGeneratedSource(AllSuppotedTypeData.class
+					.getName() + "Meta");
+			System.out.println(source);
 		}
 		assertThat(getCompiledResult(), is(true));
 	}
