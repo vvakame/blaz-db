@@ -7,7 +7,9 @@ import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.meta.ModelMeta;
 import net.vvakame.blaz.meta.KeyAttributeMeta;
+import net.vvakame.blaz.meta.CoreAttributeMeta;
 import net.vvakame.blaz.meta.PropertyAttributeMeta;
+import net.vvakame.blaz.meta.CollectionAttributeMeta;
 
 
 /**
@@ -30,16 +32,18 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @elseif{attr.castTo != null}
 	final PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
+@elseif{attr.kind() == "LIST"}
+	final CollectionAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.subTypeNameFQN}> @{attr.name} = new CollectionAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.subTypeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class, @{attr.subTypeNameFQN}.class);
 @else{}
 	final PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @end{}@end{}
 
-	final List<PropertyAttributeMeta<?>> __properties;
+	final List<CoreAttributeMeta<?>> __properties;
 	
 	protected @{target}@{postfix}() {
 		super(null);
 
-		__properties = new ArrayList<PropertyAttributeMeta<?>>();
+		__properties = new ArrayList<CoreAttributeMeta<?>>();
 @foreach{attr : attributes}
 		__properties.add(@{attr.name});
 @end{}
@@ -73,7 +77,7 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	}
 	
 	@Override
-	public List<PropertyAttributeMeta<?>> getProperties() {
+	public List<CoreAttributeMeta<?>> getProperties() {
 		return __properties;
 	}
 

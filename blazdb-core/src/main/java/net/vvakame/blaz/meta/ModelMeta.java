@@ -97,7 +97,7 @@ public abstract class ModelMeta<M> {
 	 * @return プロパティの一覧
 	 * @author vvakame
 	 */
-	public abstract List<PropertyAttributeMeta<?>> getProperties();
+	public abstract List<CoreAttributeMeta<?>> getProperties();
 
 	/**
 	 * モデルから {@link Entity} への変換を行う.<br>

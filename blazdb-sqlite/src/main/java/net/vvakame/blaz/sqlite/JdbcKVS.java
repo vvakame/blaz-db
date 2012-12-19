@@ -17,6 +17,8 @@ import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.meta.CollectionAttributeMeta;
+import net.vvakame.blaz.meta.CoreAttributeMeta;
 import net.vvakame.blaz.meta.ModelMeta;
 import net.vvakame.blaz.meta.PropertyAttributeMeta;
 import net.vvakame.blaz.util.FilterChecker;
@@ -354,9 +356,23 @@ public class JdbcKVS extends BareDatastore implements
 	 */
 	public void createView(ModelMeta<?> meta) {
 
-		List<PropertyAttributeMeta<?>> listProperties = new ArrayList<PropertyAttributeMeta<?>>();
-		createViewMains(meta, listProperties);
-		createViewSubLists(meta, listProperties);
+		List<PropertyAttributeMeta<?>> propertyList = new ArrayList<PropertyAttributeMeta<?>>();
+		List<CollectionAttributeMeta<?, ?>> collectionList = new ArrayList<CollectionAttributeMeta<?, ?>>();
+
+		List<CoreAttributeMeta<?>> properties = meta.getProperties();
+		for (CoreAttributeMeta<?> c : properties) {
+			if (c instanceof PropertyAttributeMeta) {
+				propertyList.add((PropertyAttributeMeta<?>) c);
+			} else if (c instanceof CollectionAttributeMeta) {
+				collectionList.add((CollectionAttributeMeta<?, ?>) c);
+			} else {
+				throw new IllegalStateException("unknown meta class = "
+						+ c.getClass().getCanonicalName());
+			}
+		}
+
+		createViewMains(meta, propertyList);
+		createViewSubLists(meta, collectionList);
 	}
 
 	/**
@@ -364,7 +380,6 @@ public class JdbcKVS extends BareDatastore implements
 	 * 
 	 * @param meta
 	 * @param listProperties
-	 *            Kindに含まれるプロパティのうち、Listのもの
 	 * @author vvakame
 	 */
 	void createViewMains(ModelMeta<?> meta,
@@ -378,9 +393,7 @@ public class JdbcKVS extends BareDatastore implements
 		final String kind = meta.getKind();
 		String firstName = null;
 
-		List<PropertyAttributeMeta<?>> properties = meta.getProperties();
-
-		for (PropertyAttributeMeta<?> p : properties) {
+		for (PropertyAttributeMeta<?> p : listProperties) {
 			final Class<?> clazz = p.getPropertyClass();
 			if (List.class.equals(clazz)) {
 				listProperties.add(p);
@@ -473,18 +486,32 @@ public class JdbcKVS extends BareDatastore implements
 	 * で1Kind=1Viewを作った後の、Kindに含まれる1つのListプロパティ=1Viewを作成する.
 	 * 
 	 * @param meta
-	 * @param listProperties
+	 * @param collectionList
 	 * @author vvakame
 	 */
 	void createViewSubLists(ModelMeta<?> meta,
-			List<PropertyAttributeMeta<?>> listProperties) {
-		for (PropertyAttributeMeta<?> p : listProperties) {
+			List<CollectionAttributeMeta<?, ?>> collectionList) {
+		for (CollectionAttributeMeta<?, ?> p : collectionList) {
 			final String viewName = meta.getKind() + "_List_" + p.getName();
 			StringBuilder select = new StringBuilder();
 			StringBuilder where = new StringBuilder();
 
 			select.append("KIND, KEY_STR, SEQ, TYPE, ");
-			select.append("VAL_STR, VAL_INT, VAL_REAL, VAL_BYTES").append(" ");
+			final Class<?> t = p.getTypeParameterClass();
+			if (Byte.class.equals(t) || Short.class.equals(t)
+					|| Integer.class.equals(t) || Long.class.equals(t)) {
+				select.append("VAL_INT as VAL ");
+			} else if (Float.class.equals(t) || Double.class.equals(t)) {
+				select.append("VAL_REAL as VAL ");
+			} else if (Boolean.class.equals(t) || Key.class.equals(t)
+					|| String.class.equals(t)) {
+				select.append("VAL_STR as VAL ");
+			} else if (byte[].class.equals(t)) {
+				select.append("VAL_BYTES as VAL ");
+			} else {
+				throw new IllegalStateException("unknown type parameter = "
+						+ t.getCanonicalName());
+			}
 
 			where.append("kind = '").append(meta.getKind());
 			where.append("' and name = '").append(p.getName()).append("' ");
