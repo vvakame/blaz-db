@@ -2,6 +2,7 @@ package net.vvakame.blaz.meta;
 
 /**
  * {@link ModelMeta} が保持するプロパティを表すクラス.
+ * 
  * @author vvakame
  * @param <T>
  */
@@ -11,18 +12,16 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 
 	final Class<? super T> propertyClass;
 
-
 	/**
 	 * the constructor.
+	 * 
 	 * @param name
 	 * @param clazz
 	 * @category constructor
 	 */
 	public PropertyAttributeMeta(String name, Class<? super T> clazz) {
-		// TODO clazz are for type generic
-
-		super(new AscSorterCriterion(Type.PROPERTY, name), new DescSorterCriterion(Type.PROPERTY,
-				name));
+		super(new AscSorterCriterion(Type.PROPERTY, name),
+				new DescSorterCriterion(Type.PROPERTY, name));
 		this.name = name;
 		this.propertyClass = clazz;
 	}
@@ -39,6 +38,7 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 
 	/**
 	 * Get property type class.
+	 * 
 	 * @return propety type
 	 * @author vvakame
 	 */

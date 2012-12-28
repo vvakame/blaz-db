@@ -2,6 +2,7 @@ package net.vvakame.blazdb.factory;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -138,7 +140,8 @@ public class ModelGenerator {
 		List<Element> enclosedElements = getEnclosedElementsByKind(
 				classElement, ElementKind.FIELD);
 
-		// TODO exclude static field
+		// exclude static field
+		enclosedElements = filterByNonStaticMember(enclosedElements);
 
 		// detect primary key
 		Element key = findPrimaryKeyByAnnotation(enclosedElements);
@@ -173,69 +176,15 @@ public class ModelGenerator {
 		}
 	}
 
-	// TODO あとで消す
-	@Deprecated
-	AttributeModel processAttribute(Element element) {
-		AttributeModel attrModel = new AttributeModel();
-		{
-			AttributeDelegate attr = getAttributeAnnotation(element);
-			if (attr != null && !attr.persistent()) {
-				return null;
+	List<Element> filterByNonStaticMember(List<Element> enclosedElements) {
+		List<Element> newElementList = new ArrayList<Element>();
+		for (Element element : enclosedElements) {
+			if (element.getModifiers().contains(Modifier.STATIC)) {
+				continue;
 			}
-
-			if (attr != null) {
-				attrModel.setName(attr.name());
-				attrModel.setPersistent(attr.persistent());
-			}
+			newElementList.add(element);
 		}
-
-		String simpleName = element.getSimpleName().toString();
-		if (attrModel.getName() == null || "".equals(attrModel.getName())) {
-			attrModel.setName(simpleName);
-		}
-
-		String getter = getElementGetter(element);
-		String setter = getElementSetter(element);
-		attrModel.setGetter(getter);
-		attrModel.setSetter(setter);
-
-		String typeName = getFullQualifiedName(element.asType());
-		attrModel.setTypeNameFQN(typeName);
-
-		if (isPrimitiveIntegral(element)) {
-			TypeElement wrapper = elementUtils.getTypeElement(Long.class
-					.getCanonicalName());
-			attrModel.setCastTo(wrapper.asType().toString());
-		} else if (isPrimitiveWrapperIntegral(element)) {
-			PrimitiveType primitive = toPrimitive(typeUtils, element);
-			attrModel.setCastTo(primitive.toString());
-
-		} else if (isPrimitiveReal(element)) {
-			TypeElement wrapper = elementUtils.getTypeElement(Double.class
-					.getCanonicalName());
-			attrModel.setCastTo(wrapper.asType().toString());
-		} else if (isPrimitiveWrapperReal(element)) {
-			PrimitiveType primitive = toPrimitive(typeUtils, element);
-			attrModel.setCastTo(primitive.toString());
-
-		} else if (isPrimitiveBoolean(element)) {
-			TypeElement wrapper = toPrimitiveWrapper(elementUtils, element);
-			attrModel.setCastTo(wrapper.asType().toString());
-
-		} else if (isKeyElement(element)) {
-
-		} else if (isPrimitiveWrapperBoolean(element)) {
-
-		} else if (isStringElement(element)) {
-
-		} else if (isByteArrayElement(element)) {
-
-		} else {
-			Log.e("Unsupported element type = " + element.asType(), element);
-			encountError = true;
-		}
-
-		return attrModel;
+		return newElementList;
 	}
 
 	Element findPrimaryKeyByAnnotation(List<Element> enclosedElements) {
@@ -484,6 +433,8 @@ public class ModelGenerator {
 		attrModel.setGetter(getter);
 		attrModel.setSetter(setter);
 
+		// TODO Converter周りの処理を入れ込む
+
 		attrModel.setTypeNameFQNWithGenerics(t.toString());
 		String fqn = getFullQualifiedName(t);
 		attrModel.setTypeNameFQN(fqn);
@@ -601,6 +552,8 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitList(DeclaredType t, Element el) {
+			// TODO Converter周りの処理を入れ込む
+
 			AttributeModel attr = getAttributeModel(t, el, Kind.LIST);
 
 			List<? extends TypeMirror> generics = t.getTypeArguments();
@@ -735,6 +688,8 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitUndefinedClass(DeclaredType t, Element el) {
+			// TODO Converter周りの処理を入れ込む
+
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
 			return defaultAction(t, el);
@@ -742,6 +697,8 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitArray(ArrayType t, Element el) {
+			// TODO Converter周りの処理を入れ込む
+
 			TypeMirror component = t.getComponentType();
 			if ("byte".equals(component.toString())) {
 				return getAttributeModel(t, el, Kind.BYTE_ARRAY);
