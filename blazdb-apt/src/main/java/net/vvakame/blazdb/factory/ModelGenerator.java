@@ -20,6 +20,8 @@ import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.PropertyConverter;
+import net.vvakame.blaz.PropertyConverter.DummyConverter;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.BlazModel;
@@ -324,6 +326,17 @@ public class ModelGenerator {
 					public Class<? extends Annotation> annotationType() {
 						return annotation.annotationType();
 					}
+
+					@Override
+					public Class<? extends PropertyConverter<?, ?>> converter() {
+						Class<? extends PropertyConverter<?, ?>> clazz = annotation
+								.converter();
+						if (DummyConverter.class.equals(clazz)) {
+							return null;
+						} else {
+							return clazz;
+						}
+					}
 				};
 			}
 		}
@@ -351,6 +364,17 @@ public class ModelGenerator {
 					@Override
 					public Class<? extends Annotation> annotationType() {
 						return annotation.annotationType();
+					}
+
+					@Override
+					public Class<? extends PropertyConverter<?, ?>> converter() {
+						Class<? extends PropertyConverter<?, ?>> clazz = annotation
+								.converter();
+						if (DummyConverter.class.equals(clazz)) {
+							return null;
+						} else {
+							return clazz;
+						}
 					}
 				};
 			}
