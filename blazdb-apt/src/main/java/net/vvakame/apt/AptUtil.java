@@ -630,13 +630,7 @@ public class AptUtil {
 	 * @author vvakame
 	 */
 	public static String getFullQualifiedName(TypeMirror tm) {
-		String str = tm.toString();
-		int i = str.lastIndexOf("<");
-		if (0 < i) {
-			return str.substring(0, i);
-		} else {
-			return str;
-		}
+		return typeUtil.erasure(tm).toString();
 	}
 
 	/**

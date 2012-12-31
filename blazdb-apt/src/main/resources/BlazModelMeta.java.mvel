@@ -10,6 +10,7 @@ import net.vvakame.blaz.meta.KeyAttributeMeta;
 import net.vvakame.blaz.meta.CoreAttributeMeta;
 import net.vvakame.blaz.meta.PropertyAttributeMeta;
 import net.vvakame.blaz.meta.CollectionAttributeMeta;
+import net.vvakame.blaz.meta.ConverterAttributeMeta;
 
 
 /**
@@ -27,7 +28,11 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 	final KeyAttributeMeta @{primaryKey.name} = new KeyAttributeMeta(KIND);
 
 @foreach{attr : attributes}
-@if{attr.isNumberPrimitive()}
+@if{attr.converterFQN != null && (attr.converterType() == "SINGLE" || attr.converterType() == "COLLECTION")}
+	final ConverterAttributeMeta<@{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}> @{attr.name} = new ConverterAttributeMeta<@{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}>("@{attr.name}", @{attr.converterParameterType}.class, @{attr.converterReturnType}.class, @{attr.converterFQN}.getInstance());
+@elseif{attr.converterFQN != null}
+	// @{attr.name} was not outputs. It application to PropertyConverter's unknown types. 
+@elseif{attr.isNumberPrimitive()}
 	final PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
 @elseif{attr.isNumberPrimitiveWrapper()}
 	final PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
@@ -46,7 +51,11 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 		__properties = new ArrayList<CoreAttributeMeta<?>>();
 @foreach{attr : attributes}
+@if{attr.converterFQN == null || attr.converterType() != "UNKNOWN"}
 		__properties.add(@{attr.name});
+@else{}
+		// @{attr.name} was not outputs. It application to PropertyConverter's unknown types.
+@end{}
 @end{}
 	}
 	
@@ -97,7 +106,29 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 		}
 
 @foreach{attr : attributes}
+@if{attr.converterFQN != null && attr.converterType() == "SINGLE"}
+		{
+			@{attr.converterFQN} converter = @{attr.converterFQN}.getInstance();
+			converter.set(entity, "@{attr.name}", model.@{attr.getter}());
+		}
+@elseif{attr.converterFQN != null && attr.converterType() == "COLLECTION"}
+		{
+			@{attr.converterFQN} converter = @{attr.converterFQN}.getInstance();
+			converter.setCollection(entity, "@{attr.name}", model.@{attr.getter}());
+		}
+@elseif{attr.converterFQN != null}
+		{
+			// PropertyConverter not match for single convert or collection convert.
+			// e.g.) PropertyConverter<java.util.Date, Long>,
+			//       If Attribute type was `Date at;` use PropertyConverter#set was used.
+			//       If Attribute type was `List<date> dateList;` use PropertyConverter#setCollection was used.
+			//       If Attribute type was unknown pattern(e.g. `List<List<Date>> nestedDateList;`). use PropertyConverter#setAny was used.
+			@{attr.converterFQN} converter = @{attr.converterFQN}.getInstance();
+			converter.setAny(entity, "@{attr.name}", model.@{attr.getter}());
+		}
+@else{}
 		entity.setProperty("@{attr.name}", model.@{attr.getter}());
+@end{}
 @end{}
 
 		entity.setProperty("@{schemaVersionName}", @{schemaVersion});
@@ -138,7 +169,21 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 		
 @foreach{attr : attributes}
 		if(entity.hasProperty("@{attr.name}")) {
-	@if{attr.isNumberPrimitive()}
+	@if{attr.converterFQN != null && attr.converterType() == "SINGLE"}
+			@{attr.converterFQN} converter = @{attr.converterFQN}.getInstance();
+			model.@{attr.setter}(converter.get(entity, "@{attr.name}"));
+	@elseif{attr.converterFQN != null && attr.converterType() == "COLLECTION"}
+			@{attr.converterFQN} converter = @{attr.converterFQN}.getInstance();
+			model.@{attr.setter}(converter.getList(entity, "@{attr.name}"));
+	@elseif{attr.converterFQN != null}
+			// PropertyConverter not match for single convert or collection convert.
+			// e.g.) PropertyConverter<java.util.Date, Long>, (first type parameter is very important!)
+			//       If Attribute type was `Date at;` use PropertyConverter#get was used.
+			//       If Attribute type was `List<date> dateList;` use PropertyConverter#getList was used.
+			//       If Attribute type was unknown pattern(e.g. `List<List<Date>> nestedDateList;`). use PropertyConverter#getAny was used.
+			@{attr.converterFQN} converter = @{attr.converterFQN}.getInstance();
+			model.@{attr.setter}(converter.<@{attr.typeNameFQNWithGenerics}>getAny(entity, "@{attr.name}"));
+	@elseif{attr.isNumberPrimitive()}
 			model.@{attr.setter}(((Number) entity.getProperty("@{attr.name}")).@{attr.typeNameFQN}Value());
 	@else{attr.isNumberPrimitiveWrapper()}
 			Number value = entity.getProperty("@{attr.name}");

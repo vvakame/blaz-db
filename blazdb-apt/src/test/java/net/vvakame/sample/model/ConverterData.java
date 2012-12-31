@@ -30,6 +30,10 @@ public class ConverterData {
 	List<List<String>> nestedConverter;
 
 	public static class DateConverter extends PropertyConverter<Date, Long> {
+		public static DateConverter getInstance() {
+			return new DateConverter();
+		}
+
 		@Override
 		public Long serialize(Date value) {
 			return value.getTime();
@@ -42,16 +46,29 @@ public class ConverterData {
 	}
 
 	public static class VoidConverter extends PropertyConverter<Void, Void> {
+		public static VoidConverter getInstance() {
+			return new VoidConverter();
+		}
 	}
 
 	public static class Raw1Converter<P> extends PropertyConverter<P, String> {
+		@SuppressWarnings("rawtypes")
+		public static Raw1Converter getInstance() {
+			return new Raw1Converter();
+		}
 	}
 
 	public static class Raw2Converter extends Raw1Converter<String> {
+		public static Raw2Converter getInstance() {
+			return new Raw2Converter();
+		}
 	}
 
 	public static class NestedConverter extends
 			PropertyConverter<List<List<String>>, String> {
+		public static NestedConverter getInstance() {
+			return new NestedConverter();
+		}
 	}
 
 	/**

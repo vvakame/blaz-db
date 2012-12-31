@@ -171,12 +171,20 @@ public class ModelGenerator {
 
 		// process attributes exclude pk
 		for (Element element : enclosedElements) {
-			AttributeModel attrModel = element.asType().accept(
-					new ValueExtractVisitor(), element);
-			if (attrModel == null) {
+			AttributeDelegate attr = getAttributeAnnotation(element);
+			if (attr != null && attr.converter() != null) {
+				AttributeModel attrModel = getAttributeModel(element.asType(),
+						element, Kind.CONVERTER);
+				model.getAttributes().add(attrModel);
 				continue;
 			}
-			model.getAttributes().add(attrModel);
+
+			AttributeModel attrModel = element.asType().accept(
+					new ValueExtractVisitor(), element);
+			if (attrModel != null) {
+				model.getAttributes().add(attrModel);
+				continue;
+			}
 		}
 	}
 
@@ -442,19 +450,31 @@ public class ModelGenerator {
 
 				final List<? extends TypeMirror> typeArguments = getTypeArgumentsAtType(
 						converter, PropertyConverter.class);
-				final TypeMirror parameterType = typeArguments.get(0);
-				@SuppressWarnings("unused")
-				final TypeMirror returnType = typeArguments.get(1);
+				{
+					final TypeMirror parameterType = typeArguments.get(0);
 
-				DeclaredType collection = typeUtils.getDeclaredType(
-						toTypeElement(Collection.class), parameterType);
-				if (typeUtils.isAssignable(t, parameterType)) {
-					attrModel.setConverterType(ConverterType.SINGLE);
-				} else if (typeUtils.isAssignable(t, collection)) {
-					attrModel.setConverterType(ConverterType.COLLECTION);
-				} else {
-					// other
-					attrModel.setConverterType(ConverterType.UNKNOWN);
+					DeclaredType collection = typeUtils.getDeclaredType(
+							toTypeElement(Collection.class), parameterType);
+					if (typeUtils.isAssignable(t, parameterType)) {
+						attrModel.setConverterType(ConverterType.SINGLE);
+					} else if (typeUtils.isAssignable(t, collection)) {
+						attrModel.setConverterType(ConverterType.COLLECTION);
+					} else {
+						// other
+						attrModel.setConverterType(ConverterType.UNKNOWN);
+					}
+					attrModel
+							.setConverterParameterTypeWithGenerics(parameterType
+									.toString());
+					attrModel
+							.setConverterParameterType(getFullQualifiedName(parameterType));
+				}
+				{
+					final TypeMirror returnType = typeArguments.get(1);
+					attrModel.setConverterReturnTypeWithGenerics(returnType
+							.toString());
+					attrModel
+							.setConverterReturnType(getFullQualifiedName(returnType));
 				}
 			}
 		}
@@ -618,7 +638,9 @@ public class ModelGenerator {
 			Element type = typeUtils.asElement(tm);
 			attr.setSubTypeNameFQN(tm != null ? tm.toString() : null);
 
-			if ("byte[]".equals(tm.toString())) {
+			if (attr.getConverterFQN() != null) {
+				// not do anything
+			} else if ("byte[]".equals(tm.toString())) {
 				attr.setSubKind(Kind.BYTE_ARRAY);
 
 			} else if (isPrimitiveWrapperBoolean(type)) {

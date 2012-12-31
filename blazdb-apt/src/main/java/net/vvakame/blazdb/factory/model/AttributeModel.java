@@ -33,6 +33,14 @@ public class AttributeModel {
 
 	ConverterType converterType;
 
+	String converterParameterType;
+
+	String converterParameterTypeWithGenerics;
+
+	String converterReturnType;
+
+	String converterReturnTypeWithGenerics;
+
 	// info from annotation
 
 	boolean primaryKey;
@@ -334,5 +342,75 @@ public class AttributeModel {
 	 */
 	public void setTypeNameFQNWithGenerics(String typeNameFQNWithGenerics) {
 		this.typeNameFQNWithGenerics = typeNameFQNWithGenerics;
+	}
+
+	/**
+	 * @return the converterParameterType
+	 * @category accessor
+	 */
+	public String getConverterParameterType() {
+		return converterParameterType;
+	}
+
+	/**
+	 * @param converterParameterType
+	 *            the converterParameterType to set
+	 * @category accessor
+	 */
+	public void setConverterParameterType(String converterParameterType) {
+		this.converterParameterType = converterParameterType;
+	}
+
+	/**
+	 * @return the converterReturnType
+	 * @category accessor
+	 */
+	public String getConverterReturnType() {
+		return converterReturnType;
+	}
+
+	/**
+	 * @param converterReturnType
+	 *            the converterReturnType to set
+	 * @category accessor
+	 */
+	public void setConverterReturnType(String converterReturnType) {
+		this.converterReturnType = converterReturnType;
+	}
+
+	/**
+	 * @return the converterParameterTypeWithGenerics
+	 * @category accessor
+	 */
+	public String getConverterParameterTypeWithGenerics() {
+		return converterParameterTypeWithGenerics;
+	}
+
+	/**
+	 * @param converterParameterTypeWithGenerics
+	 *            the converterParameterTypeWithGenerics to set
+	 * @category accessor
+	 */
+	public void setConverterParameterTypeWithGenerics(
+			String converterParameterTypeWithGenerics) {
+		this.converterParameterTypeWithGenerics = converterParameterTypeWithGenerics;
+	}
+
+	/**
+	 * @return the converterReturnTypeWithGenerics
+	 * @category accessor
+	 */
+	public String getConverterReturnTypeWithGenerics() {
+		return converterReturnTypeWithGenerics;
+	}
+
+	/**
+	 * @param converterReturnTypeWithGenerics
+	 *            the converterReturnTypeWithGenerics to set
+	 * @category accessor
+	 */
+	public void setConverterReturnTypeWithGenerics(
+			String converterReturnTypeWithGenerics) {
+		this.converterReturnTypeWithGenerics = converterReturnTypeWithGenerics;
 	}
 }
