@@ -2,6 +2,8 @@ package net.vvakame.blazdb.factory.model;
 
 import java.lang.annotation.Annotation;
 
+import javax.lang.model.type.TypeMirror;
+
 import net.vvakame.blaz.PropertyConverter;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
@@ -40,8 +42,8 @@ public interface AttributeDelegate {
 	/**
 	 * Thire property processed by appointed {@link PropertyConverter}.
 	 * 
-	 * @return {@link PropertyConverter} class
+	 * @return {@link PropertyConverter} class FQN
 	 * @author vvakame
 	 */
-	public Class<? extends PropertyConverter<?, ?>> converter();
+	public TypeMirror converter();
 }

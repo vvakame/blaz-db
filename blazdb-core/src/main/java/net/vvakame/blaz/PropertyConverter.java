@@ -6,9 +6,15 @@ import java.util.List;
 
 public abstract class PropertyConverter<P, R> {
 
-	public abstract R serialize(P value);
+	public R serialize(P value) {
+		throw new UnsupportedOperationException(
+				"please override this method or set method.");
+	}
 
-	public abstract P deserialize(R value);
+	public P deserialize(R value) {
+		throw new UnsupportedOperationException(
+				"please override this method or get method.");
+	}
 
 	public void set(Entity entity, String propertyName, P value) {
 		R converted;
@@ -21,7 +27,7 @@ public abstract class PropertyConverter<P, R> {
 	}
 
 	public void setCollection(Entity entity, String propertyName,
-			Collection<P> collection) {
+			Collection<? extends P> collection) {
 		List<R> list = new ArrayList<R>(collection.size());
 		for (P value : collection) {
 			if (value != null) {
@@ -31,6 +37,12 @@ public abstract class PropertyConverter<P, R> {
 			}
 		}
 		entity.setProperty(propertyName, list);
+	}
+
+	public void setAny(Entity entity, String propertyName, Object value) {
+		throw new UnsupportedOperationException(
+				"please override this method or fix attribute's type. propertyName="
+						+ propertyName);
 	}
 
 	public P get(Entity entity, String propertyName) {
@@ -59,15 +71,12 @@ public abstract class PropertyConverter<P, R> {
 		return convertedList;
 	}
 
-	public static class DummyConverter extends PropertyConverter<Void, Void> {
-		@Override
-		public Void serialize(Void value) {
-			return null;
-		}
+	public <U> U getAny(Entity entity, String propertyName) {
+		throw new UnsupportedOperationException(
+				"please override this method or fix attribute's type. propertyName="
+						+ propertyName);
+	}
 
-		@Override
-		public Void deserialize(Void value) {
-			return null;
-		}
+	public static class DummyConverter extends PropertyConverter<Void, Void> {
 	}
 }

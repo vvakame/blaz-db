@@ -3,14 +3,18 @@ package net.vvakame.blazdb.factory;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -21,9 +25,9 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 
+import net.vvakame.apt.AptUtil;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.PropertyConverter;
-import net.vvakame.blaz.PropertyConverter.DummyConverter;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.BlazModel;
@@ -66,6 +70,7 @@ public class ModelGenerator {
 		processingEnv = env;
 		typeUtils = processingEnv.getTypeUtils();
 		elementUtils = processingEnv.getElementUtils();
+		AptUtil.init(elementUtils, typeUtils);
 	}
 
 	/**
@@ -100,8 +105,7 @@ public class ModelGenerator {
 	void processModel() {
 		ModelDelegate model = getModelAnnotation(classElement);
 		{
-			this.model
-					.setPackageName(getPackageName(elementUtils, classElement));
+			this.model.setPackageName(getPackageName(classElement));
 			this.model.setTarget(getSimpleName(classElement));
 			this.model.setTargetNew(getNameForNew(classElement));
 
@@ -179,7 +183,7 @@ public class ModelGenerator {
 	List<Element> filterByNonStaticMember(List<Element> enclosedElements) {
 		List<Element> newElementList = new ArrayList<Element>();
 		for (Element element : enclosedElements) {
-			if (element.getModifiers().contains(Modifier.STATIC)) {
+			if (isStatic(element)) {
 				continue;
 			}
 			newElementList.add(element);
@@ -239,7 +243,7 @@ public class ModelGenerator {
 		return "byte[]".equals(element.asType().toString());
 	}
 
-	AttributeDelegate getAttributeAnnotation(Element element) {
+	AttributeDelegate getAttributeAnnotation(final Element element) {
 		{
 			Attribute a1 = element.getAnnotation(Attribute.class);
 			BlazAttribute a2 = element.getAnnotation(BlazAttribute.class);
@@ -277,14 +281,8 @@ public class ModelGenerator {
 					}
 
 					@Override
-					public Class<? extends PropertyConverter<?, ?>> converter() {
-						Class<? extends PropertyConverter<?, ?>> clazz = annotation
-								.converter();
-						if (DummyConverter.class.equals(clazz)) {
-							return null;
-						} else {
-							return clazz;
-						}
+					public TypeMirror converter() {
+						return getConverter(element);
 					}
 				};
 			}
@@ -316,19 +314,34 @@ public class ModelGenerator {
 					}
 
 					@Override
-					public Class<? extends PropertyConverter<?, ?>> converter() {
-						Class<? extends PropertyConverter<?, ?>> clazz = annotation
-								.converter();
-						if (DummyConverter.class.equals(clazz)) {
-							return null;
-						} else {
-							return clazz;
-						}
+					public TypeMirror converter() {
+						return getConverter(element);
 					}
 				};
 			}
 		}
 		return null;
+	}
+
+	TypeMirror getConverter(Element el) {
+
+		AnnotationValue converter = null;
+
+		for (AnnotationMirror am : el.getAnnotationMirrors()) {
+			Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = am
+					.getElementValues();
+			for (ExecutableElement e : elementValues.keySet()) {
+				if ("converter".equals(e.getSimpleName().toString())) {
+					converter = elementValues.get(e);
+				}
+			}
+		}
+
+		if (converter != null) {
+			return (TypeMirror) converter.getValue();
+		} else {
+			return null;
+		}
 	}
 
 	ModelDelegate getModelAnnotation(Element element) {
@@ -421,6 +434,29 @@ public class ModelGenerator {
 				attrModel.setName(attr.name());
 				attrModel.setPersistent(attr.persistent());
 			}
+
+			if (attr != null && attr.converter() != null) {
+				TypeElement converter = toTypeElement(toDeclaredType(attr
+						.converter()));
+				attrModel.setConverterFQN(getFullQualifiedName(converter));
+
+				final List<? extends TypeMirror> typeArguments = getTypeArgumentsAtType(
+						converter, PropertyConverter.class);
+				final TypeMirror parameterType = typeArguments.get(0);
+				@SuppressWarnings("unused")
+				final TypeMirror returnType = typeArguments.get(1);
+
+				DeclaredType collection = typeUtils.getDeclaredType(
+						toTypeElement(Collection.class), parameterType);
+				if (typeUtils.isAssignable(t, parameterType)) {
+					attrModel.setConverterType(ConverterType.SINGLE);
+				} else if (typeUtils.isAssignable(t, collection)) {
+					attrModel.setConverterType(ConverterType.COLLECTION);
+				} else {
+					// other
+					attrModel.setConverterType(ConverterType.UNKNOWN);
+				}
+			}
 		}
 
 		String simpleName = el.getSimpleName().toString();
@@ -432,8 +468,6 @@ public class ModelGenerator {
 		String setter = getElementSetter(el);
 		attrModel.setGetter(getter);
 		attrModel.setSetter(setter);
-
-		// TODO Converter周りの処理を入れ込む
 
 		attrModel.setTypeNameFQNWithGenerics(t.toString());
 		String fqn = getFullQualifiedName(t);
@@ -455,7 +489,7 @@ public class ModelGenerator {
 		case SHORT_WRAPPER:
 		case INT_WRAPPER:
 		case LONG_WRAPPER: {
-			PrimitiveType primitive = toPrimitive(typeUtils, el);
+			PrimitiveType primitive = toPrimitive(el);
 			attrModel.setCastTo(primitive.toString());
 		}
 			break;
@@ -468,12 +502,12 @@ public class ModelGenerator {
 			break;
 		case FLOAT_WRAPPER:
 		case DOUBLE_WRAPPER: {
-			PrimitiveType primitive = toPrimitive(typeUtils, el);
+			PrimitiveType primitive = toPrimitive(el);
 			attrModel.setCastTo(primitive.toString());
 		}
 			break;
 		case BOOLEAN: {
-			TypeElement wrapper = toPrimitiveWrapper(elementUtils, el);
+			TypeElement wrapper = toPrimitiveWrapper(el);
 			attrModel.setCastTo(wrapper.asType().toString());
 		}
 			break;
@@ -485,14 +519,18 @@ public class ModelGenerator {
 			// to do nothing.
 			break;
 		case LIST:
+		case CONVERTER:
 			// mod after this method.
 			break;
-
 		case CHAR:
 		case CHAR_WRAPPER:
 		case DATE:
 		case ENUM:
 		case UNKNOWN:
+			if (attrModel.getConverterFQN() != null) {
+				return null;
+			}
+
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
 			break;
@@ -624,10 +662,9 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitEnum(DeclaredType t, Element el) {
-			Types typeUtils = processingEnv.getTypeUtils();
-			if (isInternalType(typeUtils, el.asType())) {
+			if (isInternalType(el.asType())) {
 				// InternalなEnum
-				TypeElement typeElement = getTypeElement(typeUtils, el);
+				TypeElement typeElement = getTypeElement(el);
 				if (isPublic(typeElement)) {
 					return getAttributeModel(t, el, Kind.ENUM);
 				} else {
@@ -688,7 +725,10 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitUndefinedClass(DeclaredType t, Element el) {
-			// TODO Converter周りの処理を入れ込む
+			AttributeDelegate attr = getAttributeAnnotation(el);
+			if (attr != null) {
+				return getAttributeModel(t, el, Kind.CONVERTER);
+			}
 
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
@@ -697,12 +737,11 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitArray(ArrayType t, Element el) {
-			// TODO Converter周りの処理を入れ込む
-
 			TypeMirror component = t.getComponentType();
 			if ("byte".equals(component.toString())) {
 				return getAttributeModel(t, el, Kind.BYTE_ARRAY);
 			}
+
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
 			return defaultAction(t, el);

@@ -1,6 +1,7 @@
 package net.vvakame.blazdb.factory.model;
 
 import net.vvakame.blaz.annotation.Attribute;
+import net.vvakame.blazdb.factory.ConverterType;
 import net.vvakame.blazdb.factory.Kind;
 
 /**
@@ -30,6 +31,8 @@ public class AttributeModel {
 
 	String setter;
 
+	ConverterType converterType;
+
 	// info from annotation
 
 	boolean primaryKey;
@@ -37,6 +40,8 @@ public class AttributeModel {
 	String name;
 
 	boolean persistent;
+
+	String converterFQN;
 
 	/**
 	 * Accessor for enum value.
@@ -56,6 +61,16 @@ public class AttributeModel {
 	 */
 	public String subKind() {
 		return subKind != null ? subKind.name() : null;
+	}
+
+	/**
+	 * Accessor for enum value.
+	 * 
+	 * @return converterType as String
+	 * @author vvakame
+	 */
+	public String converterType() {
+		return converterType != null ? converterType.name() : null;
 	}
 
 	/**
@@ -106,15 +121,6 @@ public class AttributeModel {
 	 */
 	public String getTypeNameFQNWithGenerics() {
 		return typeNameFQNWithGenerics;
-	}
-
-	/**
-	 * @param typeNameFQNWithGenerics
-	 *            the typeNameFQNWithGenerics to set
-	 * @category accessor
-	 */
-	public void setTypeNameFQNWithGenerics(String typeNameFQNWithGenerics) {
-		this.typeNameFQNWithGenerics = typeNameFQNWithGenerics;
 	}
 
 	/**
@@ -237,6 +243,23 @@ public class AttributeModel {
 	}
 
 	/**
+	 * @return the converterType
+	 * @category accessor
+	 */
+	public ConverterType getConverterType() {
+		return converterType;
+	}
+
+	/**
+	 * @param converterType
+	 *            the converterType to set
+	 * @category accessor
+	 */
+	public void setConverterType(ConverterType converterType) {
+		this.converterType = converterType;
+	}
+
+	/**
 	 * @return the primaryKey
 	 * @category accessor
 	 */
@@ -285,5 +308,31 @@ public class AttributeModel {
 	 */
 	public void setPersistent(boolean persistent) {
 		this.persistent = persistent;
+	}
+
+	/**
+	 * @return the converterFQN
+	 * @category accessor
+	 */
+	public String getConverterFQN() {
+		return converterFQN;
+	}
+
+	/**
+	 * @param converterFQN
+	 *            the converterFQN to set
+	 * @category accessor
+	 */
+	public void setConverterFQN(String converterFQN) {
+		this.converterFQN = converterFQN;
+	}
+
+	/**
+	 * @param typeNameFQNWithGenerics
+	 *            the typeNameFQNWithGenerics to set
+	 * @category accessor
+	 */
+	public void setTypeNameFQNWithGenerics(String typeNameFQNWithGenerics) {
+		this.typeNameFQNWithGenerics = typeNameFQNWithGenerics;
 	}
 }

@@ -1,6 +1,7 @@
 package net.vvakame.blazdb.factory;
 
 import net.vvakame.sample.model.AllSuppotedTypeData;
+import net.vvakame.sample.model.ConverterData;
 import net.vvakame.sample.model.NotPrimitiveTypeData;
 import net.vvakame.sample.model.PrimitiveTypeData;
 import net.vvakame.sample.model.PrimitiveWrapperTypeData;
@@ -87,6 +88,28 @@ public class BlazDbAnnotationProcessorTest extends AptinaTestCase {
 			@SuppressWarnings("unused")
 			String source = getGeneratedSource(AllSuppotedTypeData.class
 					.getName() + "Meta");
+		}
+		assertThat(getCompiledResult(), is(true));
+	}
+
+	/**
+	 * Test case.
+	 * 
+	 * @throws Exception
+	 * @author vvakame
+	 */
+	@Test
+	public void testForConverter() throws Exception {
+		BlazDbAnnotationProcessor processor = new BlazDbAnnotationProcessor();
+		addProcessor(processor);
+
+		addCompilationUnit(ConverterData.class);
+
+		compile();
+		{
+			@SuppressWarnings("unused")
+			String source = getGeneratedSource(ConverterData.class.getName()
+					+ "Meta");
 		}
 		assertThat(getCompiledResult(), is(true));
 	}
