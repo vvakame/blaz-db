@@ -18,6 +18,7 @@ import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.meta.CollectionAttributeMeta;
+import net.vvakame.blaz.meta.ConverterAttributeMeta;
 import net.vvakame.blaz.meta.CoreAttributeMeta;
 import net.vvakame.blaz.meta.ModelMeta;
 import net.vvakame.blaz.meta.PropertyAttributeMeta;
@@ -365,6 +366,8 @@ public class JdbcKVS extends BareDatastore implements
 				propertyList.add((PropertyAttributeMeta<?>) c);
 			} else if (c instanceof CollectionAttributeMeta) {
 				collectionList.add((CollectionAttributeMeta<?, ?>) c);
+			} else if (c instanceof ConverterAttributeMeta<?, ?>) {
+				// TODO 変換結果を一意に決められない…
 			} else {
 				throw new IllegalStateException("unknown meta class = "
 						+ c.getClass().getCanonicalName());

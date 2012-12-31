@@ -1,9 +1,12 @@
 package net.vvakame.blaz.meta.sample;
 
+import java.util.Date;
 import java.util.List;
 
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.PropertyConverter;
 import net.vvakame.blaz.annotation.Attribute;
+import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.Model;
 
 /**
@@ -69,6 +72,30 @@ public class AllSuppotedTypeData {
 	List<String> strList;
 
 	List<byte[]> bytesList;
+
+	@BlazAttribute(converter = DateConverter.class)
+	Date date;
+
+	@BlazAttribute(converter = DateConverter.class)
+	List<Date> dateList;
+
+
+	static class DateConverter extends PropertyConverter<Date, Long> {
+
+		public static DateConverter getInstance() {
+			return new DateConverter();
+		}
+
+		@Override
+		public Long serialize(Date value) {
+			return value.getTime();
+		}
+
+		@Override
+		public Date deserialize(Long value) {
+			return new Date(value);
+		}
+	}
 
 
 	/**
@@ -517,5 +544,37 @@ public class AllSuppotedTypeData {
 	 */
 	public void setBytesList(List<byte[]> bytesList) {
 		this.bytesList = bytesList;
+	}
+
+	/**
+	 * @return the date
+	 * @category accessor
+	 */
+	public Date getDate() {
+		return date;
+	}
+
+	/**
+	 * @param date the date to set
+	 * @category accessor
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	/**
+	 * @return the dateList
+	 * @category accessor
+	 */
+	public List<Date> getDateList() {
+		return dateList;
+	}
+
+	/**
+	 * @param dateList the dateList to set
+	 * @category accessor
+	 */
+	public void setDateList(List<Date> dateList) {
+		this.dateList = dateList;
 	}
 }

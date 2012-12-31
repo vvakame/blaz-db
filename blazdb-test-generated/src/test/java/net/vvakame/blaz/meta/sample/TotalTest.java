@@ -1,6 +1,7 @@
 package net.vvakame.blaz.meta.sample;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Key;
@@ -86,6 +87,10 @@ public class TotalTest {
 				3
 			});
 			data.getBytesList().add(null);
+			data.setDate(new Date(10000000000L));
+			data.setDateList(new ArrayList<Date>());
+			data.getDateList().add(new Date(10000000000L));
+			data.getDateList().add(null);
 
 			Datastore.put(data);
 			key = data.getKey();
@@ -137,6 +142,12 @@ public class TotalTest {
 			assertThat(data.getBytesList().get(0)[1], is((byte) 2));
 			assertThat(data.getBytesList().get(0)[2], is((byte) 3));
 			assertThat(data.getBytesList().get(1), nullValue());
+
+			assertThat(data.getDate(), is(new Date(10000000000L)));
+
+			assertThat(data.getDateList().size(), is(2));
+			assertThat(data.getDateList().get(0), is(new Date(10000000000L)));
+			assertThat(data.getDateList().get(1), nullValue());
 		}
 		{
 			AllSuppotedTypeData data = new AllSuppotedTypeData();
@@ -157,6 +168,8 @@ public class TotalTest {
 			data.setdW(null);
 			data.setStr(null);
 			data.setBytes(null);
+			data.setDate(null);
+			data.setDateList(null);
 
 			Datastore.put(data);
 			key = data.getKey();

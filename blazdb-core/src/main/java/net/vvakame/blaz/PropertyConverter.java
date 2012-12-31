@@ -28,6 +28,10 @@ public abstract class PropertyConverter<P, R> {
 
 	public void setCollection(Entity entity, String propertyName,
 			Collection<? extends P> collection) {
+		if (collection == null) {
+			entity.setProperty(propertyName, null);
+			return;
+		}
 		List<R> list = new ArrayList<R>(collection.size());
 		for (P value : collection) {
 			if (value != null) {

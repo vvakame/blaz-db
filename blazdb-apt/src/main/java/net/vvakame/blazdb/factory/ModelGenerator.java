@@ -144,6 +144,9 @@ public class ModelGenerator {
 		List<Element> enclosedElements = getEnclosedElementsByKind(
 				classElement, ElementKind.FIELD);
 
+		// TODO getter setter の存在チェック
+		// TODO ListのGenericsのチェック List<Date> がエラーにならない
+
 		// exclude static field
 		enclosedElements = filterByNonStaticMember(enclosedElements);
 

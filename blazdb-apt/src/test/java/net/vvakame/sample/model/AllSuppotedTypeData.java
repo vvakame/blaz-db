@@ -8,6 +8,7 @@ import net.vvakame.blaz.annotation.Model;
 
 /**
  * A class with fields for all the primitive types.
+ * 
  * @author vvakame
  */
 @Model(kind = "AllTypes", schemaVersion = 1, schemaVersionName = "sv")
@@ -70,7 +71,6 @@ public class AllSuppotedTypeData {
 
 	List<byte[]> bytesList;
 
-
 	/**
 	 * @return the key
 	 * @category accessor
@@ -80,7 +80,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param key the key to set
+	 * @param key
+	 *            the key to set
 	 * @category accessor
 	 */
 	public void setKey(Key key) {
@@ -96,7 +97,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param k the k to set
+	 * @param k
+	 *            the k to set
 	 * @category accessor
 	 */
 	public void setK(Key k) {
@@ -112,7 +114,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param bool the bool to set
+	 * @param bool
+	 *            the bool to set
 	 * @category accessor
 	 */
 	public void setBool(boolean bool) {
@@ -128,7 +131,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param b the b to set
+	 * @param b
+	 *            the b to set
 	 * @category accessor
 	 */
 	public void setB(byte b) {
@@ -144,7 +148,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param s the s to set
+	 * @param s
+	 *            the s to set
 	 * @category accessor
 	 */
 	public void setS(short s) {
@@ -160,7 +165,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param i the i to set
+	 * @param i
+	 *            the i to set
 	 * @category accessor
 	 */
 	public void setI(int i) {
@@ -176,7 +182,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param l the l to set
+	 * @param l
+	 *            the l to set
 	 * @category accessor
 	 */
 	public void setL(long l) {
@@ -192,7 +199,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param f the f to set
+	 * @param f
+	 *            the f to set
 	 * @category accessor
 	 */
 	public void setF(float f) {
@@ -208,7 +216,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param d the d to set
+	 * @param d
+	 *            the d to set
 	 * @category accessor
 	 */
 	public void setD(double d) {
@@ -224,7 +233,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param boolW the boolW to set
+	 * @param boolW
+	 *            the boolW to set
 	 * @category accessor
 	 */
 	public void setBoolW(Boolean boolW) {
@@ -240,7 +250,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param bW the bW to set
+	 * @param bW
+	 *            the bW to set
 	 * @category accessor
 	 */
 	public void setbW(Byte bW) {
@@ -256,7 +267,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param sW the sW to set
+	 * @param sW
+	 *            the sW to set
 	 * @category accessor
 	 */
 	public void setsW(Short sW) {
@@ -272,7 +284,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param iW the iW to set
+	 * @param iW
+	 *            the iW to set
 	 * @category accessor
 	 */
 	public void setiW(Integer iW) {
@@ -288,7 +301,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param lW the lW to set
+	 * @param lW
+	 *            the lW to set
 	 * @category accessor
 	 */
 	public void setlW(Long lW) {
@@ -304,7 +318,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param fW the fW to set
+	 * @param fW
+	 *            the fW to set
 	 * @category accessor
 	 */
 	public void setfW(Float fW) {
@@ -320,7 +335,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param dW the dW to set
+	 * @param dW
+	 *            the dW to set
 	 * @category accessor
 	 */
 	public void setdW(Double dW) {
@@ -336,7 +352,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param str the str to set
+	 * @param str
+	 *            the str to set
 	 * @category accessor
 	 */
 	public void setStr(String str) {
@@ -352,7 +369,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param bytes the bytes to set
+	 * @param bytes
+	 *            the bytes to set
 	 * @category accessor
 	 */
 	public void setBytes(byte[] bytes) {
@@ -368,7 +386,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param keyList the keyList to set
+	 * @param keyList
+	 *            the keyList to set
 	 * @category accessor
 	 */
 	public void setKeyList(List<Key> keyList) {
@@ -384,7 +403,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param boolWList the boolWList to set
+	 * @param boolWList
+	 *            the boolWList to set
 	 * @category accessor
 	 */
 	public void setBoolWList(List<Boolean> boolWList) {
@@ -400,7 +420,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param bWList the bWList to set
+	 * @param bWList
+	 *            the bWList to set
 	 * @category accessor
 	 */
 	public void setbWList(List<Byte> bWList) {
@@ -416,7 +437,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param sWList the sWList to set
+	 * @param sWList
+	 *            the sWList to set
 	 * @category accessor
 	 */
 	public void setsWList(List<Short> sWList) {
@@ -432,7 +454,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param iWList the iWList to set
+	 * @param iWList
+	 *            the iWList to set
 	 * @category accessor
 	 */
 	public void setiWList(List<Integer> iWList) {
@@ -448,7 +471,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param lWList the lWList to set
+	 * @param lWList
+	 *            the lWList to set
 	 * @category accessor
 	 */
 	public void setlWList(List<Long> lWList) {
@@ -464,7 +488,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param fWList the fWList to set
+	 * @param fWList
+	 *            the fWList to set
 	 * @category accessor
 	 */
 	public void setfWList(List<Float> fWList) {
@@ -480,7 +505,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param dWList the dWList to set
+	 * @param dWList
+	 *            the dWList to set
 	 * @category accessor
 	 */
 	public void setdWList(List<Double> dWList) {
@@ -496,7 +522,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param strList the strList to set
+	 * @param strList
+	 *            the strList to set
 	 * @category accessor
 	 */
 	public void setStrList(List<String> strList) {
@@ -512,7 +539,8 @@ public class AllSuppotedTypeData {
 	}
 
 	/**
-	 * @param bytesList the bytesList to set
+	 * @param bytesList
+	 *            the bytesList to set
 	 * @category accessor
 	 */
 	public void setBytesList(List<byte[]> bytesList) {
