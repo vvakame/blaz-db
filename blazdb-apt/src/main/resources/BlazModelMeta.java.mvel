@@ -24,19 +24,19 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 @foreach{attr : attributes}
 @if{attr.converterFQN != null && attr.converterType() == "SINGLE"}
-	final net.vvakame.blaz.meta.PropertyConverterAttributeMeta<@{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}> @{attr.name} = new net.vvakame.blaz.meta.PropertyConverterAttributeMeta<@{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}>("@{attr.name}", @{attr.converterParameterType}.class, @{attr.converterReturnType}.class, @{attr.converterFQN}.getInstance());
+	public final net.vvakame.blaz.meta.PropertyConverterAttributeMeta<@{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}> @{attr.name} = new net.vvakame.blaz.meta.PropertyConverterAttributeMeta<@{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}>("@{attr.name}", @{attr.converterParameterType}.class, @{attr.converterReturnType}.class, @{attr.converterFQN}.getInstance());
 @elseif{attr.converterFQN != null && attr.converterType() == "COLLECTION"}
-	final net.vvakame.blaz.meta.CollectionConverterAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}> @{attr.name} = new net.vvakame.blaz.meta.CollectionConverterAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}>("@{attr.name}", @{attr.converterParameterType}.class, @{attr.converterReturnType}.class, @{attr.typeNameFQN}.class, @{attr.converterFQN}.getInstance());
+	public final net.vvakame.blaz.meta.CollectionConverterAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}> @{attr.name} = new net.vvakame.blaz.meta.CollectionConverterAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.converterParameterTypeWithGenerics}, @{attr.converterReturnTypeWithGenerics}>("@{attr.name}", @{attr.converterParameterType}.class, @{attr.converterReturnType}.class, @{attr.typeNameFQN}.class, @{attr.converterFQN}.getInstance());
 @elseif{attr.isNumberPrimitive()}
-	final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
+	public final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
 @elseif{attr.isNumberPrimitiveWrapper()}
-	final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
+	public final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQN}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @elseif{attr.castTo != null}
-	final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
+	public final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.castTo}>("@{attr.name}", @{attr.castTo}.class);
 @elseif{attr.kind() == "LIST"}
-	final net.vvakame.blaz.meta.CollectionAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.subTypeNameFQN}> @{attr.name} = new net.vvakame.blaz.meta.CollectionAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.subTypeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class, @{attr.subTypeNameFQN}.class);
+	public final net.vvakame.blaz.meta.CollectionAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.subTypeNameFQN}> @{attr.name} = new net.vvakame.blaz.meta.CollectionAttributeMeta<@{attr.typeNameFQNWithGenerics}, @{attr.subTypeNameFQN}>("@{attr.name}", @{attr.typeNameFQN}.class, @{attr.subTypeNameFQN}.class);
 @else{}
-	final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}>("@{attr.name}", @{attr.typeNameFQN}.class);
+	public final net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}> @{attr.name} = new net.vvakame.blaz.meta.PropertyAttributeMeta<@{attr.typeNameFQNWithGenerics}>("@{attr.name}", @{attr.typeNameFQN}.class);
 @end{}@end{}
 
 	final List<CoreAttributeMeta<?>> __properties;
