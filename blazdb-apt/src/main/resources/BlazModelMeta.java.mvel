@@ -59,12 +59,30 @@ public class @{target}@{postfix} extends ModelMeta<@{target}> {
 
 	@Override
 	public void setKey(@{target} model, Key key) {
+@if{primaryKey.converterFQN == null}
 		model.@{primaryKey.setter}(key);
+@else{}
+		if(key == null) {
+			model.@{primaryKey.setter}(null);
+		} else {
+			@{primaryKey.converterFQN} converter = @{primaryKey.converterFQN}.getInstance();
+			model.@{primaryKey.setter}(converter.deserialize(key));
+		}
+@end{}
 	}
 
 	@Override
 	public Key getKey(@{target} model) {
+@if{primaryKey.converterFQN == null}
 		return model.@{primaryKey.getter}();
+@else{}
+		if(model.@{primaryKey.getter}() == null) {
+			return null;
+		} else {
+			@{primaryKey.converterFQN} converter = @{primaryKey.converterFQN}.getInstance();
+			return converter.serialize(model.@{primaryKey.getter}());
+		}
+@end{}
 	}
 
 	@Override
