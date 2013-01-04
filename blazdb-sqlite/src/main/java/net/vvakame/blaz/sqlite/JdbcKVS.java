@@ -137,6 +137,9 @@ public class JdbcKVS extends BareDatastore implements
 			if (!DbUtil.checkIndexExsists(conn, "VALUE_KEY_STR")) {
 				stmt.executeUpdate("CREATE INDEX VALUE_KEY_STR ON VALUE_TABLE(KEY_STR)");
 			}
+			if (!DbUtil.checkIndexExsists(conn, "VALUE_KIND_KEY_STR")) {
+				stmt.executeUpdate("CREATE INDEX VALUE_KIND_KEY_STR ON VALUE_TABLE(KIND, KEY_STR)");
+			}
 			if (!DbUtil.checkIndexExsists(conn, "VALUE_KIND_NAME")) {
 				stmt.executeUpdate("CREATE INDEX VALUE_KIND_NAME ON VALUE_TABLE(KIND, NAME)");
 			}
