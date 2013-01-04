@@ -4,10 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.PropertyConverter;
 import net.vvakame.blazdb.factory.model.AttributeModel;
 
 /**
  * The type {@link AttributeModel} represents.
+ * 
  * @author vvakame
  */
 public enum Kind {
@@ -57,4 +59,6 @@ public enum Kind {
 	INT_WRAPPER,
 	/** {@link Short} */
 	SHORT_WRAPPER,
+	/** {@link PropertyConverter} */
+	CONVERTER
 }

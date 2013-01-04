@@ -17,10 +17,10 @@ import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
-import net.vvakame.blaz.meta.CollectionAttributeMeta;
+import net.vvakame.blaz.meta.CollectionAttributeMetaInterface;
 import net.vvakame.blaz.meta.CoreAttributeMeta;
 import net.vvakame.blaz.meta.ModelMeta;
-import net.vvakame.blaz.meta.PropertyAttributeMeta;
+import net.vvakame.blaz.meta.PropertyAttributeMetaInterface;
 import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 
@@ -356,15 +356,15 @@ public class JdbcKVS extends BareDatastore implements
 	 */
 	public void createView(ModelMeta<?> meta) {
 
-		List<PropertyAttributeMeta<?>> propertyList = new ArrayList<PropertyAttributeMeta<?>>();
-		List<CollectionAttributeMeta<?, ?>> collectionList = new ArrayList<CollectionAttributeMeta<?, ?>>();
+		List<PropertyAttributeMetaInterface<?>> propertyList = new ArrayList<PropertyAttributeMetaInterface<?>>();
+		List<CollectionAttributeMetaInterface<?, ?>> collectionList = new ArrayList<CollectionAttributeMetaInterface<?, ?>>();
 
 		List<CoreAttributeMeta<?>> properties = meta.getProperties();
 		for (CoreAttributeMeta<?> c : properties) {
-			if (c instanceof PropertyAttributeMeta) {
-				propertyList.add((PropertyAttributeMeta<?>) c);
-			} else if (c instanceof CollectionAttributeMeta) {
-				collectionList.add((CollectionAttributeMeta<?, ?>) c);
+			if (c instanceof PropertyAttributeMetaInterface) {
+				propertyList.add((PropertyAttributeMetaInterface<?>) c);
+			} else if (c instanceof CollectionAttributeMetaInterface) {
+				collectionList.add((CollectionAttributeMetaInterface<?, ?>) c);
 			} else {
 				throw new IllegalStateException("unknown meta class = "
 						+ c.getClass().getCanonicalName());
@@ -383,7 +383,7 @@ public class JdbcKVS extends BareDatastore implements
 	 * @author vvakame
 	 */
 	void createViewMains(ModelMeta<?> meta,
-			List<PropertyAttributeMeta<?>> listProperties) {
+			List<PropertyAttributeMetaInterface<?>> listProperties) {
 
 		StringBuilder select = new StringBuilder();
 		StringBuilder from = new StringBuilder();
@@ -393,7 +393,7 @@ public class JdbcKVS extends BareDatastore implements
 		final String kind = meta.getKind();
 		String firstName = null;
 
-		for (PropertyAttributeMeta<?> p : listProperties) {
+		for (PropertyAttributeMetaInterface<?> p : listProperties) {
 			final Class<?> clazz = p.getPropertyClass();
 			if (List.class.equals(clazz)) {
 				listProperties.add(p);
@@ -490,8 +490,8 @@ public class JdbcKVS extends BareDatastore implements
 	 * @author vvakame
 	 */
 	void createViewSubLists(ModelMeta<?> meta,
-			List<CollectionAttributeMeta<?, ?>> collectionList) {
-		for (CollectionAttributeMeta<?, ?> p : collectionList) {
+			List<CollectionAttributeMetaInterface<?, ?>> collectionList) {
+		for (CollectionAttributeMetaInterface<?, ?> p : collectionList) {
 			final String viewName = meta.getKind() + "_List_" + p.getName();
 			StringBuilder select = new StringBuilder();
 			StringBuilder where = new StringBuilder();

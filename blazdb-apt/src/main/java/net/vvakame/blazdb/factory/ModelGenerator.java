@@ -2,13 +2,19 @@ package net.vvakame.blazdb.factory;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -19,7 +25,9 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 
+import net.vvakame.apt.AptUtil;
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.PropertyConverter;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.BlazModel;
@@ -62,6 +70,7 @@ public class ModelGenerator {
 		processingEnv = env;
 		typeUtils = processingEnv.getTypeUtils();
 		elementUtils = processingEnv.getElementUtils();
+		AptUtil.init(elementUtils, typeUtils);
 	}
 
 	/**
@@ -96,8 +105,7 @@ public class ModelGenerator {
 	void processModel() {
 		ModelDelegate model = getModelAnnotation(classElement);
 		{
-			this.model
-					.setPackageName(getPackageName(elementUtils, classElement));
+			this.model.setPackageName(getPackageName(classElement));
 			this.model.setTarget(getSimpleName(classElement));
 			this.model.setTargetNew(getNameForNew(classElement));
 
@@ -136,7 +144,11 @@ public class ModelGenerator {
 		List<Element> enclosedElements = getEnclosedElementsByKind(
 				classElement, ElementKind.FIELD);
 
-		// TODO exclude static field
+		// TODO getter setter の存在チェック
+		// TODO ListのGenericsのチェック List<Date> がエラーにならない
+
+		// exclude static field
+		enclosedElements = filterByNonStaticMember(enclosedElements);
 
 		// detect primary key
 		Element key = findPrimaryKeyByAnnotation(enclosedElements);
@@ -162,78 +174,32 @@ public class ModelGenerator {
 
 		// process attributes exclude pk
 		for (Element element : enclosedElements) {
-			AttributeModel attrModel = element.asType().accept(
-					new ValueExtractVisitor(), element);
-			if (attrModel == null) {
+			AttributeDelegate attr = getAttributeAnnotation(element);
+			if (attr != null && attr.converter() != null) {
+				AttributeModel attrModel = getAttributeModel(element.asType(),
+						element, Kind.CONVERTER);
+				model.getAttributes().add(attrModel);
 				continue;
 			}
-			model.getAttributes().add(attrModel);
+
+			AttributeModel attrModel = element.asType().accept(
+					new ValueExtractVisitor(), element);
+			if (attrModel != null) {
+				model.getAttributes().add(attrModel);
+				continue;
+			}
 		}
 	}
 
-	// TODO あとで消す
-	@Deprecated
-	AttributeModel processAttribute(Element element) {
-		AttributeModel attrModel = new AttributeModel();
-		{
-			AttributeDelegate attr = getAttributeAnnotation(element);
-			if (attr != null && !attr.persistent()) {
-				return null;
+	List<Element> filterByNonStaticMember(List<Element> enclosedElements) {
+		List<Element> newElementList = new ArrayList<Element>();
+		for (Element element : enclosedElements) {
+			if (isStatic(element)) {
+				continue;
 			}
-
-			if (attr != null) {
-				attrModel.setName(attr.name());
-				attrModel.setPersistent(attr.persistent());
-			}
+			newElementList.add(element);
 		}
-
-		String simpleName = element.getSimpleName().toString();
-		if (attrModel.getName() == null || "".equals(attrModel.getName())) {
-			attrModel.setName(simpleName);
-		}
-
-		String getter = getElementGetter(element);
-		String setter = getElementSetter(element);
-		attrModel.setGetter(getter);
-		attrModel.setSetter(setter);
-
-		String typeName = getFullQualifiedName(element.asType());
-		attrModel.setTypeNameFQN(typeName);
-
-		if (isPrimitiveIntegral(element)) {
-			TypeElement wrapper = elementUtils.getTypeElement(Long.class
-					.getCanonicalName());
-			attrModel.setCastTo(wrapper.asType().toString());
-		} else if (isPrimitiveWrapperIntegral(element)) {
-			PrimitiveType primitive = toPrimitive(typeUtils, element);
-			attrModel.setCastTo(primitive.toString());
-
-		} else if (isPrimitiveReal(element)) {
-			TypeElement wrapper = elementUtils.getTypeElement(Double.class
-					.getCanonicalName());
-			attrModel.setCastTo(wrapper.asType().toString());
-		} else if (isPrimitiveWrapperReal(element)) {
-			PrimitiveType primitive = toPrimitive(typeUtils, element);
-			attrModel.setCastTo(primitive.toString());
-
-		} else if (isPrimitiveBoolean(element)) {
-			TypeElement wrapper = toPrimitiveWrapper(elementUtils, element);
-			attrModel.setCastTo(wrapper.asType().toString());
-
-		} else if (isKeyElement(element)) {
-
-		} else if (isPrimitiveWrapperBoolean(element)) {
-
-		} else if (isStringElement(element)) {
-
-		} else if (isByteArrayElement(element)) {
-
-		} else {
-			Log.e("Unsupported element type = " + element.asType(), element);
-			encountError = true;
-		}
-
-		return attrModel;
+		return newElementList;
 	}
 
 	Element findPrimaryKeyByAnnotation(List<Element> enclosedElements) {
@@ -288,7 +254,7 @@ public class ModelGenerator {
 		return "byte[]".equals(element.asType().toString());
 	}
 
-	AttributeDelegate getAttributeAnnotation(Element element) {
+	AttributeDelegate getAttributeAnnotation(final Element element) {
 		{
 			Attribute a1 = element.getAnnotation(Attribute.class);
 			BlazAttribute a2 = element.getAnnotation(BlazAttribute.class);
@@ -324,6 +290,11 @@ public class ModelGenerator {
 					public Class<? extends Annotation> annotationType() {
 						return annotation.annotationType();
 					}
+
+					@Override
+					public TypeMirror converter() {
+						return getConverter(element);
+					}
 				};
 			}
 		}
@@ -352,10 +323,36 @@ public class ModelGenerator {
 					public Class<? extends Annotation> annotationType() {
 						return annotation.annotationType();
 					}
+
+					@Override
+					public TypeMirror converter() {
+						return getConverter(element);
+					}
 				};
 			}
 		}
 		return null;
+	}
+
+	TypeMirror getConverter(Element el) {
+
+		AnnotationValue converter = null;
+
+		for (AnnotationMirror am : el.getAnnotationMirrors()) {
+			Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = am
+					.getElementValues();
+			for (ExecutableElement e : elementValues.keySet()) {
+				if ("converter".equals(e.getSimpleName().toString())) {
+					converter = elementValues.get(e);
+				}
+			}
+		}
+
+		if (converter != null) {
+			return (TypeMirror) converter.getValue();
+		} else {
+			return null;
+		}
 	}
 
 	ModelDelegate getModelAnnotation(Element element) {
@@ -448,6 +445,42 @@ public class ModelGenerator {
 				attrModel.setName(attr.name());
 				attrModel.setPersistent(attr.persistent());
 			}
+
+			if (attr != null && attr.converter() != null) {
+				TypeElement converter = toTypeElement(toDeclaredType(attr
+						.converter()));
+				attrModel.setConverterFQN(getFullQualifiedName(converter));
+
+				final List<? extends TypeMirror> typeArguments = getTypeArgumentsAtType(
+						converter, PropertyConverter.class);
+				{
+					final TypeMirror parameterType = typeArguments.get(0);
+
+					DeclaredType collection = typeUtils.getDeclaredType(
+							toTypeElement(Collection.class), parameterType);
+					if (typeUtils.isAssignable(t, parameterType)) {
+						attrModel.setConverterType(ConverterType.SINGLE);
+					} else if (typeUtils.isAssignable(t, collection)) {
+						attrModel.setConverterType(ConverterType.COLLECTION);
+					} else {
+						// TODO もうちょい、いいメッセージに変えたい…
+						Log.e("Can't apply converter.", el);
+						encountError = true;
+					}
+					attrModel
+							.setConverterParameterTypeWithGenerics(parameterType
+									.toString());
+					attrModel
+							.setConverterParameterType(getFullQualifiedName(parameterType));
+				}
+				{
+					final TypeMirror returnType = typeArguments.get(1);
+					attrModel.setConverterReturnTypeWithGenerics(returnType
+							.toString());
+					attrModel
+							.setConverterReturnType(getFullQualifiedName(returnType));
+				}
+			}
 		}
 
 		String simpleName = el.getSimpleName().toString();
@@ -480,7 +513,7 @@ public class ModelGenerator {
 		case SHORT_WRAPPER:
 		case INT_WRAPPER:
 		case LONG_WRAPPER: {
-			PrimitiveType primitive = toPrimitive(typeUtils, el);
+			PrimitiveType primitive = toPrimitive(el);
 			attrModel.setCastTo(primitive.toString());
 		}
 			break;
@@ -493,12 +526,12 @@ public class ModelGenerator {
 			break;
 		case FLOAT_WRAPPER:
 		case DOUBLE_WRAPPER: {
-			PrimitiveType primitive = toPrimitive(typeUtils, el);
+			PrimitiveType primitive = toPrimitive(el);
 			attrModel.setCastTo(primitive.toString());
 		}
 			break;
 		case BOOLEAN: {
-			TypeElement wrapper = toPrimitiveWrapper(elementUtils, el);
+			TypeElement wrapper = toPrimitiveWrapper(el);
 			attrModel.setCastTo(wrapper.asType().toString());
 		}
 			break;
@@ -510,14 +543,18 @@ public class ModelGenerator {
 			// to do nothing.
 			break;
 		case LIST:
+		case CONVERTER:
 			// mod after this method.
 			break;
-
 		case CHAR:
 		case CHAR_WRAPPER:
 		case DATE:
 		case ENUM:
 		case UNKNOWN:
+			if (attrModel.getConverterFQN() != null) {
+				return null;
+			}
+
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
 			break;
@@ -577,6 +614,8 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitList(DeclaredType t, Element el) {
+			// TODO Converter周りの処理を入れ込む
+
 			AttributeModel attr = getAttributeModel(t, el, Kind.LIST);
 
 			List<? extends TypeMirror> generics = t.getTypeArguments();
@@ -603,7 +642,9 @@ public class ModelGenerator {
 			Element type = typeUtils.asElement(tm);
 			attr.setSubTypeNameFQN(tm != null ? tm.toString() : null);
 
-			if ("byte[]".equals(tm.toString())) {
+			if (attr.getConverterFQN() != null) {
+				// not do anything
+			} else if ("byte[]".equals(tm.toString())) {
 				attr.setSubKind(Kind.BYTE_ARRAY);
 
 			} else if (isPrimitiveWrapperBoolean(type)) {
@@ -647,10 +688,9 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitEnum(DeclaredType t, Element el) {
-			Types typeUtils = processingEnv.getTypeUtils();
-			if (isInternalType(typeUtils, el.asType())) {
+			if (isInternalType(el.asType())) {
 				// InternalなEnum
-				TypeElement typeElement = getTypeElement(typeUtils, el);
+				TypeElement typeElement = getTypeElement(el);
 				if (isPublic(typeElement)) {
 					return getAttributeModel(t, el, Kind.ENUM);
 				} else {
@@ -711,6 +751,11 @@ public class ModelGenerator {
 
 		@Override
 		public AttributeModel visitUndefinedClass(DeclaredType t, Element el) {
+			AttributeDelegate attr = getAttributeAnnotation(el);
+			if (attr != null) {
+				return getAttributeModel(t, el, Kind.CONVERTER);
+			}
+
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
 			return defaultAction(t, el);
@@ -722,6 +767,7 @@ public class ModelGenerator {
 			if ("byte".equals(component.toString())) {
 				return getAttributeModel(t, el, Kind.BYTE_ARRAY);
 			}
+
 			Log.e("Unsuppoted element type = " + el.asType(), el);
 			encountError = true;
 			return defaultAction(t, el);

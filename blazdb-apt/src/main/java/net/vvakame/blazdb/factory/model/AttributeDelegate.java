@@ -2,11 +2,15 @@ package net.vvakame.blazdb.factory.model;
 
 import java.lang.annotation.Annotation;
 
+import javax.lang.model.type.TypeMirror;
+
+import net.vvakame.blaz.PropertyConverter;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
 
 /**
  * Delegate interface for {@link Attribute} or {@link BlazAttribute}.
+ * 
  * @author vvakame
  */
 public interface AttributeDelegate {
@@ -34,4 +38,12 @@ public interface AttributeDelegate {
 	 * @author vvakame
 	 */
 	public Class<? extends Annotation> annotationType();
+
+	/**
+	 * Thire property processed by appointed {@link PropertyConverter}.
+	 * 
+	 * @return {@link PropertyConverter} class FQN
+	 * @author vvakame
+	 */
+	public TypeMirror converter();
 }

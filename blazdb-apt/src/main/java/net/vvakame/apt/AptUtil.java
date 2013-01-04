@@ -48,6 +48,14 @@ import javax.lang.model.util.Types;
  */
 public class AptUtil {
 
+	static Elements elementUtil;
+	static Types typeUtil;
+
+	public static void init(Elements elementUtil, Types typeUtil) {
+		AptUtil.elementUtil = elementUtil;
+		AptUtil.typeUtil = typeUtil;
+	}
+
 	private AptUtil() {
 	}
 
@@ -331,13 +339,12 @@ public class AptUtil {
 	/**
 	 * convert primitive to primitive wrapper.
 	 * 
-	 * @param elementUtil
 	 * @param element
+	 * 
 	 * @return primitive wrapper
 	 * @author vvakame
 	 */
-	public static TypeElement toPrimitiveWrapper(Elements elementUtil,
-			Element element) {
+	public static TypeElement toPrimitiveWrapper(Element element) {
 		if (!isPrimitive(element)) {
 			throw new IllegalArgumentException(element.toString()
 					+ " is not primitive");
@@ -368,33 +375,33 @@ public class AptUtil {
 	/**
 	 * convert primitive wapper to primitive.
 	 * 
-	 * @param typeUtils
 	 * @param element
+	 * 
 	 * @return primitive
 	 * @author vvakame
 	 */
-	public static PrimitiveType toPrimitive(Types typeUtils, Element element) {
+	public static PrimitiveType toPrimitive(Element element) {
 		if (!isPrimitiveWrapper(element)) {
 			throw new IllegalArgumentException(element.toString()
 					+ " is not primitive wrapper");
 		}
 		String type = element.asType().toString();
 		if (Boolean.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.BOOLEAN);
+			return typeUtil.getPrimitiveType(TypeKind.BOOLEAN);
 		} else if (Character.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.CHAR);
+			return typeUtil.getPrimitiveType(TypeKind.CHAR);
 		} else if (Byte.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.BYTE);
+			return typeUtil.getPrimitiveType(TypeKind.BYTE);
 		} else if (Short.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.SHORT);
+			return typeUtil.getPrimitiveType(TypeKind.SHORT);
 		} else if (Integer.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.INT);
+			return typeUtil.getPrimitiveType(TypeKind.INT);
 		} else if (Long.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.LONG);
+			return typeUtil.getPrimitiveType(TypeKind.LONG);
 		} else if (Float.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.FLOAT);
+			return typeUtil.getPrimitiveType(TypeKind.FLOAT);
 		} else if (Double.class.getCanonicalName().equals(type)) {
-			return typeUtils.getPrimitiveType(TypeKind.DOUBLE);
+			return typeUtil.getPrimitiveType(TypeKind.DOUBLE);
 		}
 
 		return null;
@@ -414,13 +421,13 @@ public class AptUtil {
 	/**
 	 * Test if the given type is an internal type.
 	 * 
-	 * @param typeUtils
 	 * @param type
+	 * 
 	 * @return True if the type is an internal type, false otherwise.
 	 * @author vvakame
 	 */
-	public static boolean isInternalType(Types typeUtils, TypeMirror type) {
-		Element element = ((TypeElement) typeUtils.asElement(type))
+	public static boolean isInternalType(TypeMirror type) {
+		Element element = ((TypeElement) typeUtil.asElement(type))
 				.getEnclosingElement();
 		return element.getKind() != ElementKind.PACKAGE;
 	}
@@ -428,14 +435,14 @@ public class AptUtil {
 	/**
 	 * Retrieves the corresponding {@link TypeElement} of the given element.
 	 * 
-	 * @param typeUtils
 	 * @param element
+	 * 
 	 * @return The corresponding {@link TypeElement}.
 	 * @author vvakame
 	 */
-	public static TypeElement getTypeElement(Types typeUtils, Element element) {
+	public static TypeElement getTypeElement(Element element) {
 		TypeMirror type = element.asType();
-		return (TypeElement) typeUtils.asElement(type);
+		return (TypeElement) typeUtil.asElement(type);
 	}
 
 	/**
@@ -502,27 +509,25 @@ public class AptUtil {
 	 * Returns the package name of the given element. NB: This method requires
 	 * the given element has the kind of {@link ElementKind#CLASS}.
 	 * 
-	 * @param elementUtils
 	 * @param element
+	 * 
 	 * @return the package name
 	 * @author vvakame
 	 */
-	public static String getPackageName(Elements elementUtils, Element element) {
-		return elementUtils.getPackageOf(element).getQualifiedName().toString();
+	public static String getPackageName(Element element) {
+		return elementUtil.getPackageOf(element).getQualifiedName().toString();
 	}
 
 	/**
 	 * Returns the package name of the given {@link TypeMirror}.
 	 * 
-	 * @param elementUtils
-	 * @param typeUtils
 	 * @param type
+	 * 
 	 * @return the package name
 	 * @author backpaper0
 	 * @author vvakame
 	 */
-	public static String getPackageName(Elements elementUtils, Types typeUtils,
-			TypeMirror type) {
+	public static String getPackageName(TypeMirror type) {
 		TypeVisitor<DeclaredType, Object> tv = new SimpleTypeVisitor6<DeclaredType, Object>() {
 
 			@Override
@@ -539,9 +544,9 @@ public class AptUtil {
 					return e;
 				}
 			};
-			TypeElement el = typeUtils.asElement(dt).accept(ev, null);
+			TypeElement el = typeUtil.asElement(dt).accept(ev, null);
 			if (el != null && el.getNestingKind() != NestingKind.TOP_LEVEL) {
-				return AptUtil.getPackageName(elementUtils, el);
+				return AptUtil.getPackageName(el);
 			}
 		}
 		return AptUtil.getPackageNameSub(type);
@@ -625,7 +630,7 @@ public class AptUtil {
 	 * @author vvakame
 	 */
 	public static String getFullQualifiedName(TypeMirror tm) {
-		String str = tm.toString();
+		String str = typeUtil.erasure(tm).toString();
 		int i = str.lastIndexOf("<");
 		if (0 < i) {
 			return str.substring(0, i);
@@ -643,6 +648,36 @@ public class AptUtil {
 	 */
 	public static String getFullQualifiedName(Element element) {
 		return element.toString();
+	}
+
+	public static TypeElement toTypeElement(Class<?> clazz) {
+		return elementUtil.getTypeElement(clazz.getCanonicalName());
+	}
+
+	public static List<? extends TypeMirror> getTypeArgumentsAtType(
+			TypeElement type, final Class<?> base) {
+		// わかりにくいので日本語で書いておく。typeから、interfaceやsuperclassを調べてbaseTypeに指定のクラス換算でのTypeArgumentsを調べる。
+		if (isSameTypeWithoutGenerics(type.asType(),
+				toDeclaredType(toTypeElement(Object.class).asType()))) {
+			return null;
+		}
+
+		TypeMirror baseType = toTypeElement(base).asType();
+
+		List<? extends TypeMirror> interfaces = type.getInterfaces();
+		for (TypeMirror typeMirror : interfaces) {
+			if (isSameTypeWithoutGenerics(baseType, typeMirror)) {
+				return toDeclaredType(typeMirror).getTypeArguments();
+			}
+		}
+
+		DeclaredType superType = toDeclaredType(type.getSuperclass());
+		if (isSameTypeWithoutGenerics(superType, baseType)) {
+			return superType.getTypeArguments();
+		}
+
+		TypeElement superElement = toTypeElement(superType);
+		return getTypeArgumentsAtType(superElement, base);
 	}
 
 	static boolean checkModifier(Element element, Modifier modifier) {
@@ -747,6 +782,16 @@ public class AptUtil {
 		return false;
 	}
 
+	public static boolean isSameTypeWithGenerics(TypeMirror t1, TypeMirror t2) {
+		return typeUtil.isSameType(t1, t2);
+	}
+
+	public static boolean isSameTypeWithoutGenerics(TypeMirror t1, TypeMirror t2) {
+		TypeMirror t1a = typeUtil.erasure(t1);
+		TypeMirror t2a = typeUtil.erasure(t2);
+		return typeUtil.isSameType(t1a, t2a);
+	}
+
 	static String cutAfterString(String base, char key) {
 		if (base == null) {
 			return null;
@@ -845,6 +890,25 @@ public class AptUtil {
 		}
 		if (getter != null) {
 			return getter.getSimpleName().toString();
+		} else {
+			return null;
+		}
+	}
+
+	// TODO Javadoc
+	public static DeclaredType toDeclaredType(TypeMirror type) {
+		if (type instanceof DeclaredType) {
+			return (DeclaredType) type;
+		} else {
+			return null;
+		}
+	}
+
+	// TODO Javadoc
+	public static TypeElement toTypeElement(DeclaredType type) {
+		Element element = type.asElement();
+		if (element instanceof TypeElement) {
+			return (TypeElement) element;
 		} else {
 			return null;
 		}

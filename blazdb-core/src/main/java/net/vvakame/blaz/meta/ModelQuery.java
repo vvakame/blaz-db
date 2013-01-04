@@ -13,6 +13,7 @@ import net.vvakame.blaz.filter.KindEqFilter;
 
 /**
  * <M> についてのクエリビルダ
+ * 
  * @author vvakame
  * @param <M>
  */
@@ -24,10 +25,11 @@ public class ModelQuery<M> {
 
 	List<Sorter> sorters = new ArrayList<Sorter>();
 
-
 	/**
 	 * the constructor.
-	 * @param meta 処理対象の {@link ModelMeta}
+	 * 
+	 * @param meta
+	 *            処理対象の {@link ModelMeta}
 	 * @category constructor
 	 */
 	public ModelQuery(ModelMeta<M> meta) {
@@ -37,6 +39,7 @@ public class ModelQuery<M> {
 
 	/**
 	 * 検索条件の指定
+	 * 
 	 * @param criterion
 	 * @return this
 	 * @author vvakame
@@ -44,8 +47,7 @@ public class ModelQuery<M> {
 	public ModelQuery<M> filter(FilterCriterion... criterion) {
 		for (FilterCriterion criteria : criterion) {
 			if (criteria == null) {
-				// TODO ちゃんとしたメッセージ入れたい
-				throw new NullPointerException();
+				throw new NullPointerException("must not be null criteria");
 			}
 			filters.addAll(Arrays.asList(criteria.getFilters()));
 		}
@@ -54,6 +56,7 @@ public class ModelQuery<M> {
 
 	/**
 	 * ソート条件の指定
+	 * 
 	 * @param criterion
 	 * @return this
 	 * @author vvakame
@@ -61,8 +64,7 @@ public class ModelQuery<M> {
 	public ModelQuery<M> sort(SortCriterion... criterion) {
 		for (SortCriterion criteria : criterion) {
 			if (criteria == null) {
-				// TODO ちゃんとしたメッセージ入れたい
-				throw new NullPointerException();
+				throw new NullPointerException("must not be null criteria");
 			}
 			sorters.addAll(Arrays.asList(criteria.getSorters()));
 		}
@@ -71,13 +73,14 @@ public class ModelQuery<M> {
 
 	/**
 	 * 設定済みの条件に基づき検索を行い、モデルに組み立てて返す.
+	 * 
 	 * @return 検索結果
 	 * @author vvakame
 	 */
 	public List<M> asList() {
 		final BareDatastore kvs = Datastore.getBareDatastore();
-		List<Entity> entities =
-				kvs.find(filters.toArray(new Filter[] {}), sorters.toArray(new Sorter[] {}));
+		List<Entity> entities = kvs.find(filters.toArray(new Filter[] {}),
+				sorters.toArray(new Sorter[] {}));
 		List<M> modelList = new ArrayList<M>();
 		for (Entity entity : entities) {
 			M model = meta.entityToModel(entity);
