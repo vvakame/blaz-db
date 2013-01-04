@@ -2,6 +2,7 @@ package net.vvakame.blaz.meta;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.vvakame.blaz.PropertyConverter;
@@ -12,8 +13,11 @@ import net.vvakame.blaz.PropertyConverter;
  * @author vvakame
  * @param <T>
  * @param <P>
+ * @param <C>
  */
-public class ConverterAttributeMeta<T, R> extends CoreAttributeMeta<T> {
+public class CollectionConverterAttributeMeta<C extends Collection<T>, T, R>
+		extends CoreAttributeMeta<T> implements
+		CollectionAttributeMetaInterface<C, T> {
 
 	final String name;
 
@@ -21,10 +25,14 @@ public class ConverterAttributeMeta<T, R> extends CoreAttributeMeta<T> {
 
 	final Class<R> toClazz;
 
+	final Class<C> collectionClass;
+
 	final PropertyConverter<T, R> converter;
 
+	final boolean isCollection;
+
 	/**
-	 * the constructor.
+	 * the constructor. for collection value property.
 	 * 
 	 * @param name
 	 * @param fromClazz
@@ -33,14 +41,27 @@ public class ConverterAttributeMeta<T, R> extends CoreAttributeMeta<T> {
 	 * @category constructor
 	 */
 	@SuppressWarnings("unchecked")
-	public ConverterAttributeMeta(String name, Class<?> fromClazz,
-			Class<?> toClazz, PropertyConverter<T, R> converter) {
+	public CollectionConverterAttributeMeta(String name, Class<?> fromClazz,
+			Class<?> toClazz, Class<?> collectionClass,
+			PropertyConverter<T, R> converter) {
 		super(new AscSorterCriterion(Type.PROPERTY, name),
 				new DescSorterCriterion(Type.PROPERTY, name));
 		this.name = name;
 		this.fromClazz = (Class<T>) fromClazz;
 		this.toClazz = (Class<R>) toClazz;
+		this.collectionClass = (Class<C>) collectionClass;
 		this.converter = converter;
+		this.isCollection = true;
+	}
+
+	@Override
+	public Class<R> getTypeParameterClass() {
+		return toClazz;
+	}
+
+	@Override
+	public Class<C> getCollectionClass() {
+		return collectionClass;
 	}
 
 	@Override
@@ -98,5 +119,13 @@ public class ConverterAttributeMeta<T, R> extends CoreAttributeMeta<T> {
 		R[] array = (R[]) Array.newInstance(toClazz, values.length);
 		return new InCriterion<R>((CoreAttributeMeta<R>) this,
 				list.toArray(array));
+	}
+
+	/**
+	 * @return the isCollection
+	 * @category accessor
+	 */
+	public boolean isCollection() {
+		return isCollection;
 	}
 }

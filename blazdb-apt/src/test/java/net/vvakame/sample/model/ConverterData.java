@@ -20,12 +20,6 @@ public class ConverterData {
 	@BlazAttribute(converter = DateConverter.class)
 	List<Date> atList;
 
-	@BlazAttribute(converter = VoidConverter.class)
-	String voidConverter;
-
-	@Attribute(converter = Raw2Converter.class)
-	String rawConverter;
-
 	@Attribute(converter = NestedConverter.class)
 	List<List<String>> nestedConverter;
 
@@ -120,40 +114,6 @@ public class ConverterData {
 	 */
 	public void setAtList(List<Date> atList) {
 		this.atList = atList;
-	}
-
-	/**
-	 * @return the voidConverter
-	 * @category accessor
-	 */
-	public String getVoidConverter() {
-		return voidConverter;
-	}
-
-	/**
-	 * @param voidConverter
-	 *            the voidConverter to set
-	 * @category accessor
-	 */
-	public void setVoidConverter(String voidConverter) {
-		this.voidConverter = voidConverter;
-	}
-
-	/**
-	 * @return the rawConverter
-	 * @category accessor
-	 */
-	public String getRawConverter() {
-		return rawConverter;
-	}
-
-	/**
-	 * @param rawConverter
-	 *            the rawConverter to set
-	 * @category accessor
-	 */
-	public void setRawConverter(String rawConverter) {
-		this.rawConverter = rawConverter;
 	}
 
 	/**

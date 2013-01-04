@@ -6,7 +6,8 @@ package net.vvakame.blaz.meta;
  * @author vvakame
  * @param <T>
  */
-public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
+public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> implements
+		PropertyAttributeMetaInterface<T> {
 
 	final String name;
 
@@ -36,12 +37,7 @@ public class PropertyAttributeMeta<T> extends CoreAttributeMeta<T> {
 		return name;
 	}
 
-	/**
-	 * Get property type class.
-	 * 
-	 * @return propety type
-	 * @author vvakame
-	 */
+	@Override
 	public Class<? super T> getPropertyClass() {
 		return propertyClass;
 	}

@@ -43,12 +43,6 @@ public abstract class PropertyConverter<P, R> {
 		entity.setProperty(propertyName, list);
 	}
 
-	public void setAny(Entity entity, String propertyName, Object value) {
-		throw new UnsupportedOperationException(
-				"please override this method or fix attribute's type. propertyName="
-						+ propertyName);
-	}
-
 	public P get(Entity entity, String propertyName) {
 		R value = entity.getProperty(propertyName);
 		if (value != null) {
@@ -73,12 +67,6 @@ public abstract class PropertyConverter<P, R> {
 			}
 		}
 		return convertedList;
-	}
-
-	public <U> U getAny(Entity entity, String propertyName) {
-		throw new UnsupportedOperationException(
-				"please override this method or fix attribute's type. propertyName="
-						+ propertyName);
 	}
 
 	public static class DummyConverter extends PropertyConverter<Void, Void> {

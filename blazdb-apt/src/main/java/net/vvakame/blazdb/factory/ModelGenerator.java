@@ -463,8 +463,9 @@ public class ModelGenerator {
 					} else if (typeUtils.isAssignable(t, collection)) {
 						attrModel.setConverterType(ConverterType.COLLECTION);
 					} else {
-						// other
-						attrModel.setConverterType(ConverterType.UNKNOWN);
+						// TODO もうちょい、いいメッセージに変えたい…
+						Log.e("Can't apply converter.", el);
+						encountError = true;
 					}
 					attrModel
 							.setConverterParameterTypeWithGenerics(parameterType

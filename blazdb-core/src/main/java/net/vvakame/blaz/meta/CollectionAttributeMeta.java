@@ -13,7 +13,7 @@ import net.vvakame.blaz.Key;
  * @param <P>
  */
 public class CollectionAttributeMeta<C extends Collection<T>, T> extends
-		CoreAttributeMeta<T> {
+		CoreAttributeMeta<T> implements CollectionAttributeMetaInterface<C, T> {
 
 	final String name;
 
@@ -43,18 +43,12 @@ public class CollectionAttributeMeta<C extends Collection<T>, T> extends
 		this.typeParameterClass = typeParameterClass;
 	}
 
-	/**
-	 * @return the collectionClass
-	 * @category accessor
-	 */
+	@Override
 	public Class<C> getCollectionClass() {
 		return collectionClass;
 	}
 
-	/**
-	 * @return the typeParameterClass
-	 * @category accessor
-	 */
+	@Override
 	public Class<T> getTypeParameterClass() {
 		return typeParameterClass;
 	}
