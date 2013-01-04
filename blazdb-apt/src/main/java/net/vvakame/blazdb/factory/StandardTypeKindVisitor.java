@@ -6,8 +6,8 @@ import java.util.List;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.TypeKindVisitor6;
 
-import net.vvakame.apt.AptUtil;
 import net.vvakame.blaz.Key;
+import net.vvakame.blazdb.apt.AptUtil;
 
 /**
  * A {@link TypeKindVisitor6} variant, which is also capable of recognizing {@link String}, {@link List}.

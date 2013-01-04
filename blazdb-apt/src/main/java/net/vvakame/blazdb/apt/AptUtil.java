@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.vvakame.apt;
+package net.vvakame.blazdb.apt;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

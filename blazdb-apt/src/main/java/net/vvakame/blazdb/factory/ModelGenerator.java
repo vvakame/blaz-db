@@ -25,19 +25,19 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 
-import net.vvakame.apt.AptUtil;
 import net.vvakame.blaz.Key;
 import net.vvakame.blaz.PropertyConverter;
 import net.vvakame.blaz.annotation.Attribute;
 import net.vvakame.blaz.annotation.BlazAttribute;
 import net.vvakame.blaz.annotation.BlazModel;
 import net.vvakame.blaz.annotation.Model;
+import net.vvakame.blazdb.apt.AptUtil;
 import net.vvakame.blazdb.factory.model.AttributeDelegate;
 import net.vvakame.blazdb.factory.model.AttributeModel;
 import net.vvakame.blazdb.factory.model.ModelDelegate;
 import net.vvakame.blazdb.factory.model.ModelModel;
 import net.vvakame.blazdb.factory.template.Template;
-import static net.vvakame.apt.AptUtil.*;
+import static net.vvakame.blazdb.apt.AptUtil.*;
 
 /**
  * Annotation processor.
