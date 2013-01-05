@@ -4,9 +4,10 @@ import net.vvakame.blaz.Filter;
 
 /**
  * Entityを検索するためのフィルタ
+ * 
  * @author vvakame
  */
-public class KindEqFilter implements Filter {
+public class KindEqFilter extends Filter {
 
 	final static FilterTarget target = FilterTarget.KIND;
 
@@ -14,9 +15,9 @@ public class KindEqFilter implements Filter {
 
 	String name;
 
-
 	/**
 	 * the constructor.
+	 * 
 	 * @param kind
 	 * @category constructor
 	 */
@@ -46,6 +47,6 @@ public class KindEqFilter implements Filter {
 	@Override
 	@Deprecated
 	public Object getValue() {
-		throw new IllegalStateException("not supported!");
+		throw new UnsupportedOperationException("not supported!");
 	}
 }

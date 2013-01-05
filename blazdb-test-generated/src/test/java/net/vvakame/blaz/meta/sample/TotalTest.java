@@ -2,6 +2,7 @@ package net.vvakame.blaz.meta.sample;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import net.vvakame.blaz.Datastore;
 import net.vvakame.blaz.Key;
@@ -10,6 +11,7 @@ import net.vvakame.blaz.util.KeyUtil;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -208,6 +210,23 @@ public class TotalTest {
 			assertThat(data.isBool(), is(true));
 			assertThat(data.getF(), is(1.125f));
 		}
+	}
+
+	/**
+	 * Test.
+	 * @author vvakame
+	 */
+	@Test
+	@Ignore("not implemented")
+	public void queryIfOver10000Entity() {
+		for (int i = 0; i < 10000; i++) {
+			PrimitiveTypeData data = new PrimitiveTypeData();
+			Datastore.put(data);
+		}
+
+		PrimitiveTypeDataMeta meta = PrimitiveTypeDataMeta.get();
+		List<PrimitiveTypeData> list = Datastore.query(meta).asList();
+		assertThat(list.size(), is(10000));
 	}
 
 	/**

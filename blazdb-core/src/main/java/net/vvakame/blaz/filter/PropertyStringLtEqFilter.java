@@ -1,22 +1,22 @@
 package net.vvakame.blaz.filter;
 
-import net.vvakame.blaz.Filter;
 
 /**
  * Entityを検索するためのフィルタ
+ * 
  * @author vvakame
  */
-public class PropertyStringLtEqFilter extends AbstractPropertyFilter implements Filter {
+public class PropertyStringLtEqFilter extends AbstractPropertyFilter {
 
 	final FilterOption option = FilterOption.LT_EQ;
 
 	String value;
 
-
 	/**
 	 * the constructor.
-	 * @param name 
-	 * @param value 
+	 * 
+	 * @param name
+	 * @param value
 	 * @category constructor
 	 */
 	public PropertyStringLtEqFilter(String name, String value) {

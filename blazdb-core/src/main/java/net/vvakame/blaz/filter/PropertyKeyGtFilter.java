@@ -1,23 +1,23 @@
 package net.vvakame.blaz.filter;
 
-import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
 
 /**
  * Entityを検索するためのフィルタ
+ * 
  * @author vvakame
  */
-public class PropertyKeyGtFilter extends AbstractPropertyFilter implements Filter {
+public class PropertyKeyGtFilter extends AbstractPropertyFilter {
 
 	final FilterOption option = FilterOption.GT;
 
 	Key value;
 
-
 	/**
 	 * the constructor.
-	 * @param name 
-	 * @param value 
+	 * 
+	 * @param name
+	 * @param value
 	 * @category constructor
 	 */
 	public PropertyKeyGtFilter(String name, Key value) {

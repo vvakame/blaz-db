@@ -5,14 +5,14 @@ import net.vvakame.blaz.Key;
 
 /**
  * Entityを検索するためのフィルタ
+ * 
  * @author vvakame
  */
-public abstract class AbstractKeyFilter implements Filter {
+public abstract class AbstractKeyFilter extends Filter {
 
 	final static FilterTarget target = FilterTarget.KEY;
 
 	Key key;
-
 
 	protected AbstractKeyFilter() {
 	}
@@ -29,6 +29,6 @@ public abstract class AbstractKeyFilter implements Filter {
 	@Override
 	@Deprecated
 	public final String getName() {
-		throw new IllegalStateException("not supported!");
+		throw new UnsupportedOperationException("not supported!");
 	}
 }

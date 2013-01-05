@@ -1,22 +1,22 @@
 package net.vvakame.blaz.filter;
 
-import net.vvakame.blaz.Filter;
 
 /**
  * Entityを検索するためのフィルタ
+ * 
  * @author vvakame
  */
-public class PropertyStringGtFilter extends AbstractPropertyFilter implements Filter {
+public class PropertyStringGtFilter extends AbstractPropertyFilter {
 
 	final FilterOption option = FilterOption.GT;
 
 	String value;
 
-
 	/**
 	 * the constructor.
-	 * @param name 
-	 * @param value 
+	 * 
+	 * @param name
+	 * @param value
 	 * @category constructor
 	 */
 	public PropertyStringGtFilter(String name, String value) {

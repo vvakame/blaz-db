@@ -2,12 +2,14 @@ package net.vvakame.blaz;
 
 /**
  * Entity検索結果をソートするためのソータ
+ * 
  * @author vvakame
  */
-public interface Sorter {
+public abstract class Sorter {
 
 	/**
 	 * ソート順
+	 * 
 	 * @author vvakame
 	 */
 	public static enum Order {
@@ -17,16 +19,26 @@ public interface Sorter {
 		DESC
 	}
 
-
 	/**
 	 * @return the order
 	 * @category accessor
 	 */
-	public Order getOrder();
+	public abstract Order getOrder();
 
 	/**
 	 * @return the name
 	 * @category accessor
 	 */
-	public String getName();
+	public abstract String getName();
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getClass().getSimpleName()).append(" ");
+		builder.append(getName()).append(" ");
+		builder.append(getOrder()).append(" ");
+		builder.setLength(builder.length() - 1);
+
+		return builder.toString();
+	}
 }

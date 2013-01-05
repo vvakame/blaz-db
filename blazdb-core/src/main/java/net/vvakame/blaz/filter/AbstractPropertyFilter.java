@@ -4,18 +4,19 @@ import net.vvakame.blaz.Filter;
 
 /**
  * Entityを検索するためのフィルタ
+ * 
  * @author vvakame
  */
-public abstract class AbstractPropertyFilter implements Filter {
+public abstract class AbstractPropertyFilter extends Filter {
 
 	final static FilterTarget target = FilterTarget.PROPERTY;
 
 	String name;
 
-
 	/**
 	 * the constructor.
-	 * @param name 
+	 * 
+	 * @param name
 	 * @category constructor
 	 */
 	public AbstractPropertyFilter(String name) {

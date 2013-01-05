@@ -4,15 +4,16 @@ import net.vvakame.blaz.Sorter;
 
 /**
  * EntityのPropertyを元にソートするためのソータの抽象
+ * 
  * @author vvakame
  */
-public abstract class AbstractPropertySorter implements Sorter {
+public abstract class AbstractPropertySorter extends Sorter {
 
 	String name;
 
-
 	/**
 	 * the constructor.
+	 * 
 	 * @param name
 	 * @category constructor
 	 */

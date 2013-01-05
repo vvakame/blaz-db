@@ -1,5 +1,7 @@
 package net.vvakame.blaz.meta;
 
+import net.vvakame.blaz.query.ModelQuery;
+
 /**
  * {@link ModelMeta} が保持するなんらかの値を表す抽象クラス.
  * @author vvakame

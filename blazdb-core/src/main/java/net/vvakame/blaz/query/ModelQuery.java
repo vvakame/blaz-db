@@ -1,4 +1,4 @@
-package net.vvakame.blaz.meta;
+package net.vvakame.blaz.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +10,9 @@ import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.KindEqFilter;
+import net.vvakame.blaz.meta.FilterCriterion;
+import net.vvakame.blaz.meta.ModelMeta;
+import net.vvakame.blaz.meta.SortCriterion;
 
 /**
  * <M> についてのクエリビルダ
@@ -17,7 +20,7 @@ import net.vvakame.blaz.filter.KindEqFilter;
  * @author vvakame
  * @param <M>
  */
-public class ModelQuery<M> {
+public class ModelQuery<M> extends AbstractQuery<ModelQuery<M>> {
 
 	ModelMeta<M> meta;
 

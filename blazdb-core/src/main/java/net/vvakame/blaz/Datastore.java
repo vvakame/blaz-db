@@ -4,7 +4,7 @@ import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.exception.EntityNotFoundException;
 import net.vvakame.blaz.meta.DatastoreUtil;
 import net.vvakame.blaz.meta.ModelMeta;
-import net.vvakame.blaz.meta.ModelQuery;
+import net.vvakame.blaz.query.ModelQuery;
 
 /**
  * DB.<br>
