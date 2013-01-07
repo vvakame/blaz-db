@@ -310,7 +310,7 @@ public class JdbcKVS extends BareDatastore implements
 	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
 		List<Key> keys = findAsKey(filters);
 		List<Entity> list = get(keys.toArray(new Key[] {}));
-		sort(list, sorters);
+		list = sort(list, sorters);
 		return list;
 	}
 

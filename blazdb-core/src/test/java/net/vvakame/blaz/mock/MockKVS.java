@@ -19,6 +19,7 @@ import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.AbstractKeyFilter;
 import net.vvakame.blaz.filter.AbstractPropertyFilter;
 import net.vvakame.blaz.filter.KindEqFilter;
+import net.vvakame.blaz.option.FetchOptions;
 import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 
@@ -132,6 +133,9 @@ public class MockKVS extends BareDatastore {
 		if (checkFilter && !FilterChecker.check(this, filters)) {
 			throw new IllegalArgumentException("invalid filter combination.");
 		}
+		if (filters == null) {
+			filters = new Filter[] {};
+		}
 
 		Map<String, Map<Key, Entity>> workingMap = db;
 		for (Filter filter : filters) {
@@ -201,10 +205,12 @@ public class MockKVS extends BareDatastore {
 	}
 
 	@Override
-	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+	public List<Entity> find(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
 		List<Key> keys = findAsKey(filters);
 		List<Entity> list = get(keys.toArray(new Key[] {}));
-		sort(list, sorters);
+		list = sort(list, sorters);
+		list = applyFetchOptions(list, options);
 		return list;
 	}
 

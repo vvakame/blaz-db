@@ -1,11 +1,29 @@
 package net.vvakame.blaz.query;
 
-public abstract class AbstractQuery<M> {
-	int limit;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.vvakame.blaz.Filter;
+import net.vvakame.blaz.Sorter;
+import net.vvakame.blaz.option.FetchOptions;
+
+public abstract class AbstractQuery<SUB> {
+
+	protected List<Filter> filters = new ArrayList<Filter>();
+
+	protected List<Sorter> sorters = new ArrayList<Sorter>();
+
+	protected FetchOptions options = new FetchOptions();
 
 	@SuppressWarnings("unchecked")
-	public M limit(int limit) {
-		this.limit = limit;
-		return (M) this;
+	public SUB limit(int limit) {
+		options.limit(limit);
+		return (SUB) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public SUB offset(int offset) {
+		options.offset(offset);
+		return (SUB) this;
 	}
 }

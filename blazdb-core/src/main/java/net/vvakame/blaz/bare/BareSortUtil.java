@@ -19,9 +19,9 @@ class BareSortUtil {
 	private BareSortUtil() {
 	}
 
-	public static void sort(List<Entity> entities, Sorter[] sorters) {
+	public static List<Entity> sort(List<Entity> entities, Sorter[] sorters) {
 		if (sorters == null) {
-			return;
+			return entities;
 		}
 		List<Sorter> sorterList = reverse(sorters);
 		for (Sorter sorter : sorterList) {
@@ -38,6 +38,7 @@ class BareSortUtil {
 						+ sorter.getClass().getCanonicalName());
 			}
 		}
+		return entities;
 	}
 
 	static List<Sorter> reverse(Sorter[] sorters) {

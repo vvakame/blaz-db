@@ -24,10 +24,6 @@ public class ModelQuery<M> extends AbstractQuery<ModelQuery<M>> {
 
 	ModelMeta<M> meta;
 
-	List<Filter> filters = new ArrayList<Filter>();
-
-	List<Sorter> sorters = new ArrayList<Sorter>();
-
 	/**
 	 * the constructor.
 	 * 
@@ -83,7 +79,7 @@ public class ModelQuery<M> extends AbstractQuery<ModelQuery<M>> {
 	public List<M> asList() {
 		final BareDatastore kvs = Datastore.getBareDatastore();
 		List<Entity> entities = kvs.find(filters.toArray(new Filter[] {}),
-				sorters.toArray(new Sorter[] {}));
+				sorters.toArray(new Sorter[] {}), options);
 		List<M> modelList = new ArrayList<M>();
 		for (Entity entity : entities) {
 			M model = meta.entityToModel(entity);

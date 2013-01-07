@@ -12,6 +12,7 @@ import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.exception.EntityNotFoundException;
+import net.vvakame.blaz.option.FetchOptions;
 import net.vvakame.blaz.util.FilterChecker;
 
 /**
@@ -147,7 +148,7 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public List<Entity> find(Filter... filters) {
-		return find(filters, null);
+		return find(filters, null, null);
 	}
 
 	/**
@@ -160,18 +161,30 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+		return find(filters, sorters, null);
+	}
+
+	/**
+	 * 指定の条件に合致する {@link Entity} を探した後、ソートして返す。<br>
+	 * 同一プロパティに複数の型がある場合、異なる型の間のソート可否や、ソート順は保証されない。<br>
+	 * 
+	 * @param filters
+	 * @param sorters
+	 * @param options
+	 * @return 見つかった {@link Entity}
+	 * @author vvakame
+	 */
+	public List<Entity> find(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
 		// find または findAsKey は独自の実装を用意すること
 
-		List<Key> keys = findAsKey(filters, sorters);
+		List<Key> keys = findAsKey(filters, sorters, options);
 		if (keys == null || keys.size() == 0) {
 			return new ArrayList<Entity>();
 		}
 
 		Map<Key, Entity> entities = getAsMap(keys);
 		List<Entity> resultList = new ArrayList<Entity>(entities.values());
-		if (keys.size() == entities.size()) {
-			return resultList;
-		}
 
 		for (Key key : keys) {
 			if (!entities.containsKey(key)) {
@@ -179,8 +192,6 @@ public abstract class BareDatastore {
 				resultList.add(entity);
 			}
 		}
-
-		BareSortUtil.sort(resultList, sorters);
 
 		return resultList;
 	}
@@ -193,7 +204,7 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public List<Key> findAsKey(Filter... filters) {
-		return findAsKey(filters, null);
+		return findAsKey(filters, null, null);
 	}
 
 	/**
@@ -206,9 +217,14 @@ public abstract class BareDatastore {
 	 * @author vvakame
 	 */
 	public List<Key> findAsKey(Filter[] filters, Sorter[] sorters) {
+		return findAsKey(filters, sorters, null);
+	}
+
+	public List<Key> findAsKey(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
 		// find または findAsKey は独自の実装を用意すること
 
-		List<Entity> entities = find(filters, sorters);
+		List<Entity> entities = find(filters, sorters, options);
 		if (entities == null || entities.size() == 0) {
 			return new ArrayList<Key>();
 		}
@@ -217,6 +233,7 @@ public abstract class BareDatastore {
 		for (Entity entity : entities) {
 			keys.add(entity.getKey());
 		}
+
 		return keys;
 	}
 
@@ -253,14 +270,45 @@ public abstract class BareDatastore {
 	public abstract boolean checkFilter(Filter[] filters, Sorter[] sorters);
 
 	/**
-	 * 渡されたEntityのリストを指定のSorterに基づきソートする。
+	 * 渡されたEntityのリストを指定のSorterに基づきソートする。 引き数は破壊的に利用されるが、返り値と同値になることは保証されない。
 	 * 
 	 * @param entities
 	 * @param sorters
+	 * @return
 	 * @author vvakame
 	 */
-	public void sort(List<Entity> entities, Sorter[] sorters) {
-		BareSortUtil.sort(entities, sorters);
+	public List<Entity> sort(List<Entity> entities, Sorter[] sorters) {
+		return BareSortUtil.sort(entities, sorters);
+	}
+
+	/**
+	 * 渡されたリストを指定のFetchOptionsに基づき操作する。 引き数は破壊的に利用されるが、返り値と同値になることは保証されない。
+	 * 
+	 * @param list
+	 * @param options
+	 * @return
+	 * @author vvakame
+	 */
+	public <T> List<T> applyFetchOptions(final List<T> list,
+			FetchOptions options) {
+		if (options == null
+				|| (options.getLimit() == null && options.getOffset() == null)) {
+			return list;
+		}
+
+		List<T> resultList = list;
+		final Integer offset = options.getOffset();
+		if (offset != null && offset <= resultList.size()) {
+			resultList = resultList.subList(offset, resultList.size());
+		} else if (offset != null) {
+			resultList = new ArrayList<T>();
+		}
+		final Integer limit = options.getLimit();
+		if (limit != null && limit < resultList.size()) {
+			resultList = resultList.subList(0, limit);
+		}
+
+		return resultList;
 	}
 
 	/**
