@@ -8,6 +8,7 @@ import java.util.Map;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.util.FilterChecker;
@@ -18,9 +19,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * SQLiteによるKVSの実装
+ * 
  * @author vvakame
  */
-public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCallback {
+public class SQLiteKVS extends BareDatastore implements
+		SqlTransaction.ActionCallback {
 
 	static final String DB_NAME = "blaz.db";
 
@@ -30,15 +33,16 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 
 	SQLiteDatabase mDb = null;
 
-
 	/**
 	 * the constructor.
+	 * 
 	 * @param context
 	 * @category constructor
 	 */
 	public SQLiteKVS(Context context) {
 		mContext = context.getApplicationContext();
-		mDb = new KvsOpenHelper(mContext, DB_NAME, DB_VERSION).getWritableDatabase();
+		mDb = new KvsOpenHelper(mContext, DB_NAME, DB_VERSION)
+				.getWritableDatabase();
 	}
 
 	long getLatestId(String kind) {
@@ -76,7 +80,8 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		if (!KeysDao.isExists(mDb, key)) {
 			return null;
 		}
-		Entity entity = ValuesDao.cursorToEntityAsSingle(key, ValuesDao.query(mDb, key));
+		Entity entity = ValuesDao.cursorToEntityAsSingle(key,
+				ValuesDao.query(mDb, key));
 
 		return entity;
 	}
@@ -120,7 +125,8 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 
 		for (Filter filter : filters) {
 			if (filter == null) {
-				throw new IllegalArgumentException("null argment is not allowed.");
+				throw new IllegalArgumentException(
+						"null argment is not allowed.");
 			}
 		}
 		StringBuilder builder = new StringBuilder();
@@ -151,9 +157,18 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 		return KeysDao.cursorToKeys(c);
 	}
 
+	@Override
+	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+		List<Key> keys = findAsKey(filters);
+		List<Entity> list = get(keys.toArray(new Key[] {}));
+		sort(list, sorters);
+		return list;
+	}
+
 	/**
 	 * データ操作に対するトランザクションを開始する.<br>
 	 * トランザクションの仕様は {@link SQLiteDatabase#beginTransaction()} に準じる。
+	 * 
 	 * @return トランザクション
 	 * @author vvakame
 	 */
@@ -177,7 +192,7 @@ public class SQLiteKVS extends BareDatastore implements SqlTransaction.ActionCal
 	}
 
 	@Override
-	public boolean checkFilter(Filter... filters) {
+	public boolean checkFilter(Filter[] filters, Sorter[] sorters) {
 		return true;
 	}
 }

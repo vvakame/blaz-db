@@ -15,6 +15,7 @@ import java.util.Map;
 import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.meta.CollectionAttributeMetaInterface;
@@ -305,6 +306,14 @@ public class JdbcKVS extends BareDatastore implements
 		}
 	}
 
+	@Override
+	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+		List<Key> keys = findAsKey(filters);
+		List<Entity> list = get(keys.toArray(new Key[] {}));
+		sort(list, sorters);
+		return list;
+	}
+
 	/**
 	 * データ操作に対するトランザクションを開始する.
 	 * 
@@ -547,5 +556,11 @@ public class JdbcKVS extends BareDatastore implements
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean checkFilter(Filter[] filters, Sorter[] sorters) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

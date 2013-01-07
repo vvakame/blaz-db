@@ -140,14 +140,29 @@ public abstract class BareDatastore {
 	}
 
 	/**
-	 * 指定の条件に合致する {@link Entity} を探して返す
+	 * 指定の条件に合致する {@link Entity} を探して返す。
 	 * 
 	 * @param filters
 	 * @return 見つかった {@link Entity}
 	 * @author vvakame
 	 */
 	public List<Entity> find(Filter... filters) {
-		List<Key> keys = findAsKey(filters);
+		return find(filters, null);
+	}
+
+	/**
+	 * 指定の条件に合致する {@link Entity} を探した後、ソートして返す。<br>
+	 * 同一プロパティに複数の型がある場合、異なる型の間のソート可否や、ソート順は保証されない。<br>
+	 * 
+	 * @param filters
+	 * @param sorters
+	 * @return 見つかった {@link Entity}
+	 * @author vvakame
+	 */
+	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+		// find または findAsKey は独自の実装を用意すること
+
+		List<Key> keys = findAsKey(filters, sorters);
 		if (keys == null || keys.size() == 0) {
 			return new ArrayList<Entity>();
 		}
@@ -165,34 +180,45 @@ public abstract class BareDatastore {
 			}
 		}
 
+		BareSortUtil.sort(resultList, sorters);
+
 		return resultList;
 	}
 
 	/**
-	 * 指定の条件に合致する {@link Entity} を探した後、ソートして返す<br>
-	 * 同一プロパティに複数の型がある場合、異なる型の間のソート可否や、ソート順は保証されない.<br>
-	 * 
-	 * @param filters
-	 * @param sorters
-	 * @return 見つかった {@link Entity}
-	 * @author vvakame
-	 */
-	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
-		List<Entity> entities = find(filters);
-
-		BareSortUtil.sort(entities, sorters);
-
-		return entities;
-	}
-
-	/**
-	 * 指定の条件に合致する {@link Entity} の {@link Key} を探して返す
+	 * 指定の条件に合致する {@link Entity} の {@link Key} を探して返す。
 	 * 
 	 * @param filters
 	 * @return 見つかった {@link Entity} の {@link Key}
 	 * @author vvakame
 	 */
-	public abstract List<Key> findAsKey(Filter... filters);
+	public List<Key> findAsKey(Filter... filters) {
+		return findAsKey(filters, null);
+	}
+
+	/**
+	 * 指定の条件に合致する {@link Entity} の {@link Key} を探して返す。
+	 * 同一プロパティに複数の型がある場合、異なる型の間のソート可否や、ソート順は保証されない。<br>
+	 * 
+	 * @param filters
+	 * @param sorters
+	 * @return 見つかった {@link Entity} の {@link Key}
+	 * @author vvakame
+	 */
+	public List<Key> findAsKey(Filter[] filters, Sorter[] sorters) {
+		// find または findAsKey は独自の実装を用意すること
+
+		List<Entity> entities = find(filters, sorters);
+		if (entities == null || entities.size() == 0) {
+			return new ArrayList<Key>();
+		}
+
+		List<Key> keys = new ArrayList<Key>();
+		for (Entity entity : entities) {
+			keys.add(entity.getKey());
+		}
+		return keys;
+	}
 
 	/**
 	 * データ操作に対するトランザクションを開始する.<br>
@@ -211,7 +237,31 @@ public abstract class BareDatastore {
 	 * @return クエリ発行可否
 	 * @author vvakame
 	 */
-	public abstract boolean checkFilter(Filter... filters);
+	public boolean checkFilter(Filter... filters) {
+		return checkFilter(filters, null);
+	}
+
+	/**
+	 * 渡されたFilterのリストをクエリとして発行可能かチェックする.<br>
+	 * 基本的なチェックは {@link FilterChecker#check(BareDatastore, Filter...)} にて行われる.
+	 * 
+	 * @param filters
+	 * @param sorters
+	 * @return クエリ発行可否
+	 * @author vvakame
+	 */
+	public abstract boolean checkFilter(Filter[] filters, Sorter[] sorters);
+
+	/**
+	 * 渡されたEntityのリストを指定のSorterに基づきソートする。
+	 * 
+	 * @param entities
+	 * @param sorters
+	 * @author vvakame
+	 */
+	public void sort(List<Entity> entities, Sorter[] sorters) {
+		BareSortUtil.sort(entities, sorters);
+	}
 
 	/**
 	 * フィルタの組み合わせチェックを行うかを設定する.

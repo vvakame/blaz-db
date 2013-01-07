@@ -20,13 +20,19 @@ class BareSortUtil {
 	}
 
 	public static void sort(List<Entity> entities, Sorter[] sorters) {
+		if (sorters == null) {
+			return;
+		}
 		List<Sorter> sorterList = reverse(sorters);
 		for (Sorter sorter : sorterList) {
 			if (sorter instanceof AbstractPropertySorter) {
-				Collections.sort(entities,
-						new PropertyComparator(sorter.getName(), sorter.getOrder()));
+				Collections.sort(
+						entities,
+						new PropertyComparator(sorter.getName(), sorter
+								.getOrder()));
 			} else if (sorter instanceof AbstractKeySorter) {
-				Collections.sort(entities, new KeyComparator(sorter.getOrder()));
+				Collections
+						.sort(entities, new KeyComparator(sorter.getOrder()));
 			} else {
 				throw new IllegalArgumentException("unknown sorter "
 						+ sorter.getClass().getCanonicalName());
@@ -43,11 +49,9 @@ class BareSortUtil {
 		return resultList;
 	}
 
-
 	private static class KeyComparator implements Comparator<Entity> {
 
 		Order order;
-
 
 		private KeyComparator(Order order) {
 			this.order = order;
@@ -77,7 +81,6 @@ class BareSortUtil {
 		final int small;
 
 		final int big;
-
 
 		private PropertyComparator(String name, Order order) {
 			this.name = name;
@@ -123,20 +126,19 @@ class BareSortUtil {
 				return big;
 			}
 			if (!(v1 instanceof Comparable)) {
-				throw new IllegalStateException("property " + name + " is not comparable.");
+				throw new IllegalStateException("property " + name
+						+ " is not comparable.");
 			}
 
 			final int compareTo;
 			if (v1 instanceof Number && v2 instanceof Number) {
-				compareTo =
-						((Double) ((Number) v1).doubleValue()).compareTo(((Number) v2)
-							.doubleValue());
+				compareTo = ((Double) ((Number) v1).doubleValue())
+						.compareTo(((Number) v2).doubleValue());
 			} else if (v1.getClass().equals(v2.getClass())) {
 				compareTo = ((Comparable<Object>) v1).compareTo(v2);
 			} else {
-				compareTo =
-						v1.getClass().getCanonicalName()
-							.compareTo(v2.getClass().getCanonicalName());
+				compareTo = v1.getClass().getCanonicalName()
+						.compareTo(v2.getClass().getCanonicalName());
 			}
 
 			if (compareTo == 0) {

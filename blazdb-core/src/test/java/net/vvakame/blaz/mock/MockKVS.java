@@ -13,6 +13,7 @@ import net.vvakame.blaz.Entity;
 import net.vvakame.blaz.Filter;
 import net.vvakame.blaz.Filter.FilterOption;
 import net.vvakame.blaz.Key;
+import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
 import net.vvakame.blaz.filter.AbstractKeyFilter;
@@ -24,12 +25,12 @@ import net.vvakame.blaz.util.KeyUtil;
 /**
  * {@link BareDatastore} のモック実装.<br>
  * {@link Serializable} を活用すれば永続化可能.
+ * 
  * @author vvakame
  */
 public class MockKVS extends BareDatastore {
 
 	Map<String, Map<Key, Entity>> db = new HashMap<String, Map<Key, Entity>>();
-
 
 	Map<Key, Entity> getKindMap(String kind) {
 		return getKindMap(db, kind);
@@ -155,8 +156,8 @@ public class MockKVS extends BareDatastore {
 					CompareBlock cmp = getCompareBlock(FilterOption.EQ);
 					Map<String, Map<Key, Entity>> tmpMap1 = new HashMap<String, Map<Key, Entity>>();
 					for (Key key : keys) {
-						Map<String, Map<Key, Entity>> tmpMap2 =
-								getKindMapByKey(workingMap, cmp, key);
+						Map<String, Map<Key, Entity>> tmpMap2 = getKindMapByKey(
+								workingMap, cmp, key);
 						tmpMap1 = margeKindMap(tmpMap1, tmpMap2);
 					}
 					workingMap = tmpMap1;
@@ -168,21 +169,25 @@ public class MockKVS extends BareDatastore {
 				AbstractPropertyFilter propertyFilter = (AbstractPropertyFilter) filter;
 
 				String name = propertyFilter.getName();
-				if (filter.getOption() == FilterOption.EQ && filter.getValue() == null) {
+				if (filter.getOption() == FilterOption.EQ
+						&& filter.getValue() == null) {
 					CompareBlock cmp = CMP_EQ_NULL;
-					workingMap = getKindMapByProperty(workingMap, cmp, name, null);
+					workingMap = getKindMapByProperty(workingMap, cmp, name,
+							null);
 				} else if (filter.getOption() != FilterOption.IN) {
 					Object value = propertyFilter.getValue();
-					CompareBlock cmp = getCompareBlock(propertyFilter.getOption());
+					CompareBlock cmp = getCompareBlock(propertyFilter
+							.getOption());
 
-					workingMap = getKindMapByProperty(workingMap, cmp, name, value);
+					workingMap = getKindMapByProperty(workingMap, cmp, name,
+							value);
 				} else {
 					CompareBlock cmp = getCompareBlock(FilterOption.EQ);
 
 					Map<String, Map<Key, Entity>> tmpMap1 = new HashMap<String, Map<Key, Entity>>();
 					for (Object value : (Object[]) propertyFilter.getValue()) {
-						Map<String, Map<Key, Entity>> tmpMap2 =
-								getKindMapByProperty(workingMap, cmp, name, value);
+						Map<String, Map<Key, Entity>> tmpMap2 = getKindMapByProperty(
+								workingMap, cmp, name, value);
 						tmpMap1 = margeKindMap(tmpMap1, tmpMap2);
 					}
 					workingMap = tmpMap1;
@@ -195,42 +200,51 @@ public class MockKVS extends BareDatastore {
 		return dbToKeyList(workingMap);
 	}
 
+	@Override
+	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+		List<Key> keys = findAsKey(filters);
+		List<Entity> list = get(keys.toArray(new Key[] {}));
+		sort(list, sorters);
+		return list;
+	}
+
 	CompareBlock getCompareBlock(FilterOption option) {
 		CompareBlock cmp;
 		switch (option) {
-			case EQ:
-				cmp = CMP_EQ;
-				break;
-			case GT:
-				cmp = CMP_GT;
-				break;
-			case GT_EQ:
-				cmp = CMP_GT_EQ;
-				break;
-			case LT:
-				cmp = CMP_LT;
-				break;
-			case LT_EQ:
-				cmp = CMP_LT_EQ;
-				break;
-			case IN:
-				// EQを複数回回してINを実現する
-				cmp = CMP_EQ;
-				break;
-			default:
-				throw new IllegalArgumentException();
+		case EQ:
+			cmp = CMP_EQ;
+			break;
+		case GT:
+			cmp = CMP_GT;
+			break;
+		case GT_EQ:
+			cmp = CMP_GT_EQ;
+			break;
+		case LT:
+			cmp = CMP_LT;
+			break;
+		case LT_EQ:
+			cmp = CMP_LT_EQ;
+			break;
+		case IN:
+			// EQを複数回回してINを実現する
+			cmp = CMP_EQ;
+			break;
+		default:
+			throw new IllegalArgumentException();
 		}
 		return cmp;
 	}
 
-	Map<String, Map<Key, Entity>> getDbByKind(Map<String, Map<Key, Entity>> workingMap, String kind) {
+	Map<String, Map<Key, Entity>> getDbByKind(
+			Map<String, Map<Key, Entity>> workingMap, String kind) {
 		Map<String, Map<Key, Entity>> tmpMap = new HashMap<String, Map<Key, Entity>>();
 		tmpMap.put(kind, workingMap.get(kind));
 		return tmpMap;
 	}
 
-	Map<String, Map<Key, Entity>> getKindMapByKey(Map<String, Map<Key, Entity>> workingMap,
-			CompareBlock cmp, Key key) {
+	Map<String, Map<Key, Entity>> getKindMapByKey(
+			Map<String, Map<Key, Entity>> workingMap, CompareBlock cmp, Key key) {
 
 		Map<Key, Entity> kindMap = workingMap.get(key.getKind());
 
@@ -251,8 +265,9 @@ public class MockKVS extends BareDatastore {
 	}
 
 	@SuppressWarnings("unchecked")
-	Map<String, Map<Key, Entity>> getKindMapByProperty(Map<String, Map<Key, Entity>> workingMap,
-			CompareBlock cmp, String name, Object value) {
+	Map<String, Map<Key, Entity>> getKindMapByProperty(
+			Map<String, Map<Key, Entity>> workingMap, CompareBlock cmp,
+			String name, Object value) {
 
 		Map<String, Map<Key, Entity>> newWorkingMap = new HashMap<String, Map<Key, Entity>>();
 
@@ -282,7 +297,8 @@ public class MockKVS extends BareDatastore {
 		return newWorkingMap;
 	}
 
-	Map<String, Map<Key, Entity>> margeKindMap(Map<String, Map<Key, Entity>> mapA,
+	Map<String, Map<Key, Entity>> margeKindMap(
+			Map<String, Map<Key, Entity>> mapA,
 			Map<String, Map<Key, Entity>> mapB) {
 
 		Map<String, Map<Key, Entity>> newWorkingMap = new HashMap<String, Map<Key, Entity>>();
@@ -324,16 +340,14 @@ public class MockKVS extends BareDatastore {
 	}
 
 	@Override
-	public boolean checkFilter(Filter... filters) {
+	public boolean checkFilter(Filter[] filters, Sorter[] sorters) {
 		return true;
 	}
-
 
 	interface CompareBlock {
 
 		public boolean isComparePassage(Object obj1, Object obj2);
 	}
-
 
 	final CompareBlock CMP_EQ_NULL = new CompareBlock() {
 
@@ -345,11 +359,7 @@ public class MockKVS extends BareDatastore {
 
 	final CompareBlock CMP_EQ = new CompareBlock() {
 
-		@SuppressWarnings({
-			"cast",
-			"unchecked",
-			"rawtypes"
-		})
+		@SuppressWarnings({ "cast", "unchecked", "rawtypes" })
 		@Override
 		public boolean isComparePassage(Object obj1, Object obj2) {
 			return ((Comparable) obj1).compareTo((Comparable) obj2) == 0;
@@ -358,11 +368,7 @@ public class MockKVS extends BareDatastore {
 
 	final CompareBlock CMP_GT = new CompareBlock() {
 
-		@SuppressWarnings({
-			"cast",
-			"unchecked",
-			"rawtypes"
-		})
+		@SuppressWarnings({ "cast", "unchecked", "rawtypes" })
 		@Override
 		public boolean isComparePassage(Object obj1, Object obj2) {
 			return ((Comparable) obj1).compareTo((Comparable) obj2) < 0;
@@ -371,11 +377,7 @@ public class MockKVS extends BareDatastore {
 
 	final CompareBlock CMP_GT_EQ = new CompareBlock() {
 
-		@SuppressWarnings({
-			"cast",
-			"unchecked",
-			"rawtypes"
-		})
+		@SuppressWarnings({ "cast", "unchecked", "rawtypes" })
 		@Override
 		public boolean isComparePassage(Object obj1, Object obj2) {
 			return ((Comparable) obj1).compareTo((Comparable) obj2) <= 0;
@@ -384,11 +386,7 @@ public class MockKVS extends BareDatastore {
 
 	final CompareBlock CMP_LT = new CompareBlock() {
 
-		@SuppressWarnings({
-			"cast",
-			"unchecked",
-			"rawtypes"
-		})
+		@SuppressWarnings({ "cast", "unchecked", "rawtypes" })
 		@Override
 		public boolean isComparePassage(Object obj1, Object obj2) {
 			return ((Comparable) obj1).compareTo((Comparable) obj2) > 0;
@@ -397,11 +395,7 @@ public class MockKVS extends BareDatastore {
 
 	final CompareBlock CMP_LT_EQ = new CompareBlock() {
 
-		@SuppressWarnings({
-			"cast",
-			"unchecked",
-			"rawtypes"
-		})
+		@SuppressWarnings({ "cast", "unchecked", "rawtypes" })
 		@Override
 		public boolean isComparePassage(Object obj1, Object obj2) {
 			return ((Comparable) obj1).compareTo((Comparable) obj2) >= 0;
