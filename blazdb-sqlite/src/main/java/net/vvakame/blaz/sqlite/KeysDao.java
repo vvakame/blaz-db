@@ -46,10 +46,9 @@ class KeysDao {
 	public static void insert(Connection conn, Key key) throws SQLException {
 		PreparedStatement pre = null;
 		try {
-			pre =
-					conn.prepareStatement("INSERT INTO " + TABLE_KEYS + " (" + COL_ID + ", "
-							+ COL_NAME + ", " + COL_KIND + ", " + COL_KEY_STRING
-							+ ") values (?, ?, ?, ?)");
+			pre = conn.prepareStatement("INSERT INTO " + TABLE_KEYS + " ("
+					+ COL_ID + ", " + COL_NAME + ", " + COL_KIND + ", "
+					+ COL_KEY_STRING + ") values (?, ?, ?, ?)");
 
 			if (key.getName() == null) {
 				pre.setLong(1, key.getId());
@@ -72,9 +71,8 @@ class KeysDao {
 	public static void delete(Connection conn, Key key) throws SQLException {
 		PreparedStatement pre = null;
 		try {
-			pre =
-					conn.prepareStatement("DELETE FROM " + TABLE_KEYS + " WHERE " + COL_KEY_STRING
-							+ " = ?");
+			pre = conn.prepareStatement("DELETE FROM " + TABLE_KEYS + " WHERE "
+					+ COL_KEY_STRING + " = ?");
 
 			pre.setString(1, KeyUtil.keyToString(key));
 
@@ -86,11 +84,12 @@ class KeysDao {
 		}
 	}
 
-	public static List<Key> query(Connection conn, Key... keys) throws SQLException {
+	public static List<Key> query(Connection conn, Key... keys)
+			throws SQLException {
 		StringBuilder builder = new StringBuilder();
 		List<String> args = new ArrayList<String>();
-		builder.append("SELECT * FROM " + TABLE_KEYS + " WHERE ").append(COL_KEY_STRING)
-			.append(" IN (");
+		builder.append("SELECT * FROM " + TABLE_KEYS + " WHERE ")
+				.append(COL_KEY_STRING).append(" IN (");
 		for (int i = 0; i < keys.length; i++) {
 			builder.append("?");
 			if (i != keys.length - 1) {
@@ -116,12 +115,13 @@ class KeysDao {
 		}
 	}
 
-	public static long getLatestId(Connection conn, String kind) throws SQLException {
+	public static long getLatestId(Connection conn, String kind)
+			throws SQLException {
 		PreparedStatement pre = null;
 		try {
-			pre =
-					conn.prepareStatement("SELECT max(" + COL_ID + ") as maxValue FROM "
-							+ TABLE_KEYS + " WHERE " + COL_KIND + " = ?");
+			pre = conn.prepareStatement("SELECT max(" + COL_ID
+					+ ") as maxValue FROM " + TABLE_KEYS + " WHERE " + COL_KIND
+					+ " = ?");
 
 			pre.setString(1, kind);
 
@@ -135,12 +135,12 @@ class KeysDao {
 		}
 	}
 
-	public static boolean isExists(Connection conn, Key key) throws SQLException {
+	public static boolean isExists(Connection conn, Key key)
+			throws SQLException {
 		PreparedStatement pre = null;
 		try {
-			pre =
-					conn.prepareStatement("SELECT count(*) as cnt FROM " + TABLE_KEYS + " WHERE "
-							+ COL_KEY_STRING + " = ?");
+			pre = conn.prepareStatement("SELECT count(*) as cnt FROM "
+					+ TABLE_KEYS + " WHERE " + COL_KEY_STRING + " = ?");
 
 			pre.setString(1, KeyUtil.keyToString(key));
 
