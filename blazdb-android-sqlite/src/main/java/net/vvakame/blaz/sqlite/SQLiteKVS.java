@@ -11,6 +11,7 @@ import net.vvakame.blaz.Key;
 import net.vvakame.blaz.Sorter;
 import net.vvakame.blaz.Transaction;
 import net.vvakame.blaz.bare.BareDatastore;
+import net.vvakame.blaz.option.FetchOptions;
 import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 import android.content.Context;
@@ -118,7 +119,8 @@ public class SQLiteKVS extends BareDatastore implements
 	}
 
 	@Override
-	public List<Key> findAsKey(Filter... filters) {
+	public List<Key> findAsKey(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
 		if (checkFilter && !FilterChecker.check(this, filters)) {
 			throw new IllegalArgumentException("invalid filter combination.");
 		}
@@ -158,10 +160,11 @@ public class SQLiteKVS extends BareDatastore implements
 	}
 
 	@Override
-	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
+	public List<Entity> find(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
 		List<Key> keys = findAsKey(filters);
 		List<Entity> list = get(keys.toArray(new Key[] {}));
-		sort(list, sorters);
+		list = sort(list, sorters);
 		return list;
 	}
 
