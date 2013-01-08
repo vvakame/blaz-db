@@ -22,7 +22,8 @@ class ValuesDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Entity resultSetToEntityAsSingle(Key key, ResultSet rs) throws SQLException {
+	public static Entity resultSetToEntityAsSingle(Key key, ResultSet rs)
+			throws SQLException {
 
 		Entity entity = new Entity(key);
 		if (!rs.next()) {
@@ -38,7 +39,8 @@ class ValuesDao {
 			} else if (T_STRING.equals(type)) {
 				value = rs.getString(COL_VALUE_STRING);
 			} else if (T_BOOLEAN.equals(type)) {
-				value = rs.getString(COL_VALUE_STRING).equals(T_V_BOOLEAN_TRUE) ? true : false;
+				value = rs.getString(COL_VALUE_STRING).equals(T_V_BOOLEAN_TRUE) ? true
+						: false;
 			} else if (T_LONG.equals(type)) {
 				value = rs.getLong(COL_VALUE_INTEGER);
 			} else if (T_DOUBLE.equals(type)) {
@@ -61,8 +63,8 @@ class ValuesDao {
 				} else if (T_L_STRING.equals(type)) {
 					list.add(rs.getString(COL_VALUE_STRING));
 				} else if (T_L_BOOLEAN.equals(type)) {
-					boolean b =
-							rs.getString(COL_VALUE_STRING).equals(T_V_BOOLEAN_TRUE) ? true : false;
+					boolean b = rs.getString(COL_VALUE_STRING).equals(
+							T_V_BOOLEAN_TRUE) ? true : false;
 					list.add(b);
 				} else if (T_L_LONG.equals(type)) {
 					list.add(rs.getLong(COL_VALUE_INTEGER));
@@ -73,8 +75,8 @@ class ValuesDao {
 				} else if (T_L_BYTES.equals(type)) {
 					list.add(rs.getBytes(COL_VALUE_BLOB));
 				} else {
-					throw new UnsupportedPropertyException("property name=" + name
-							+ " is not suppored type. type=" + type);
+					throw new UnsupportedPropertyException("property name="
+							+ name + " is not suppored type. type=" + type);
 				}
 				value = list;
 			} else {
@@ -88,7 +90,8 @@ class ValuesDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<Key, Entity> resultSetToEntities(ResultSet rs) throws SQLException {
+	public static Map<Key, Entity> resultSetToEntities(ResultSet rs)
+			throws SQLException {
 		if (!rs.next()) {
 			return new HashMap<Key, Entity>();
 		}
@@ -113,7 +116,8 @@ class ValuesDao {
 			} else if (T_STRING.equals(type)) {
 				value = rs.getString(COL_VALUE_STRING);
 			} else if (T_BOOLEAN.equals(type)) {
-				value = rs.getString(COL_VALUE_STRING).equals(T_V_BOOLEAN_TRUE) ? true : false;
+				value = rs.getString(COL_VALUE_STRING).equals(T_V_BOOLEAN_TRUE) ? true
+						: false;
 			} else if (T_LONG.equals(type)) {
 				value = rs.getLong(COL_VALUE_INTEGER);
 			} else if (T_DOUBLE.equals(type)) {
@@ -136,8 +140,8 @@ class ValuesDao {
 				} else if (T_L_STRING.equals(type)) {
 					list.add(rs.getString(COL_VALUE_STRING));
 				} else if (T_L_BOOLEAN.equals(type)) {
-					boolean b =
-							rs.getString(COL_VALUE_STRING).equals(T_V_BOOLEAN_TRUE) ? true : false;
+					boolean b = rs.getString(COL_VALUE_STRING).equals(
+							T_V_BOOLEAN_TRUE) ? true : false;
 					list.add(b);
 				} else if (T_L_LONG.equals(type)) {
 					list.add(rs.getLong(COL_VALUE_INTEGER));
@@ -148,8 +152,8 @@ class ValuesDao {
 				} else if (T_L_BYTES.equals(type)) {
 					list.add(rs.getBytes(COL_VALUE_BLOB));
 				} else {
-					throw new UnsupportedPropertyException("property name=" + name
-							+ " is not suppored type. type=" + type);
+					throw new UnsupportedPropertyException("property name="
+							+ name + " is not suppored type. type=" + type);
 				}
 				value = list;
 			} else {
@@ -163,14 +167,16 @@ class ValuesDao {
 		return resultMap;
 	}
 
-	public static void insert(Connection conn, Entity entity) throws SQLException {
+	public static void insert(Connection conn, Entity entity)
+			throws SQLException {
 		makeValues(conn, entity.getKey(), entity.getProperties());
 	}
 
 	public static void delete(Connection conn, Key key) throws SQLException {
 		PreparedStatement pre = null;
 		try {
-			pre = conn.prepareStatement("DELETE FROM VALUE_TABLE WHERE KEY_STR = ?");
+			pre = conn
+					.prepareStatement("DELETE FROM VALUE_TABLE WHERE KEY_STR = ?");
 			pre.setString(1, KeyUtil.keyToString(key));
 			pre.executeUpdate();
 			pre.close();
@@ -181,10 +187,12 @@ class ValuesDao {
 		}
 	}
 
-	public static Map<Key, Entity> query(Connection conn, Key... keys) throws SQLException {
+	public static Map<Key, Entity> query(Connection conn, Key... keys)
+			throws SQLException {
 		StringBuilder builder = new StringBuilder();
 		List<String> args = new ArrayList<String>();
-		builder.append("SELECT * FROM VALUE_TABLE WHERE ").append(COL_KEY_STRING).append(" IN (");
+		builder.append("SELECT * FROM VALUE_TABLE WHERE ")
+				.append(COL_KEY_STRING).append(" IN (");
 		for (int i = 0; i < keys.length; i++) {
 			builder.append("?");
 			if (i != keys.length - 1) {
@@ -211,12 +219,12 @@ class ValuesDao {
 		}
 	}
 
-	static void makeValues(Connection conn, Key key, Map<String, Object> properties)
-			throws SQLException {
+	static void makeValues(Connection conn, Key key,
+			Map<String, Object> properties) throws SQLException {
 		PreparedStatement pre = null;
 		try {
-			pre =
-					conn.prepareStatement("INSERT INTO VALUE_TABLE (KEY_STR, KIND, NAME, TYPE, SEQ, VAL_STR, VAL_INT, VAL_REAL, VAL_BYTES) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			pre = conn
+					.prepareStatement("INSERT INTO VALUE_TABLE (KEY_STR, KIND, NAME, TYPE, SEQ, VAL_STR, VAL_INT, VAL_REAL, VAL_BYTES) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			for (String name : properties.keySet()) {
 				Object obj = properties.get(name);
@@ -233,8 +241,8 @@ class ValuesDao {
 		}
 	}
 
-	static void convObjToValue(PreparedStatement pre, Key key, String name, Object obj,
-			boolean isList) throws SQLException {
+	static void convObjToValue(PreparedStatement pre, Key key, String name,
+			Object obj, boolean isList) throws SQLException {
 		pre.setString(1, KeyUtil.keyToString(key));
 		pre.setString(2, key.getKind());
 		pre.setString(3, name);
@@ -277,7 +285,8 @@ class ValuesDao {
 			pre.setBytes(9, (byte[]) obj);
 		} else {
 			throw new UnsupportedPropertyException("property name=" + name
-					+ " is not suppored type. type=" + obj.getClass().getCanonicalName());
+					+ " is not suppored type. type="
+					+ obj.getClass().getCanonicalName());
 		}
 
 		pre.executeUpdate();
