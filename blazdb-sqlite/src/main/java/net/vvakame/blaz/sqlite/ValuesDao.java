@@ -190,25 +190,20 @@ class ValuesDao {
 	public static Map<Key, Entity> query(Connection conn, Key... keys)
 			throws SQLException {
 		StringBuilder builder = new StringBuilder();
-		List<String> args = new ArrayList<String>();
 		builder.append("SELECT * FROM VALUE_TABLE WHERE ")
 				.append(COL_KEY_STRING).append(" IN (");
 		for (int i = 0; i < keys.length; i++) {
-			builder.append("?");
+			builder.append("'").append(KeyUtil.keyToString(keys[i]))
+					.append("'");
 			if (i != keys.length - 1) {
 				builder.append(",");
 			}
-			args.add(KeyUtil.keyToString(keys[i]));
 		}
 		builder.append(")");
 
 		PreparedStatement pre = null;
 		try {
 			pre = conn.prepareStatement(builder.toString());
-
-			for (int i = 1; i <= args.size(); i++) {
-				pre.setString(i, args.get(i - 1));
-			}
 
 			ResultSet rs = pre.executeQuery();
 			return resultSetToEntities(rs);
