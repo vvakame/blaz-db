@@ -88,4 +88,17 @@ public class ModelQuery<M> extends AbstractQuery<ModelQuery<M>> {
 
 		return modelList;
 	}
+
+	public M asSingle() {
+		final BareDatastore kvs = Datastore.getBareDatastore();
+		options.limit(1);
+		List<Entity> entities = kvs.find(filters.toArray(new Filter[] {}),
+				sorters.toArray(new Sorter[] {}), options);
+		List<M> modelList = new ArrayList<M>();
+		if (modelList == null || modelList.size() == 0) {
+			return null;
+		} else {
+			return meta.entityToModel(entities.get(0));
+		}
+	}
 }
