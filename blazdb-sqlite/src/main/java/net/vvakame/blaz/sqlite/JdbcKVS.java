@@ -22,6 +22,7 @@ import net.vvakame.blaz.meta.CollectionAttributeMetaInterface;
 import net.vvakame.blaz.meta.CoreAttributeMeta;
 import net.vvakame.blaz.meta.ModelMeta;
 import net.vvakame.blaz.meta.PropertyAttributeMetaInterface;
+import net.vvakame.blaz.option.FetchOptions;
 import net.vvakame.blaz.util.FilterChecker;
 import net.vvakame.blaz.util.KeyUtil;
 
@@ -251,7 +252,9 @@ public class JdbcKVS extends BareDatastore implements
 	}
 
 	@Override
-	public List<Key> findAsKey(Filter... filters) {
+	public List<Key> findAsKey(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
+		// TODO 書き直し
 		if (checkFilter && !FilterChecker.check(this, filters)) {
 			throw new IllegalArgumentException("invalid filter combination.");
 		}
@@ -307,11 +310,12 @@ public class JdbcKVS extends BareDatastore implements
 	}
 
 	@Override
-	public List<Entity> find(Filter[] filters, Sorter[] sorters) {
-		List<Key> keys = findAsKey(filters);
-		List<Entity> list = get(keys.toArray(new Key[] {}));
-		list = sort(list, sorters);
-		return list;
+	public List<Entity> find(Filter[] filters, Sorter[] sorters,
+			FetchOptions options) {
+		// TODO 書き直し
+		List<Entity> entities = super.find(filters, sorters, options);
+		entities = sort(entities, sorters);
+		return entities;
 	}
 
 	/**
